@@ -401,4 +401,8 @@ export class DebugScope extends ExpressionContainer {
         return this.raw.name;
     }
 
+    expandByDefault(): boolean {
+        return this.raw.presentationHint === 'locals';
+    }
+
 }
