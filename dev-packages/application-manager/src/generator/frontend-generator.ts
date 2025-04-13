@@ -72,9 +72,7 @@ export class FrontendGenerator extends AbstractGenerator {
     protected compileIndexJs(frontendModules: Map<string, string>, frontendPreloadModules: Map<string, string>): string {
         return `\
 // @ts-check
-${this.ifBrowser("require('es6-promise/auto');")}
 require('reflect-metadata');
-require('setimmediate');
 const { Container } = require('inversify');
 const { FrontendApplicationConfigProvider } = require('@theia/core/lib/browser/frontend-application-config-provider');
 
@@ -123,13 +121,13 @@ module.exports = (async () => {
     `)};
 
     const { FrontendApplication } = require('@theia/core/lib/browser');
-    const { frontendApplicationModule } = require('@theia/core/lib/browser/frontend-application-module');    
+    const { frontendApplicationModule } = require('@theia/core/lib/browser/frontend-application-module');
     const { loggerFrontendModule } = require('@theia/core/lib/browser/logger-frontend-module');
 
     container.load(frontendApplicationModule);
     ${this.pck.ifBrowserOnly(`const { frontendOnlyApplicationModule } = require('@theia/core/lib/browser-only/frontend-only-application-module');
     container.load(frontendOnlyApplicationModule);`)}
-    
+
     container.load(loggerFrontendModule);
     ${this.ifBrowserOnly(`const { loggerFrontendOnlyModule } = require('@theia/core/lib/browser-only/logger-frontend-only-module');
     container.load(loggerFrontendOnlyModule);`)}
