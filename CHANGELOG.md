@@ -4,6 +4,12 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.59.100 - 04/14/2025
+
+- [monaco] fixed context menu for editor minimap [#15220](https://github.com/eclipse-theia/theia/pull/15220)
+- [monaco] fixed [#15102](https://github.com/eclipse-theia/theia/issues/15102): dirty-diff peek view opens only one time
+- [monaco] reverted the fix in [#14909](https://github.com/eclipse-theia/theia/pull/14909) because of significant regressions
+
 ## 1.59.0 - 02/27/2025
 
 - [ai] added claude sonnet 3.7 to default models [#15023](https://github.com/eclipse-theia/theia/pull/15023)
