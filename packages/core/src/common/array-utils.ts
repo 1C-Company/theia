@@ -127,25 +127,59 @@ export namespace ArrayUtils {
         return result;
     }
 
-    export function shallowEqual<T>(left: readonly T[], right: readonly T[]): boolean {
+    export function shallowEqual<T>(left: readonly T[], right: readonly T[], eq: (a: T, b: T) => boolean = (a, b) => a === b): boolean {
+        if (left === right) {
+            return true;
+        }
         if (left.length !== right.length) {
             return false;
         }
         for (let i = 0; i < left.length; i++) {
-            if (left[i] !== right[i]) {
+            if (!eq(left[i], right[i])) {
                 return false;
             }
         }
         return true;
     }
 
-    export function startsWith<T>(left: readonly T[], right: readonly T[]): boolean {
+    export function startsWith<T>(left: readonly T[], right: readonly T[], eq: (a: T, b: T) => boolean = (a, b) => a === b): boolean {
         if (right.length > left.length) {
             return false;
         }
 
         for (let i = 0; i < right.length; i++) {
-            if (left[i] !== right[i]) {
+            if (!eq(left[i], right[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    export function findLast<T>(array: readonly T[], predicate: (item: T) => boolean): T | undefined {
+        const idx = findLastIdx(array, predicate);
+        if (idx === -1) {
+            return undefined;
+        }
+        return array[idx];
+    }
+
+    export function findLastIdx<T>(array: readonly T[], predicate: (item: T) => boolean, fromIndex = array.length - 1): number {
+        for (let i = fromIndex; i >= 0; i--) {
+            const element = array[i];
+
+            if (predicate(element)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    export function checkAdjacentItems<T>(items: readonly T[], predicate: (item1: T, item2: T) => boolean): boolean {
+        for (let i = 0; i < items.length - 1; i++) {
+            const a = items[i];
+            const b = items[i + 1];
+            if (!predicate(a, b)) {
                 return false;
             }
         }

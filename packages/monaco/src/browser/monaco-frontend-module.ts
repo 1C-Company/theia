@@ -79,6 +79,9 @@ import { ActiveMonacoUndoRedoHandler, FocusedMonacoUndoRedoHandler } from './mon
 import { ILogService } from '@theia/monaco-editor-core/esm/vs/platform/log/common/log';
 import { DefaultContentHoverWidgetPatcher } from './default-content-hover-widget-patcher';
 import { MonacoWorkspaceContextService } from './monaco-workspace-context-service';
+import { MonacoDiffComputer } from './monaco-diff-computer';
+import { DiffComputer } from '@theia/core/lib/common/diff';
+import { MonacoEditorContentMenuContribution } from './monaco-editor-content-menu';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(MonacoThemingService).toSelf().inSingletonScope();
@@ -191,6 +194,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     bind(DefaultContentHoverWidgetPatcher).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(DefaultContentHoverWidgetPatcher);
+
+    bind(MonacoDiffComputer).toSelf().inSingletonScope();
+    bind(DiffComputer).toService(MonacoDiffComputer);
+
+    bind(MonacoEditorContentMenuContribution).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).to(MonacoEditorContentMenuContribution);
 });
 
 export const MonacoConfigurationService = Symbol('MonacoConfigurationService');

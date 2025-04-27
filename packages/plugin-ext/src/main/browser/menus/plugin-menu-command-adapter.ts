@@ -98,6 +98,7 @@ export class PluginMenuCommandAdapter implements MenuCommandAdapter {
             ['debug/variables/context', firstArgOnly],
             ['debug/toolBar', noArgs],
             ['editor/context', selectedResource],
+            ['editor/content', widgetURI],
             ['editor/title', widgetURI],
             ['editor/title/context', selectedResource],
             ['editor/title/run', widgetURI],
