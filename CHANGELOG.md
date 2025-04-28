@@ -4,6 +4,14 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.59.101 - 04/28/2025
+
+- [core] removed unnecessary polyfills es6-promise and setImmediate [#15436](https://github.com/eclipse-theia/theia/pull/15436)
+- [core] fixed switching the localization language back to the default [#15445](https://github.com/eclipse-theia/theia/pull/15445)
+- [debug] fixed breakpoint editor shrinking in size [#15515](https://github.com/eclipse-theia/theia/pull/15515)
+- [editor] added support for editor associations when opening diff-editors [#15422](https://github.com/eclipse-theia/theia/pull/15422)
+- [scm] added initial implementation for the 3-way merge editor
+
 ## 1.59.100 - 04/14/2025
 
 - [monaco] fixed context menu for editor minimap [#15220](https://github.com/eclipse-theia/theia/pull/15220)
