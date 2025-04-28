@@ -569,6 +569,10 @@
       "editorDecorationsEnabled": "Show git decorations in the editor.",
       "fetchPickRemote": "Pick a remote to fetch from:",
       "gitDecorationsColors": "Use color decoration in the navigator.",
+      "mergeEditor": {
+        "currentSideTitle": "Current",
+        "incomingSideTitle": "Incoming"
+      },
       "mergeQuickPickPlaceholder": "Pick a branch to merge into the currently active {0} branch:",
       "missingUserInfo": "Make sure you configure your 'user.name' and 'user.email' in git.",
       "noHistoryForError": "There is no history available for {0}",
@@ -786,6 +790,10 @@
         "close": "Close Change Peek View"
       },
       "history": "History",
+      "mergeEditor": {
+        "resetConfirmationMessage": "This action cannot be undone.",
+        "resetConfirmationTitle": "Do you really want to reset the merge result in this editor?"
+      },
       "noRepositoryFound": "No repository found",
       "unamend": "Unamend",
       "unamendCommit": "Unamend commit"

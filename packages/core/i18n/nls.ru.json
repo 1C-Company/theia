@@ -783,9 +783,13 @@
       "config.untrackedChanges.mixed": "смешанный",
       "config.untrackedChanges.separate": "отдельный",
       "dirtyDiff": {
-        "close": "Закрыть Изменить Посмотреть"
+        "close": "Закрыть окно просмотра текущего изменения"
       },
       "history": "История",
+      "mergeEditor": {
+        "resetConfirmationMessage": "Это действие не может быть отменено.",
+        "resetConfirmationTitle": "Вы действительно хотите сбросить получившийся результат в этом редакторе?"
+      },
       "noRepositoryFound": "Репозиторий не найден",
       "unamend": "не изменять",
       "unamendCommit": "Неизмененное обязательство"
