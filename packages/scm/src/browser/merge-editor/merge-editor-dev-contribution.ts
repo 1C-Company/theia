@@ -82,10 +82,10 @@ export class MergeEditorDevContribution implements CommandContribution {
     protected copyContentsToJSON(editor: MergeEditor): void {
         const { model } = editor;
         const editorContents: MergeEditorContents = {
-            baseContent: model.baseDocument.getText(),
-            side1Content: model.side1Document.getText(),
-            side2Content: model.side2Document.getText(),
-            resultContent: model.resultDocument.getText(),
+            base: model.baseDocument.getText(),
+            input1: model.side1Document.getText(),
+            input2: model.side2Document.getText(),
+            result: model.resultDocument.getText(),
             languageId: model.resultDocument.getLanguageId()
         };
         this.clipboardService.writeText(JSON.stringify(editorContents, undefined, 2));
@@ -102,11 +102,11 @@ export class MergeEditorDevContribution implements CommandContribution {
             return;
         }
 
-        const { baseContent, side1Content, side2Content, resultContent, languageId } = Object.assign<MergeEditorContents, unknown>({
-            baseContent: '',
-            side1Content: '',
-            side2Content: '',
-            resultContent: '',
+        const { base, input1, input2, result, languageId } = Object.assign<MergeEditorContents, unknown>({
+            base: '',
+            input1: '',
+            input2: '',
+            result: '',
             languageId: 'plaintext'
         }, JSON.parse(inputText));
 
@@ -120,10 +120,10 @@ export class MergeEditorDevContribution implements CommandContribution {
 
         const toDispose = new DisposableCollection();
         try {
-            toDispose.push(this.inMemoryResources.add(baseUri, baseContent));
-            toDispose.push(this.inMemoryResources.add(side1Uri, side1Content));
-            toDispose.push(this.inMemoryResources.add(side2Uri, side2Content));
-            toDispose.push(this.inMemoryResources.add(resultUri, resultContent));
+            toDispose.push(this.inMemoryResources.add(baseUri, base));
+            toDispose.push(this.inMemoryResources.add(side1Uri, input1));
+            toDispose.push(this.inMemoryResources.add(side2Uri, input2));
+            toDispose.push(this.inMemoryResources.add(resultUri, result));
 
             const uri = MergeEditorUri.encode({ baseUri, side1Uri, side2Uri, resultUri });
             const options: MergeEditorOpenerOptions = {
@@ -146,9 +146,9 @@ export class MergeEditorDevContribution implements CommandContribution {
 }
 
 export interface MergeEditorContents {
-    baseContent: string;
-    side1Content: string;
-    side2Content: string;
-    resultContent: string;
+    base: string;
+    input1: string;
+    input2: string;
+    result: string;
     languageId?: string;
 }
