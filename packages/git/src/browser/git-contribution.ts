@@ -152,17 +152,17 @@ export namespace GIT_COMMANDS {
         id: 'git.open.mergeEditor',
         category: GIT_CATEGORY,
         label: 'Resolve in Merge Editor'
-    }, 'vscode.git/package/command.openMergeEditor', GIT_CATEGORY_KEY);
+    }, 'vscode.git/package/command.git.openMergeEditor', GIT_CATEGORY_KEY);
     export const OPEN_MERGE_CHANGES = Command.toLocalizedCommand({
         id: 'git.open.mergeChanges',
         category: GIT_CATEGORY,
         label: 'Resolve in Merge Editor'
-    }, 'vscode.git/package/command.openMergeChanges', GIT_CATEGORY_KEY);
+    }, 'vscode.git/package/command.git.openMergeEditor', GIT_CATEGORY_KEY);
     export const ACCEPT_MERGE = Command.toLocalizedCommand({
         id: 'git.acceptMerge',
         category: GIT_CATEGORY,
         label: 'Complete Merge'
-    }, 'vscode.git/package/command.acceptMerge', GIT_CATEGORY_KEY);
+    }, 'vscode.git/package/command.git.acceptMerge', GIT_CATEGORY_KEY);
     export const SYNC = Command.toLocalizedCommand({
         id: 'git.sync',
         category: GIT_CATEGORY,
