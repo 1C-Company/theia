@@ -338,7 +338,7 @@ export class MergeEditorModel implements Disposable {
 
     protected computeMergeRangeStateFromResult(mergeRange: MergeRange): MergeRangeResultState {
 
-        const resultRange = this.resultLiveDiff.projectLineRange(mergeRange.baseRange);
+        const resultRange = this.getLineRangeInResult(mergeRange);
         const existingLines = resultRange.getLines(this.resultDocument);
 
         const states: MergeRangeAcceptedState[] = [
@@ -442,9 +442,21 @@ export class MergeEditorModel implements Disposable {
         if (!this.isUpToDateObservable.get()) {
             throw new Error('Cannot apply merge range accepted state while updating');
         }
+        if (state !== 'Base' && this.getMergeRangeResultState(mergeRange) === 'Unrecognized') {
+            throw new Error('Cannot apply merge range accepted state to an unrecognized result state');
+        }
 
-        const baseEdit = mergeRange.getBaseRangeEdit(state);
-        const resultEdit = new LineRangeEdit((this.getLineRangeInResult(baseEdit.range)), baseEdit.newLines);
+        const { originalRange: baseRange, modifiedRange: resultRange } = this.getResultLineRangeMapping(mergeRange);
+        let newLines: string[];
+        if (state === 'Base') {
+            newLines = baseRange.getLines(this.baseDocument);
+        } else {
+            if (!baseRange.equals(mergeRange.baseRange)) {
+                throw new Error('Assertion error');
+            }
+            newLines = mergeRange.getBaseRangeEdit(state).newLines;
+        }
+        const resultEdit = new LineRangeEdit(resultRange, newLines);
         const editOperation = resultEdit.toRangeEdit(this.resultDocument.lineCount).toMonacoEdit();
 
         const cursorState = this.resultEditor.getControl().getSelections();
@@ -457,12 +469,39 @@ export class MergeEditorModel implements Disposable {
         return this.getMergeRangeData(mergeRange).isHandledObservable.get();
     }
 
-    getLineRangeInResult(baseRange: LineRange): LineRange {
-        return this.resultLiveDiff.projectLineRange(baseRange);
+    getLineRangeInResult(mergeRange: MergeRange): LineRange {
+        return this.getResultLineRangeMapping(mergeRange).modifiedRange;
     }
 
-    getLineInResult(baseLine: number): number {
-        return this.resultLiveDiff.projectLine(baseLine);
+    protected getResultLineRangeMapping(mergeRange: MergeRange): LineRangeMapping {
+        const projectLine = (lineNumber: number): number | LineRangeMapping => {
+            let offset = 0;
+            const changes = this.resultChanges;
+            for (const change of changes) {
+                const { originalRange } = change;
+                if (originalRange.containsLine(lineNumber) || originalRange.endLineNumberExclusive === lineNumber) {
+                    return change;
+                } else if (originalRange.endLineNumberExclusive < lineNumber) {
+                    offset = change.modifiedRange.endLineNumberExclusive - originalRange.endLineNumberExclusive;
+                } else {
+                    break;
+                }
+            }
+            return lineNumber + offset;
+        };
+        let startBase = mergeRange.baseRange.startLineNumber;
+        let startResult = projectLine(startBase);
+        if (typeof startResult !== 'number') {
+            startBase = startResult.originalRange.startLineNumber;
+            startResult = startResult.modifiedRange.startLineNumber;
+        }
+        let endExclusiveBase = mergeRange.baseRange.endLineNumberExclusive;
+        let endExclusiveResult = projectLine(endExclusiveBase);
+        if (typeof endExclusiveResult !== 'number') {
+            endExclusiveBase = endExclusiveResult.originalRange.endLineNumberExclusive;
+            endExclusiveResult = endExclusiveResult.modifiedRange.endLineNumberExclusive;
+        }
+        return new LineRangeMapping(LineRange.fromLineNumbers(startBase, endExclusiveBase), LineRange.fromLineNumbers(startResult, endExclusiveResult));
     }
 
     translateBaseRangeToSide(range: Range, side: MergeSide): Range {

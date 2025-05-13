@@ -76,8 +76,11 @@ export class MergeEditorViewZoneComputer {
                 }
             }
             if (actions.hasResultActions) {
-                resultViewZones.push(this.newActionZone(resultPane, actions.resultActionsObservable, model.getLineInResult(mergeRange.baseRange.startLineNumber) - 1,
-                    resultActionZoneHeight));
+                resultViewZones.push(
+                    this.newActionZone(resultPane, actions.resultActionsObservable, model.getLineRangeInResult(mergeRange).startLineNumber - 1, resultActionZoneHeight)
+                );
+            } else if (shouldAlignResult && actions.hasSideActions) {
+                resultViewZones.push(this.newActionZonePlaceholder(model.getLineRangeInResult(mergeRange).startLineNumber - 1, resultActionZoneHeight));
             }
         }
 

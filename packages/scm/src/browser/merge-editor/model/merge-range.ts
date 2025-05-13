@@ -90,7 +90,7 @@ export class MergeRange {
     }
 
     canBeSmartCombined(firstSide: MergeSide): boolean {
-        return this.smartCombineChanges(firstSide) !== undefined;
+        return this.isConflicting && this.smartCombineChanges(firstSide) !== undefined;
     }
 
     get isSmartCombinationOrderRelevant(): boolean {

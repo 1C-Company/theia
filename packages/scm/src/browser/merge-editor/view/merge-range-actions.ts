@@ -60,11 +60,13 @@ export class MergeRangeActions {
         const state = model.getMergeRangeResultState(mergeRange);
 
         if (state !== 'Unrecognized' && !state.includes('Side' + side)) {
-            result.push({
-                text: nls.localizeByDefault('Accept {0}', sideTitle),
-                tooltip: nls.localizeByDefault('Accept {0} in the result document.', sideTitle),
-                run: () => this.applyMergeRangeAcceptedState(mergeRange, MergeRangeAcceptedState.addSide(state, side))
-            });
+            if (state !== 'Base' || mergeRange.getChanges(side).length) {
+                result.push({
+                    text: nls.localizeByDefault('Accept {0}', sideTitle),
+                    tooltip: nls.localizeByDefault('Accept {0} in the result document.', sideTitle),
+                    run: () => this.applyMergeRangeAcceptedState(mergeRange, MergeRangeAcceptedState.addSide(state, side))
+                });
+            }
 
             if (mergeRange.canBeSmartCombined(side)) {
                 result.push({
@@ -84,7 +86,7 @@ export class MergeRangeActions {
         const { mergeEditor, mergeRange } = this;
         const { model, side1Title, side2Title } = mergeEditor;
 
-        if (!model.hasMergeRange(mergeRange) || model.getLineRangeInResult(mergeRange.baseRange).isEmpty) {
+        if (!model.hasMergeRange(mergeRange) || model.getLineRangeInResult(mergeRange).isEmpty) {
             return [];
         }
 

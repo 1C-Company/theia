@@ -38,7 +38,7 @@ export class MergeEditorResultPane extends MergeEditorPane {
     }
 
     override getLineRangeForMergeRange(mergeRange: MergeRange): LineRange {
-        return this.mergeEditor.model.getLineRangeInResult(mergeRange.baseRange);
+        return this.mergeEditor.model.getLineRangeInResult(mergeRange);
     }
 
     protected override translateBaseRange(range: Range): Range {
@@ -100,7 +100,7 @@ export class MergeEditorResultPane extends MergeEditorPane {
 
         for (const mergeRange of model.mergeRanges) {
             if (mergeRange) {
-                const lineRange = model.getLineRangeInResult(mergeRange.baseRange);
+                const lineRange = model.getLineRangeInResult(mergeRange);
                 if (!lineRange.isEmpty) {
                     result.push(this.toMergeRangeDecoration(lineRange, {
                         isHandled: model.isMergeRangeHandled(mergeRange),

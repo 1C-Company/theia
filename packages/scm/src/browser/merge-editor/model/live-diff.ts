@@ -101,28 +101,6 @@ export class LiveDiff implements Disposable {
             });
         });
     }
-
-    projectLineRange(originalRange: LineRange): LineRange {
-        const startLineNumber = this.projectLine(originalRange.startLineNumber);
-        const endLineNumberExclusive = this.projectLine(originalRange.endLineNumberExclusive);
-        return LineRange.fromLineNumbers(startLineNumber, endLineNumberExclusive);
-    }
-
-    projectLine(originalLine: number): number {
-        let deltaSum = 0;
-        const { changes } = this;
-        for (const { originalRange, modifiedRange } of changes) {
-            if (originalLine < originalRange.startLineNumber + Math.min(originalRange.lineCount, modifiedRange.lineCount)) {
-                break;
-            }
-            const delta = modifiedRange.lineCount - originalRange.lineCount;
-            deltaSum += delta;
-            if (delta < 0 && originalLine < originalRange.endLineNumberExclusive) {
-                return modifiedRange.endLineNumberExclusive;
-            }
-        }
-        return originalLine + deltaSum;
-    }
 }
 
 export const enum LiveDiffState {
