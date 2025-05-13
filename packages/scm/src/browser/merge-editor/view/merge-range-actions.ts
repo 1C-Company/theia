@@ -86,7 +86,7 @@ export class MergeRangeActions {
         const { mergeEditor, mergeRange } = this;
         const { model, side1Title, side2Title } = mergeEditor;
 
-        if (!model.hasMergeRange(mergeRange) || model.getLineRangeInResult(mergeRange).isEmpty) {
+        if (!model.hasMergeRange(mergeRange)) {
             return [];
         }
 
@@ -151,7 +151,9 @@ export class MergeRangeActions {
         const { model, resultPane } = this.mergeEditor;
         resultPane.activate();
         await ObservableUtils.waitForState(model.isUpToDateObservable);
-        resultPane.goToMergeRange(mergeRange, { reveal: false });
+        resultPane.goToMergeRange(mergeRange, { reveal: false }); // set the cursor state that will be restored when undoing the operation
         model.applyMergeRangeAcceptedState(mergeRange, state);
+        await ObservableUtils.waitForState(model.isUpToDateObservable);
+        resultPane.goToMergeRange(mergeRange, { reveal: false }); // set the resulting cursor state
     }
 }

@@ -272,7 +272,10 @@ export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableS
                 return undefined;
             }
             const { cursorLine } = currentPane;
-            return this.model.mergeRanges.find(mergeRange => currentPane.getLineRangeForMergeRange(mergeRange).containsLine(cursorLine));
+            return this.model.mergeRanges.find(mergeRange => {
+                const lineRange = currentPane.getLineRangeForMergeRange(mergeRange);
+                return lineRange.isEmpty ? lineRange.startLineNumber === cursorLine : lineRange.containsLine(cursorLine);
+            });
         });
     }
 

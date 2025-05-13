@@ -101,13 +101,11 @@ export class MergeEditorResultPane extends MergeEditorPane {
         for (const mergeRange of model.mergeRanges) {
             if (mergeRange) {
                 const lineRange = model.getLineRangeInResult(mergeRange);
-                if (!lineRange.isEmpty) {
-                    result.push(this.toMergeRangeDecoration(lineRange, {
-                        isHandled: model.isMergeRangeHandled(mergeRange),
-                        isFocused: mergeRange === currentMergeRange,
-                        isAfterEnd: lineRange.startLineNumber > model.resultDocument.lineCount,
-                    }));
-                }
+                result.push(this.toMergeRangeDecoration(lineRange, {
+                    isHandled: model.isMergeRangeHandled(mergeRange),
+                    isFocused: mergeRange === currentMergeRange,
+                    isAfterEnd: lineRange.startLineNumber > model.resultDocument.lineCount,
+                }));
             }
         }
 

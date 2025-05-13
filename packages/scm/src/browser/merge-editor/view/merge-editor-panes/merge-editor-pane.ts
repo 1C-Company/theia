@@ -134,7 +134,7 @@ export abstract class MergeEditorPane extends BoxPanel {
     goToMergeRange(mergeRange: MergeRange, options?: { reveal?: boolean }): void {
         const { editor } = this;
         const { startLineNumber, endLineNumberExclusive } = this.getLineRangeForMergeRange(mergeRange);
-        editor.cursor = { line: startLineNumber, character: editor.getControl().getModel()!.getLineFirstNonWhitespaceColumn(startLineNumber + 1) - 1 };
+        editor.cursor = { line: startLineNumber, character: 0 };
         const reveal = options?.reveal ?? true;
         if (reveal) {
             editor.getControl().revealLinesNearTop(startLineNumber + 1, endLineNumberExclusive + 1);
