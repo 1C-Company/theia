@@ -60,7 +60,7 @@ export class MergeEditorDevContribution implements CommandContribution {
     protected readonly openerService: OpenerService;
 
     protected getMergeEditor(widget = this.shell.currentWidget): MergeEditor | undefined {
-        return widget instanceof MergeEditor ? widget : undefined;
+        return widget instanceof MergeEditor ? widget : (widget?.parent ? this.getMergeEditor(widget.parent) : undefined);
     }
 
     registerCommands(commands: CommandRegistry): void {
