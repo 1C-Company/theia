@@ -17,7 +17,7 @@
 import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { ArrayUtils, Disposable, DisposableCollection, nls, URI } from '@theia/core';
 import {
-    BaseWidget, LabelProvider, Message, Navigatable, NavigatableWidgetOpenHandler, PanelLayout,
+    ApplicationShell, BaseWidget, LabelProvider, Message, Navigatable, NavigatableWidgetOpenHandler, PanelLayout,
     Saveable, SaveableSource, SplitPanel, StatefulWidget, StorageService, Widget, WidgetOpenerOptions
 } from '@theia/core/lib/browser';
 import { Autorun, DerivedObservable, Observable, ObservableUtils, SettableObservable } from '@theia/core/lib/common/observable';
@@ -114,7 +114,7 @@ export class MergeEditorSettings {
 }
 
 @injectable()
-export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableSource, Navigatable {
+export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableSource, Navigatable, ApplicationShell.TrackableWidgetProvider {
 
     @inject(MergeEditorModel)
     readonly model: MergeEditorModel;
@@ -398,6 +398,10 @@ export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableS
     createMoveToUri(resourceUri: URI): URI | undefined {
         const { baseUri, side1Uri, side2Uri, resultUri } = this;
         return MergeEditorUri.encode({ baseUri, side1Uri, side2Uri, resultUri: resultUri.withPath(resourceUri.path) });
+    }
+
+    getTrackableWidgets(): Widget[] {
+        return this.panes.map(pane => pane.editorWidget);
     }
 
     goToFirstMergeRange(predicate: (mergeRange: MergeRange) => boolean = () => true): void {
