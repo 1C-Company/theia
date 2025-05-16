@@ -4,6 +4,10 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.59.102 - 05/16/2025
+
+- [scm] fixed a few issues with the 3-way merge editor
+
 ## 1.59.101 - 04/28/2025
 
 - [core] removed unnecessary polyfills es6-promise and setImmediate [#15436](https://github.com/eclipse-theia/theia/pull/15436)
