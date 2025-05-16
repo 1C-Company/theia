@@ -1,14 +1,14 @@
 {
   "name": "@theia/getting-started",
-  "version": "1.59.101",
+  "version": "1.59.102",
   "description": "Theia - GettingStarted Extension",
   "dependencies": {
-    "@theia/core": "1.59.101",
-    "@theia/editor": "1.59.101",
-    "@theia/filesystem": "1.59.101",
-    "@theia/keymaps": "1.59.101",
-    "@theia/preview": "1.59.101",
-    "@theia/workspace": "1.59.101",
+    "@theia/core": "1.59.102",
+    "@theia/editor": "1.59.102",
+    "@theia/filesystem": "1.59.102",
+    "@theia/keymaps": "1.59.102",
+    "@theia/preview": "1.59.102",
+    "@theia/workspace": "1.59.102",
     "tslib": "^2.6.2"
   },
   "publishConfig": {
@@ -45,7 +45,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.59.101"
+    "@theia/ext-scripts": "1.59.102"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
