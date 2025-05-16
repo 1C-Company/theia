@@ -569,6 +569,10 @@
       "editorDecorationsEnabled": "Показать украшения git в редакторе.",
       "fetchPickRemote": "Выберите пульт, с которого будет производиться выборка:",
       "gitDecorationsColors": "Используйте цветовое оформление в навигаторе.",
+      "mergeEditor": {
+        "currentSideTitle": "Текущее",
+        "incomingSideTitle": "Входящее"
+      },
       "mergeQuickPickPlaceholder": "Выберите ветвь для слияния с активной в данный момент ветвью {0}:",
       "missingUserInfo": "Убедитесь, что вы настроили 'user.name' и 'user.email' в git.",
       "noHistoryForError": "Не существует истории, доступной для {0}",
