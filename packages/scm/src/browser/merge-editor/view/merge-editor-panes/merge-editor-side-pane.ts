@@ -17,7 +17,7 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { nls } from '@theia/core';
 import { ObservableUtils } from '@theia/core/lib/common/observable';
-import { codicon, DiffUris, open, OpenerService } from '@theia/core/lib/browser';
+import { codicon, DiffUris, LabelProvider, open, OpenerService } from '@theia/core/lib/browser';
 import { EditorDecoration, EditorOpenerOptions, Range } from '@theia/editor/lib/browser';
 import { MergeRange, MergeRangeAcceptedState, MergeSide } from '../../model/merge-range';
 import { MergeEditorPane } from './merge-editor-pane';
@@ -26,6 +26,9 @@ import { LineRange } from '../../model/line-range';
 
 @injectable()
 export abstract class MergeEditorSidePane extends MergeEditorPane {
+
+    @inject(LabelProvider)
+    protected readonly labelProvider: LabelProvider;
 
     @inject(OpenerService)
     protected readonly openerService: OpenerService;
@@ -64,9 +67,13 @@ export abstract class MergeEditorSidePane extends MergeEditorPane {
     }
 
     compareWithBase(): void {
-        const { baseUri } = this.mergeEditor;
+        let label = this.labelProvider.getName(this.editor.uri);
+        if (label) {
+            label += ': ';
+        }
+        label += `${nls.localizeByDefault('Base')} ⟷ ${this.header.title.label}`;
         const options: EditorOpenerOptions = { selection: { start: this.editor.cursor } };
-        open(this.openerService, DiffUris.encode(baseUri, this.editor.uri), options).catch(e => {
+        open(this.openerService, DiffUris.encode(this.mergeEditor.baseUri, this.editor.uri, label), options).catch(e => {
             console.error(e);
         });
     }
