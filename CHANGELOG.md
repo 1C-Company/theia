@@ -4,6 +4,11 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.59.103 - 07/10/2025
+
+- [core] updated electron to version 36.4.0 [#15837](https://github.com/eclipse-theia/theia/pull/15837)
+- [core] reenabled deprecated paste command in electron [#15918](https://github.com/eclipse-theia/theia/pull/15918)
+
 ## 1.59.102 - 05/16/2025
 
 - [scm] fixed a few issues with the 3-way merge editor
