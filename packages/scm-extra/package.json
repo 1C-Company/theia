@@ -1,13 +1,13 @@
 {
   "name": "@theia/scm-extra",
-  "version": "1.59.102",
+  "version": "1.59.103",
   "description": "Theia - Source control extras Extension",
   "dependencies": {
-    "@theia/core": "1.59.102",
-    "@theia/editor": "1.59.102",
-    "@theia/filesystem": "1.59.102",
-    "@theia/navigator": "1.59.102",
-    "@theia/scm": "1.59.102",
+    "@theia/core": "1.59.103",
+    "@theia/editor": "1.59.103",
+    "@theia/filesystem": "1.59.103",
+    "@theia/navigator": "1.59.103",
+    "@theia/scm": "1.59.103",
     "tslib": "^2.6.2"
   },
   "publishConfig": {
@@ -43,7 +43,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.59.102"
+    "@theia/ext-scripts": "1.59.103"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
