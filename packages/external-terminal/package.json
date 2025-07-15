@@ -1,11 +1,11 @@
 {
   "name": "@theia/external-terminal",
-  "version": "1.59.103",
+  "version": "1.59.104",
   "description": "Theia - External Terminal Extension",
   "dependencies": {
-    "@theia/core": "1.59.103",
-    "@theia/editor": "1.59.103",
-    "@theia/workspace": "1.59.103",
+    "@theia/core": "1.59.104",
+    "@theia/editor": "1.59.104",
+    "@theia/workspace": "1.59.104",
     "tslib": "^2.6.2"
   },
   "publishConfig": {
@@ -42,7 +42,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.59.103"
+    "@theia/ext-scripts": "1.59.104"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
