@@ -91,14 +91,13 @@ export class SplitPositionHandler {
             move.resolve = resolve;
             move.reject = reject;
             if (this.splitMoves.length === 0) {
-                setTimeout(this.animationFrame.bind(this), 10);
+                window.requestAnimationFrame(this.animationFrame.bind(this));
             }
             this.splitMoves.push(move);
         });
     }
 
-    protected animationFrame(): void {
-        const time = Date.now();
+    protected animationFrame(time: number): void {
         const move = this.splitMoves[this.currentMoveIndex];
         let rejectedOrResolved = false;
         if (move.ended || move.referenceWidget && move.referenceWidget.isHidden) {
@@ -134,7 +133,7 @@ export class SplitPositionHandler {
             this.currentMoveIndex = 0;
         }
         if (this.splitMoves.length > 0) {
-            setTimeout(this.animationFrame.bind(this));
+            window.requestAnimationFrame(this.animationFrame.bind(this));
         }
     }
 
