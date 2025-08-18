@@ -1,16 +1,16 @@
 {
   "private": true,
   "name": "@theia/eslint-plugin",
-  "version": "1.46.101",
+  "version": "1.46.102",
   "description": "Custom ESLint rules for developing Theia extensions and applications",
   "main": "index.js",
   "scripts": {
     "prepare": "tsc -b"
   },
   "dependencies": {
-    "@theia/core": "1.46.101",
-    "@theia/ext-scripts": "1.46.101",
-    "@theia/re-exports": "1.46.101",
+    "@theia/core": "1.46.102",
+    "@theia/ext-scripts": "1.46.102",
+    "@theia/re-exports": "1.46.102",
     "js-levenshtein": "^1.1.6"
   }
 }
