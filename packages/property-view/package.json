@@ -1,10 +1,10 @@
 {
   "name": "@theia/property-view",
-  "version": "1.59.104",
+  "version": "1.59.105",
   "description": "Theia - Property View Extension",
   "dependencies": {
-    "@theia/core": "1.59.104",
-    "@theia/filesystem": "1.59.104",
+    "@theia/core": "1.59.105",
+    "@theia/filesystem": "1.59.105",
     "tslib": "^2.6.2"
   },
   "publishConfig": {
@@ -40,7 +40,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.59.104"
+    "@theia/ext-scripts": "1.59.105"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
