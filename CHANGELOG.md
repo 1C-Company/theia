@@ -4,6 +4,17 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.59.105 - 08/18/2025
+
+- [core] fixed [#14484](https://github.com/eclipse-theia/theia/issues/14484) by partially reverting [#13887](https://github.com/eclipse-theia/theia/pull/13887)
+- [debug] fixed breakpoints being lost when editing source [#16154](https://github.com/eclipse-theia/theia/pull/16154)
+- [debug] fixed text misalignment caused by inline breakpoint decoration [#16160](https://github.com/eclipse-theia/theia/pull/16160)
+- [debug] fixed line breakpoints not shifting if lines are inserted above [#16183](https://github.com/eclipse-theia/theia/pull/16183)
+- [plugin-ext] fixed status bar registry leaking memory on item updates [#16168](https://github.com/eclipse-theia/theia/pull/16168)
+& [#16178](https://github.com/eclipse-theia/theia/pull/16178)
+- [scm] set relative sizes for horizontal split panel in the 3-way merge editor [#16036](https://github.com/eclipse-theia/theia/pull/16036)
+- [scm] fixed minor issues with scroll sync in the 3-way merge editor [#16038](https://github.com/eclipse-theia/theia/pull/16038)
+
 ## 1.59.104 - 07/16/2025
 
 - [core] updated electron to version 37.1.2 [#15999](https://github.com/eclipse-theia/theia/pull/15999)
