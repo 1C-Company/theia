@@ -12,6 +12,13 @@
 
 - [component] add here -->
 
+## v1.46.102 - 08/18/2025
+
+- [core] fixed memory leak in DockPanelRenderer and ToolbarAwareTabBar [#13327](https://github.com/eclipse-theia/theia/pull/13327)
+- [plugin-ext] fixed memory leak in tabs-main.ts [#14186](https://github.com/eclipse-theia/theia/pull/14186)
+- [plugin-ext] fixed status bar registry leaking memory on item updates [#16168](https://github.com/eclipse-theia/theia/pull/16168)
+& [#16178](https://github.com/eclipse-theia/theia/pull/16178)
+
 ## v1.46.101 (based on v1.46.1) - 02/16/2024
 
 - [scm] added support for dirty diff peek view [#13104](https://github.com/eclipse-theia/theia/pull/13104)
