@@ -4,6 +4,12 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.59.106 - 09/08/2025
+
+- [debug] added Run to Cursor and Run to Line commands [#16219](https://github.com/eclipse-theia/theia/pull/16219)
+- [debug] allowed showing error message when setting variable value fails [#16235](https://github.com/eclipse-theia/theia/pull/16235)
+- [workspace] fix: cannot open same folder once declined exit confirmation [#16238](https://github.com/eclipse-theia/theia/pull/16238)
+
 ## 1.59.105 - 08/18/2025
 
 - [core] fixed [#14484](https://github.com/eclipse-theia/theia/issues/14484) by partially reverting [#13887](https://github.com/eclipse-theia/theia/pull/13887)
