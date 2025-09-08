@@ -458,7 +458,10 @@
     "debug": {
       "addConfigurationPlaceholder": "Select workspace root to add configuration to",
       "breakpoint": "breakpoint",
+      "cannotRunToThisLocation": "Could not run the current thread to the specified location.",
       "compound-cycle": "Launch configuration '{0}' contains a cycle with itself",
+      "confirmRunToShiftedPosition_msg": "The target position will be shifted to Ln {0}, Col {1}. Run anyway?",
+      "confirmRunToShiftedPosition_title": "Cannot run the current thread to exactly the specified location",
       "continueAll": "Continue All",
       "copyExpressionValue": "Copy Expression Value",
       "dataBreakpoint": "data breakpoint",
