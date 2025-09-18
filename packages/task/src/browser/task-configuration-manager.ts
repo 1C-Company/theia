@@ -30,7 +30,7 @@ import { WorkspaceVariableContribution } from '@theia/workspace/lib/browser/work
 import { FileChangeType } from '@theia/filesystem/lib/common/filesystem-watcher-protocol';
 import { PreferenceConfigurations } from '@theia/core/lib/browser/preferences/preference-configurations';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { DisposableCollection } from '@theia/core/lib/common';
+import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { TaskSchemaUpdater } from './task-schema-updater';
 
 export interface TasksChange {
@@ -216,7 +216,7 @@ export class TaskConfigurationManager {
 
     protected async getInitialConfigurationContent(): Promise<string | undefined> {
         const selected = await this.quickPickService.show(this.taskTemplateSelector.selectTemplates(), {
-            placeholder: 'Select a Task Template'
+            placeholder: nls.localizeByDefault('Select a Task Template')
         });
         if (selected) {
             return selected.value?.content;
