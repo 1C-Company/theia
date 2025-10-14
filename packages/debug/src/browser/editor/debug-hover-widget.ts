@@ -32,7 +32,7 @@ import { StandaloneServices } from '@theia/monaco-editor-core/esm/vs/editor/stan
 import { ILanguageFeaturesService } from '@theia/monaco-editor-core/esm/vs/editor/common/services/languageFeatures';
 import { CancellationTokenSource } from '@theia/monaco-editor-core/esm/vs/base/common/cancellation';
 import { Position } from '@theia/monaco-editor-core/esm/vs/editor/common/core/position';
-import { ArrayUtils } from '@theia/core';
+import { ArrayUtils, MenuPath } from '@theia/core';
 
 export interface ShowDebugHoverOptions {
     selection: monaco.Range
@@ -49,6 +49,7 @@ export interface HideDebugHoverOptions {
 
 export function createDebugHoverWidgetContainer(parent: interfaces.Container, editor: DebugEditor): Container {
     const child = SourceTreeWidget.createContainer(parent, {
+        contextMenuPath: DebugHoverWidget.CONTEXT_MENU,
         virtualized: false
     });
     child.bind(DebugEditor).toConstantValue(editor);
@@ -61,6 +62,10 @@ export function createDebugHoverWidgetContainer(parent: interfaces.Container, ed
 
 @injectable()
 export class DebugHoverWidget extends SourceTreeWidget implements monaco.editor.IContentWidget {
+
+    static CONTEXT_MENU: MenuPath = ['debug-hover-context-menu'];
+    static EDIT_MENU: MenuPath = [...DebugHoverWidget.CONTEXT_MENU, 'a_edit'];
+    static WATCH_MENU: MenuPath = [...DebugHoverWidget.CONTEXT_MENU, 'b_watch'];
 
     @inject(DebugEditor)
     protected readonly editor: DebugEditor;
