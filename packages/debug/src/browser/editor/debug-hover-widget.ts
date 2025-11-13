@@ -28,11 +28,7 @@ import { DebugExpressionProvider } from './debug-expression-provider';
 import { DebugHoverSource } from './debug-hover-source';
 import { DebugVariable } from '../console/debug-console-items';
 import * as monaco from '@theia/monaco-editor-core';
-import { StandaloneServices } from '@theia/monaco-editor-core/esm/vs/editor/standalone/browser/standaloneServices';
-import { ILanguageFeaturesService } from '@theia/monaco-editor-core/esm/vs/editor/common/services/languageFeatures';
-import { CancellationTokenSource } from '@theia/monaco-editor-core/esm/vs/base/common/cancellation';
-import { Position } from '@theia/monaco-editor-core/esm/vs/editor/common/core/position';
-import { ArrayUtils, MenuPath } from '@theia/core';
+import { MenuPath } from '@theia/core';
 
 export interface ShowDebugHoverOptions {
     selection: monaco.Range
@@ -55,7 +51,6 @@ export function createDebugHoverWidgetContainer(parent: interfaces.Container, ed
     child.bind(DebugEditor).toConstantValue(editor);
     child.bind(DebugHoverSource).toSelf();
     child.unbind(SourceTreeWidget);
-    child.bind(DebugExpressionProvider).toSelf();
     child.bind(DebugHoverWidget).toSelf();
     return child;
 }
@@ -159,7 +154,6 @@ export class DebugHoverWidget extends SourceTreeWidget implements monaco.editor.
     }
 
     protected async doShow(options: ShowDebugHoverOptions | undefined = this.options): Promise<void> {
-        const cancellationSource = new CancellationTokenSource();
 
         if (!this.isEditorFrame()) {
             this.hide();
@@ -177,56 +171,16 @@ export class DebugHoverWidget extends SourceTreeWidget implements monaco.editor.
         }
 
         this.options = options;
-        let matchingExpression: string | undefined;
 
-        const pluginExpressionProvider = StandaloneServices.get(ILanguageFeaturesService).evaluatableExpressionProvider;
-        const textEditorModel = this.editor.document.textEditorModel;
+        const result = await this.expressionProvider.getEvaluatableExpression(this.editor, options.selection);
 
-        if (pluginExpressionProvider && pluginExpressionProvider.has(textEditorModel)) {
-            const registeredProviders = pluginExpressionProvider.ordered(textEditorModel);
-            const position = new Position(this.options!.selection.startLineNumber, this.options!.selection.startColumn);
-
-            const promises = registeredProviders.map(support =>
-                Promise.resolve(support.provideEvaluatableExpression(textEditorModel, position, cancellationSource.token))
-            );
-
-            const results = await Promise.all(promises).then(ArrayUtils.coalesce);
-            if (results.length > 0) {
-                matchingExpression = results[0].expression;
-                const range = results[0].range;
-
-                if (!matchingExpression) {
-                    const lineContent = textEditorModel.getLineContent(position.lineNumber);
-                    matchingExpression = lineContent.substring(range.startColumn - 1, range.endColumn - 1);
-                }
-            }
-        } else { // use fallback if no provider was registered
-            const model = this.editor.getControl().getModel();
-            if (model) {
-
-                matchingExpression = this.expressionProvider.get(model, options.selection);
-                if (matchingExpression) {
-                    const expressionLineContent = model.getLineContent(this.options.selection.startLineNumber);
-                    const startColumn =
-                        expressionLineContent.indexOf(
-                            matchingExpression,
-                            this.options.selection.startColumn - matchingExpression.length
-                        ) + 1;
-                    const endColumn = startColumn + matchingExpression.length;
-                    this.options.selection = new monaco.Range(
-                        this.options.selection.startLineNumber,
-                        startColumn,
-                        this.options.selection.startLineNumber,
-                        endColumn
-                    );
-                }
-            }
-        }
-
-        if (!matchingExpression) {
+        if (!result?.matchingExpression) {
             this.hide();
             return;
         }
+
+        this.options.selection = monaco.Range.lift(result.range);
+
         const toFocus = new DisposableCollection();
         if (this.options.focus === true) {
             toFocus.push(this.model.onNodeRefreshed(() => {
@@ -234,7 +188,7 @@ export class DebugHoverWidget extends SourceTreeWidget implements monaco.editor.
                 this.activate();
             }));
         }
-        const expression = await this.hoverSource.evaluate(matchingExpression);
+        const expression = await this.hoverSource.evaluate(result.matchingExpression);
         if (!expression) {
             toFocus.dispose();
             this.hide();
