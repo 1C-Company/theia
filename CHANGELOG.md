@@ -4,6 +4,11 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.66.102 (based on 1.66.2) - 11/14/2025
+
+- (Re-)enable publishing for the git package
+- Fix [#14484](https://github.com/eclipse-theia/theia/issues/14484) by partially reverting [#13887](https://github.com/eclipse-theia/theia/pull/13887)
+
 ## 1.66.0 - 10/30/2025
 
 - [ai-anthropic] allowed configuring proxy settings [#16453](https://github.com/eclipse-theia/theia/pull/16453)
