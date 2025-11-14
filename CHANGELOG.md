@@ -4,6 +4,11 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.67.100 (based on 1.67.0) - 12/25/2025
+
+- (Re-)enable publishing for the git package
+- Fix [#14484](https://github.com/eclipse-theia/theia/issues/14484) by partially reverting [#13887](https://github.com/eclipse-theia/theia/pull/13887)
+
 ## 1.67.0 - 12/10/2025
 
 - [ai-anthropic] added opus 4.5 to default models [#16656](https://github.com/eclipse-theia/theia/pull/16656)
