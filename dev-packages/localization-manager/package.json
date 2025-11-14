@@ -1,6 +1,6 @@
 {
   "name": "@theia/localization-manager",
-  "version": "1.66.2",
+  "version": "1.66.102",
   "description": "Theia localization manager API.",
   "publishConfig": {
     "access": "public"
@@ -41,7 +41,7 @@
     "typescript": "~5.4.5"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.66.2"
+    "@theia/ext-scripts": "1.66.102"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
