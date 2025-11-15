@@ -4,6 +4,18 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.59.107 - 11/15/2025
+
+- [debug] don't accept/cancel breakpoint editor while its suggest widget is visible [#16285](https://github.com/eclipse-theia/theia/pull/16285)
+- [debug] added Evaluate in Debug Console command [#16289](https://github.com/eclipse-theia/theia/pull/16289)
+- [debug] enhanced localization of the debug package [#16305](https://github.com/eclipse-theia/theia/pull/16305)
+- [debug] add support for Copy Value/Copy as Expression in Debug Console [#16310](https://github.com/eclipse-theia/theia/pull/16310)
+- [debug] fixed Add to Watch command [#16340](https://github.com/eclipse-theia/theia/pull/16340)
+- [debug] added support for context menu in debug hover [#16366](https://github.com/eclipse-theia/theia/pull/16366)
+- [debug] added support for adding the current editor selection to watch [#16567](https://github.com/eclipse-theia/theia/pull/16567)
+- [task] enhanced localization of the task package [#16286](https://github.com/eclipse-theia/theia/pull/16286)
+- [task] localized property tooltips for tasks.json [#16300](https://github.com/eclipse-theia/theia/pull/16300)
+
 ## 1.59.106 - 09/08/2025
 
 - [debug] added Run to Cursor and Run to Line commands [#16219](https://github.com/eclipse-theia/theia/pull/16219)
