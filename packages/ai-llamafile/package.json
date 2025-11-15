@@ -1,11 +1,11 @@
 {
   "name": "@theia/ai-llamafile",
-  "version": "1.59.106",
+  "version": "1.59.107",
   "description": "Theia - Llamafile Integration",
   "dependencies": {
-    "@theia/ai-core": "1.59.106",
-    "@theia/core": "1.59.106",
-    "@theia/output": "1.59.106",
+    "@theia/ai-core": "1.59.107",
+    "@theia/core": "1.59.107",
+    "@theia/output": "1.59.107",
     "tslib": "^2.6.2"
   },
   "publishConfig": {
@@ -42,7 +42,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.59.106"
+    "@theia/ext-scripts": "1.59.107"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
