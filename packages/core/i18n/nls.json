@@ -456,29 +456,45 @@
       "tabShrinkToFit": "Shrink tabs to fit available space."
     },
     "debug": {
+      "TheiaIDE": "Theia IDE",
       "addConfigurationPlaceholder": "Select workspace root to add configuration to",
       "breakpoint": "breakpoint",
       "cannotRunToThisLocation": "Could not run the current thread to the specified location.",
       "compound-cycle": "Launch configuration '{0}' contains a cycle with itself",
+      "conditionalBreakpoint": "Conditional Breakpoint",
+      "conditionalBreakpointsNotSupported": "Conditional breakpoints not supported by this debug type",
       "confirmRunToShiftedPosition_msg": "The target position will be shifted to Ln {0}, Col {1}. Run anyway?",
       "confirmRunToShiftedPosition_title": "Cannot run the current thread to exactly the specified location",
       "continueAll": "Continue All",
       "copyExpressionValue": "Copy Expression Value",
+      "couldNotRunTask": "Could not run the task '{0}'.",
       "dataBreakpoint": "data breakpoint",
+      "debugConfiguration": "Debug Configuration",
+      "debugSessionInitializationFailed": "Debug session initialization failed. See console for details.",
+      "debugSessionTypeNotSupported": "The debug session type \"{0}\" is not supported.",
       "debugVariableInput": "Set {0} Value",
+      "disabledBreakpoint": "Disabled {0}",
       "entry": "entry",
+      "errorStartingDebugSession": "There was an error starting the debug session, check the logs for more details.",
       "exception": "exception",
       "functionBreakpoint": "function breakpoint",
       "goto": "goto",
+      "htiConditionalBreakpointsNotSupported": "Hit conditional breakpoints not supported by this debug type",
       "instruction-breakpoint": "Instruction Breakpoint",
       "instructionBreakpoint": "instruction breakpoint",
+      "logpointsNotSupported": "Logpoints not supported by this debug type",
       "missingConfiguration": "Dynamic configuration '{0}:{1}' is missing or not applicable",
       "pause": "pause",
       "pauseAll": "Pause All",
       "reveal": "Reveal",
       "step": "step",
+      "taskTerminatedBySignal": "Task '{0}' terminated by signal {1}.",
+      "taskTerminatedForUnknownReason": "Task '{0}' terminated for unknown reason.",
+      "taskTerminatedWithExitCode": "Task '{0}' terminated with exit code {1}.",
       "threads": "Threads",
-      "toggleTracing": "Enable/disable tracing communications with debug adapters"
+      "toggleTracing": "Enable/disable tracing communications with debug adapters",
+      "unknownSession": "Unknown Session",
+      "unverifiedBreakpoint": "Unverified {0}"
     },
     "editor": {
       "diffEditor.wordWrap2": "Lines will wrap according to the `#editor.wordWrap#` setting.",
@@ -815,8 +831,36 @@
     },
     "task": {
       "attachTask": "Attach Task...",
+      "circularReferenceDetected": "Circular reference detected: {0} --> {1}",
       "clearHistory": "Clear History",
-      "noTaskToRun": "No task to run found. Configure Tasks..."
+      "errorKillingTask": "Error killing task '{0}': {1}",
+      "errorLaunchingTask": "Error launching task '{0}': {1}",
+      "invalidTaskConfigs": "Invalid task configurations are found. Open tasks.json and find details in the Problems view.",
+      "neverScanTaskOutput": "Never scan the task output",
+      "noTaskToRun": "No task to run found. Configure Tasks...",
+      "noTasksFound": "No tasks found",
+      "notEnoughDataInDependsOn": "The information provided in the \"dependsOn\" is not enough for matching the correct task!",
+      "schema": {
+        "commandOptions": {
+          "cwd": "The current working directory of the executed program or script. If omitted Theia's current workspace root is used."
+        },
+        "presentation": {
+          "panel": {
+            "dedicated": "The terminal is dedicated to a specific task. If that task is executed again, the terminal is reused. However, the output of a different task is presented in a different terminal.",
+            "new": "Every execution of that task is using a new clean terminal.",
+            "shared": "The terminal is shared and the output of other task runs are added to the same terminal."
+          },
+          "showReuseMessage": "Controls whether to show the \"Terminal will be reused by tasks\" message."
+        },
+        "problemMatcherObject": {
+          "owner": "The owner of the problem inside Theia. Can be omitted if base is specified. Defaults to 'external' if omitted and base is not specified."
+        }
+      },
+      "taskAlreadyRunningInTerminal": "Task is already running in terminal",
+      "taskExitedWithCode": "Task '{0}' has exited with code {1}.",
+      "taskTerminalTitle": "Task: {0}",
+      "taskTerminatedBySignal": "Task '{0}' was terminated by signal {1}.",
+      "terminalWillBeReusedByTasks": "Terminal will be reused by tasks."
     },
     "terminal": {
       "defaultProfile": "The default profile used on {0}",
