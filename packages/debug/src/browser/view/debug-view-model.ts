@@ -28,6 +28,7 @@ import { DebugWatchManager } from '../debug-watch-manager';
 import { DebugFunctionBreakpoint } from '../model/debug-function-breakpoint';
 import { DebugInstructionBreakpoint } from '../model/debug-instruction-breakpoint';
 import { DebugSessionOptionsBase } from '../debug-session-options';
+import { DebugVariable } from '../console/debug-console-items';
 
 @injectable()
 export class DebugViewModel implements Disposable {
@@ -45,6 +46,12 @@ export class DebugViewModel implements Disposable {
         this.onDidChangeBreakpointsEmitter.fire(uri);
     }
 
+    protected readonly onDidResolveLazyVariableEmitter = new Emitter<DebugVariable>();
+    readonly onDidResolveLazyVariable: Event<DebugVariable> = this.onDidResolveLazyVariableEmitter.event;
+    protected fireDidResolveLazyVariable(variable: DebugVariable): void {
+        this.onDidResolveLazyVariableEmitter.fire(variable);
+    }
+
     protected readonly _watchExpressions = new Map<number, DebugWatchExpression>();
 
     protected readonly onDidChangeWatchExpressionsEmitter = new Emitter<void>();
@@ -56,6 +63,7 @@ export class DebugViewModel implements Disposable {
     protected readonly toDispose = new DisposableCollection(
         this.onDidChangeEmitter,
         this.onDidChangeBreakpointsEmitter,
+        this.onDidResolveLazyVariableEmitter,
         this.onDidChangeWatchExpressionsEmitter,
     );
 
@@ -94,6 +102,11 @@ export class DebugViewModel implements Disposable {
         this.toDispose.push(this.manager.onDidChangeBreakpoints(({ session, uri }) => {
             if (!session || session === this.currentSession) {
                 this.fireDidChangeBreakpoints(uri);
+            }
+        }));
+        this.toDispose.push(this.manager.onDidResolveLazyVariable(({ session, variable }) => {
+            if (session === this.currentSession) {
+                this.fireDidResolveLazyVariable(variable);
             }
         }));
         this.updateWatchExpressions();
