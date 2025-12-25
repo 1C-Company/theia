@@ -1,12 +1,12 @@
 {
   "name": "@theia/ai-openai",
-  "version": "1.59.107",
+  "version": "1.59.108",
   "description": "Theia - OpenAI Integration",
   "dependencies": {
-    "@theia/ai-core": "1.59.107",
-    "@theia/core": "1.59.107",
-    "@theia/filesystem": "1.59.107",
-    "@theia/workspace": "1.59.107",
+    "@theia/ai-core": "1.59.108",
+    "@theia/core": "1.59.108",
+    "@theia/filesystem": "1.59.108",
+    "@theia/workspace": "1.59.108",
     "minimatch": "^5.1.0",
     "openai": "^4.77.0",
     "tslib": "^2.6.2"
@@ -45,7 +45,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.59.107"
+    "@theia/ext-scripts": "1.59.108"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
