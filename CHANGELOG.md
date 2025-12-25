@@ -4,6 +4,10 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.59.108 - 12/25/2025
+
+- [debug] added support for "lazy" debug variables [#16681](https://github.com/eclipse-theia/theia/pull/16681)
+
 ## 1.59.107 - 11/15/2025
 
 - [debug] don't accept/cancel breakpoint editor while its suggest widget is visible [#16285](https://github.com/eclipse-theia/theia/pull/16285)
