@@ -1,11 +1,11 @@
 {
   "name": "@theia/ai-anthropic",
-  "version": "1.67.0",
+  "version": "1.67.100",
   "description": "Theia - Anthropic Integration",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.65.0",
-    "@theia/ai-core": "1.67.0",
-    "@theia/core": "1.67.0",
+    "@theia/ai-core": "1.67.100",
+    "@theia/core": "1.67.100",
     "undici": "^7.16.0"
   },
   "publishConfig": {
@@ -42,7 +42,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.67.0"
+    "@theia/ext-scripts": "1.67.100"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
