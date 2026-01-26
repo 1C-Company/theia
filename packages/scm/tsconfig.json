@@ -3,7 +3,10 @@
   "compilerOptions": {
     "composite": true,
     "rootDir": "src",
-    "outDir": "lib"
+    "outDir": "lib",
+    "lib": [
+      "ES2021.WeakRef"
+    ]
   },
   "include": [
     "src"
