@@ -343,7 +343,12 @@ export class MergeEditorModel implements Disposable {
 
     protected computeMergeRangeStateFromResult(mergeRange: MergeRange): MergeRangeResultState {
 
-        const resultRange = this.getLineRangeInResult(mergeRange);
+        const { originalRange: baseRange, modifiedRange: resultRange } = this.getResultLineRangeMapping(mergeRange);
+
+        if (!mergeRange.baseRange.equals(baseRange)) {
+            return 'Unrecognized';
+        }
+
         const existingLines = resultRange.getLines(this.resultDocument);
 
         const states: MergeRangeAcceptedState[] = [
