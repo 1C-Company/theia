@@ -150,7 +150,7 @@ export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableS
     protected verticalSplitPanel: SplitPanel;
     protected horizontalSplitPanel: SplitPanel;
 
-    protected updateScrollSync?: () => void;
+    protected scrollSync: MergeEditorScrollSync;
 
     @postConstruct()
     protected init(): void {
@@ -197,8 +197,13 @@ export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableS
 
         this.layoutMode = this.settings.layoutMode;
 
+        this.toDispose.push(this.scrollSync = this.createScrollSynchronizer());
+
         this.initCurrentPaneTracker();
-        this.initScrollSynchronizer();
+    }
+
+    protected createScrollSynchronizer(): MergeEditorScrollSync {
+        return new MergeEditorScrollSync(this);
     }
 
     protected initCurrentPaneTracker(): void {
@@ -213,12 +218,6 @@ export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableS
         }));
     }
 
-    protected initScrollSynchronizer(): void {
-        const scrollSync = new MergeEditorScrollSync(this);
-        this.toDispose.push(scrollSync);
-        this.updateScrollSync = () => scrollSync.update();
-    }
-
     protected layoutInitialized = false;
 
     protected ensureLayoutInitialized(): void {
@@ -230,15 +229,34 @@ export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableS
     }
 
     protected doInitializeLayout(): void {
-        this.toDispose.push(Autorun.create(({ isFirstRun }) => {
+        this.toDispose.push(Autorun.create(({ isFirstRun }) => { // note: by design, this autorun should only depend on this.layoutMode
             const { layoutMode } = this;
-            this.applyLayoutMode(layoutMode);
-            if (!isFirstRun) {
-                this.settings.layoutMode = layoutMode;
-            }
+            Observable.noAutoTracking(() => {
+                const scrollState = this.scrollSync.storeScrollState();
+
+                this.applyLayoutMode(layoutMode);
+
+                this.scrollSync.restoreScrollState(scrollState);
+
+                if (!isFirstRun) {
+                    this.settings.layoutMode = layoutMode;
+                }
+            });
         }));
-        this.toDispose.push(ObservableUtils.autorunWithDisposables(({ toDispose }) => {
-            toDispose.push(this.createViewZones());
+        let viewZones: Disposable | undefined;
+        this.toDispose.push(Disposable.create(() => viewZones?.dispose()));
+        this.toDispose.push(Autorun.create(() => { // note: by design, this autorun should only depend on any observables accessed in this.createViewZones()
+            let scrollState: unknown;
+            Observable.noAutoTracking(() => {
+                scrollState = this.scrollSync.storeScrollState();
+                viewZones?.dispose();
+            });
+
+            viewZones = this.createViewZones();
+
+            Observable.noAutoTracking(() => {
+                this.scrollSync.restoreScrollState(scrollState);
+            });
         }));
     }
 
@@ -569,7 +587,6 @@ export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableS
         addViewZones(this.side1Pane, side1ViewZones);
         addViewZones(this.side2Pane, side2ViewZones);
         addViewZones(this.resultPane, resultViewZones);
-        this.updateScrollSync?.();
         return toDispose;
     }
 
