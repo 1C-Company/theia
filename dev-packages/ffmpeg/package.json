@@ -1,6 +1,6 @@
 {
   "name": "@theia/ffmpeg",
-  "version": "1.59.108",
+  "version": "1.59.109",
   "description": "Theia FFMPEG reader utility.",
   "publishConfig": {
     "access": "public"

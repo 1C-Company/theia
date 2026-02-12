@@ -1,11 +1,11 @@
 {
   "name": "@theia/ai-anthropic",
-  "version": "1.59.108",
+  "version": "1.59.109",
   "description": "Theia - Anthropic Integration",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
-    "@theia/ai-core": "1.59.108",
-    "@theia/core": "1.59.108"
+    "@theia/ai-core": "1.59.109",
+    "@theia/core": "1.59.109"
   },
   "publishConfig": {
     "access": "public"
@@ -41,7 +41,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.59.108"
+    "@theia/ext-scripts": "1.59.109"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"

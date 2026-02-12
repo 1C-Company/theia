@@ -1,6 +1,6 @@
 {
   "name": "@theia/ai-ide",
-  "version": "1.59.108",
+  "version": "1.59.109",
   "description": "AI IDE Agents Extension",
   "license": "EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0",
   "repository": {
@@ -15,14 +15,14 @@
     "theia-extension"
   ],
   "dependencies": {
-    "@theia/ai-chat": "1.59.108",
-    "@theia/ai-core": "1.59.108",
-    "@theia/core": "1.59.108",
-    "@theia/filesystem": "1.59.108",
-    "@theia/monaco": "1.59.108",
-    "@theia/navigator": "1.59.108",
-    "@theia/terminal": "1.59.108",
-    "@theia/workspace": "1.59.108",
+    "@theia/ai-chat": "1.59.109",
+    "@theia/ai-core": "1.59.109",
+    "@theia/core": "1.59.109",
+    "@theia/filesystem": "1.59.109",
+    "@theia/monaco": "1.59.109",
+    "@theia/navigator": "1.59.109",
+    "@theia/terminal": "1.59.109",
+    "@theia/workspace": "1.59.109",
     "ignore": "^6.0.0",
     "minimatch": "^9.0.0"
   },
@@ -30,8 +30,8 @@
     "access": "public"
   },
   "devDependencies": {
-    "@theia/cli": "1.59.108",
-    "@theia/test": "1.59.108"
+    "@theia/cli": "1.59.109",
+    "@theia/test": "1.59.109"
   },
   "theiaExtensions": [
     {
