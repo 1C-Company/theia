@@ -22,6 +22,7 @@ import { ApplicationShell } from './shell/application-shell';
 import { Emitter } from '../common/event';
 import { SecondaryWindowService } from './window/secondary-window-service';
 import { KeybindingRegistry } from './keybinding';
+import { nls } from '../common/nls';
 
 /** Widget to be contained directly in a secondary window. */
 class SecondaryWindowRootWidget extends Widget {
@@ -129,6 +130,8 @@ export class SecondaryWindowHandler {
             // See https://html.spec.whatwg.org/multipage/dom.html#document.title
             newWindow.document.title = `${widget.title.label} — ${mainWindowTitle}`;
 
+            this.setupHtmlLanguageAttributes(newWindow.document.documentElement);
+
             const element = newWindow.document.getElementById('widget-host');
             if (!element) {
                 console.error('Could not find dom element to attach to in secondary window');
@@ -166,6 +169,11 @@ export class SecondaryWindowHandler {
             });
             widget.activate();
         });
+    }
+
+    protected setupHtmlLanguageAttributes(element: HTMLElement): void {
+        nls.setHtmlLang(element);
+        nls.setHtmlNoTranslate(element);
     }
 
     /**
