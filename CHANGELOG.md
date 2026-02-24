@@ -4,6 +4,22 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.67.101 - 02/24/2026
+
+- [core] added locale and no-translate attributes to html element on startup [#16966](https://github.com/eclipse-theia/theia/pull/16966)
+- [monaco] ensured Monaco editors are connected to their model iff they are visible [#16832](https://github.com/eclipse-theia/theia/pull/16832)
+- [monaco] ensured model for embedded diff editors is set immediately [#16940](https://github.com/eclipse-theia/theia/pull/16940)
+- [monaco] fixed search-in-workspace replace all failing for unopened files [#16945](https://github.com/eclipse-theia/theia/pull/16945)
+- [scm] fixed `Go to Previous Unhandled Conflict` doing nothing in the 3-way merge editor [#16838](https://github.com/eclipse-theia/theia/pull/16838)
+- [scm] fixed `Mark as Handled` having no effect in some cases in the 3-way merge editor [#16858](https://github.com/eclipse-theia/theia/pull/16858)
+- [scm] fixed unexpectedly marking merge conflict as handled in the 3-way merge editor [#16867](https://github.com/eclipse-theia/theia/pull/16867)
+- [scm] fixed manual resolution not detected in some cases in the 3-way merge editor [#16869](https://github.com/eclipse-theia/theia/pull/16869)
+- [scm] improved scroll sync implementation in the 3-way merge editor [#16947](https://github.com/eclipse-theia/theia/pull/16947)
+- [scm] improved merge conflict revealing in the 3-way merge editor [#16950](https://github.com/eclipse-theia/theia/pull/16950)
+- [scm] improved scroll state preservation in the 3-way merge editor [#16960](https://github.com/eclipse-theia/theia/pull/16960)
+- [scm] improved UX for merge conflict actions in special cases in the 3-way merge editor [#16980](https://github.com/eclipse-theia/theia/pull/16980)
+- [scm] ensured `handleVisibilityChanged` is called for embedded diff editor in dirty diff peek view [#17009](https://github.com/eclipse-theia/theia/pull/17009)
+
 ## 1.67.100 (based on 1.67.0) - 12/25/2025
 
 - (Re-)enable publishing for the git package
