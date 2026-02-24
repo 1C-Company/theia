@@ -1,17 +1,17 @@
 {
   "name": "@theia/ai-claude-code",
-  "version": "1.67.100",
+  "version": "1.67.101",
   "description": "Theia - Claude Code Integration",
   "dependencies": {
-    "@theia/ai-chat": "1.67.100",
-    "@theia/ai-chat-ui": "1.67.100",
-    "@theia/ai-core": "1.67.100",
-    "@theia/core": "1.67.100",
-    "@theia/editor": "1.67.100",
-    "@theia/filesystem": "1.67.100",
+    "@theia/ai-chat": "1.67.101",
+    "@theia/ai-chat-ui": "1.67.101",
+    "@theia/ai-core": "1.67.101",
+    "@theia/core": "1.67.101",
+    "@theia/editor": "1.67.101",
+    "@theia/filesystem": "1.67.101",
     "@theia/monaco-editor-core": "^1.96.302",
-    "@theia/output": "1.67.100",
-    "@theia/workspace": "1.67.100",
+    "@theia/output": "1.67.101",
+    "@theia/workspace": "1.67.101",
     "tslib": "^2.6.2"
   },
   "publishConfig": {
@@ -48,7 +48,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.67.100"
+    "@theia/ext-scripts": "1.67.101"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
