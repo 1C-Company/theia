@@ -4,6 +4,10 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.59.110 - 02/24/2026
+
+- [core] added locale and no-translate attributes to html element on startup [#16966](https://github.com/eclipse-theia/theia/pull/16966)
+
 ## 1.59.109 - 02/12/2026
 
 - [scm] fixed `Go to Previous Unhandled Conflict` doing nothing in the 3-way merge editor [#16838](https://github.com/eclipse-theia/theia/pull/16838)
