@@ -1,6 +1,6 @@
 {
   "name": "@theia/toolbar",
-  "version": "1.59.109",
+  "version": "1.59.110",
   "description": "Theia - Toolbar",
   "keywords": [
     "theia-extension"
@@ -27,15 +27,15 @@
     "watch": "theiaext watch"
   },
   "dependencies": {
-    "@theia/core": "1.59.109",
-    "@theia/editor": "1.59.109",
-    "@theia/file-search": "1.59.109",
-    "@theia/filesystem": "1.59.109",
-    "@theia/monaco": "1.59.109",
+    "@theia/core": "1.59.110",
+    "@theia/editor": "1.59.110",
+    "@theia/file-search": "1.59.110",
+    "@theia/filesystem": "1.59.110",
+    "@theia/monaco": "1.59.110",
     "@theia/monaco-editor-core": "1.96.302",
-    "@theia/search-in-workspace": "1.59.109",
-    "@theia/userstorage": "1.59.109",
-    "@theia/workspace": "1.59.109",
+    "@theia/search-in-workspace": "1.59.110",
+    "@theia/userstorage": "1.59.110",
+    "@theia/workspace": "1.59.110",
     "ajv": "^6.5.3",
     "jsonc-parser": "^2.2.0",
     "perfect-scrollbar": "^1.5.5",
