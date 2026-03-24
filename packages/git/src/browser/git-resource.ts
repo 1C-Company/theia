@@ -31,6 +31,15 @@ export class GitResource implements Resource {
             if (options?.encoding === 'utf8' || options?.encoding === 'binary') {
                 encoding = options?.encoding;
             }
+            if ([':2', ':3'].includes(commitish)) { // special case: index stage number for a merge side
+                const path = Repository.relativePath(this.repository, this.uri.withScheme('file'))?.toString();
+                if (path) {
+                    const stages = (await this.git.exec(this.repository, ['ls-files', '--format=%(stage)', '--', path])).stdout.split('\n').map(line => line.trim());
+                    if (stages.includes('1') && !stages.includes(commitish.substring(1))) { // the file was deleted by that side of a merge conflict
+                        return '';
+                    }
+                }
+            }
             return this.git.show(this.repository, this.uri.toString(), { commitish, encoding });
         }
         return '';
