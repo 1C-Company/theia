@@ -594,9 +594,9 @@ export class MergeEditor extends BaseWidget implements StatefulWidget, SaveableS
         super.onActivateRequest(msg);
         const { currentPane } = this;
         if (currentPane) {
-            currentPane.activate();
+            currentPane.editor.focus();
         } else {
-            this.resultPane.activate();
+            this.resultPane.editor.focus();
         }
     }
 }
