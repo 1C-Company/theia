@@ -4,6 +4,15 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.67.102 - 05/07/2026
+
+- [git] fixed error reading contents of a file deleted by a merge conflict side
+- [scm] improved navigation support in the merge editor [#17242](https://github.com/eclipse-theia/theia/pull/17242)
+- [scm] ensured unique counters for editor widgets in a merge editor [#17257](https://github.com/eclipse-theia/theia/pull/17257)
+- [scm] ensured empty base is shown on error in merge editor [#17274](https://github.com/eclipse-theia/theia/pull/17274)
+- [scm] enforced some options for child editors of the merge editor [#17303](https://github.com/eclipse-theia/theia/pull/17303)
+- [scm] ensured the dirty-diff widget always shows the heading [#17421](https://github.com/eclipse-theia/theia/pull/17421)
+
 ## 1.67.101 - 02/24/2026
 
 - [core] added locale and no-translate attributes to html element on startup [#16966](https://github.com/eclipse-theia/theia/pull/16966)
