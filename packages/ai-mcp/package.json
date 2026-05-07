@@ -1,11 +1,11 @@
 {
   "name": "@theia/ai-mcp",
-  "version": "1.59.110",
+  "version": "1.59.111",
   "description": "Theia - MCP Integration",
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.0.1",
-    "@theia/ai-core": "1.59.110",
-    "@theia/core": "1.59.110"
+    "@theia/ai-core": "1.59.111",
+    "@theia/core": "1.59.111"
   },
   "publishConfig": {
     "access": "public"
@@ -41,7 +41,7 @@
     "watch": "theiaext watch"
   },
   "devDependencies": {
-    "@theia/ext-scripts": "1.59.110"
+    "@theia/ext-scripts": "1.59.111"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
