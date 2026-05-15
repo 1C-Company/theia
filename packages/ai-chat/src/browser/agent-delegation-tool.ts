@@ -15,26 +15,29 @@
 // *****************************************************************************
 
 import { AGENT_DELEGATION_FUNCTION_ID, ToolInvocationContext, ToolProvider, ToolRequest } from '@theia/ai-core';
+import { Disposable } from '@theia/core';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import {
     assertChatContext,
     ChatAgentService,
     ChatAgentServiceFactory,
+    ChatChangeEvent,
     ChatRequest,
     ChatService,
     ChatServiceFactory,
     ChatToolContext,
     MutableChatModel,
     MutableChatRequestModel,
-    ChatSession,
+    MutableChatResponseModel,
     ChatRequestInvocation,
 } from '../common';
+import { TASK_CONTEXT_VARIABLE } from './task-context-variable';
 
 @injectable()
 export class AgentDelegationTool implements ToolProvider {
     static ID = AGENT_DELEGATION_FUNCTION_ID;
 
-    protected readonly pendingDelegations = new Map<string, { agentName: string; prompt: string; invocation: ChatRequestInvocation }>();
+    protected readonly pendingDelegations = new Map<string, { prompt: string; invocation: ChatRequestInvocation }>();
 
     @inject(ChatAgentServiceFactory)
     protected readonly getChatAgentService: () => ChatAgentService;
@@ -50,7 +53,8 @@ export class AgentDelegationTool implements ToolProvider {
                 'Delegate a task or question to a specific AI agent. IMPORTANT: When you delegate a task or question to a specific AI agent using this tool, ' +
                 'remember that each sub-agent operates solely within its specialized capabilities and tools and does not have access to previous conversation context ' +
                 ' or external systems. Therefore, it is crucial to provide all necessary context and detailed information directly within your request to ensure accurate ' +
-                'and effective task completion.',
+                'and effective task completion. ' +
+                'You may optionally pass a taskContextId to make a specific task context (e.g. a plan) available to the delegated agent via its system prompt.',
             parameters: {
                 type: 'object',
                 properties: {
@@ -64,6 +68,10 @@ export class AgentDelegationTool implements ToolProvider {
                         description:
                             'The task, question, or prompt to pass to the specified agent.',
                     },
+                    taskContextId: {
+                        type: 'string',
+                        description: 'Optional task context ID to make available to the delegated agent. The agent will see the task context in its system prompt.',
+                    },
                 },
                 required: ['agentId', 'prompt'],
             },
@@ -74,7 +82,7 @@ export class AgentDelegationTool implements ToolProvider {
         };
     }
 
-    getDelegation(toolCallId: string): { agentName: string; prompt: string; invocation: ChatRequestInvocation } | undefined {
+    getDelegation(toolCallId: string): { prompt: string; invocation: ChatRequestInvocation } | undefined {
         return this.pendingDelegations.get(toolCallId);
     }
 
@@ -88,7 +96,7 @@ export class AgentDelegationTool implements ToolProvider {
 
         try {
             const args = JSON.parse(arg_string);
-            const { agentId, prompt } = args;
+            const { agentId, prompt, taskContextId } = args;
 
             if (!agentId || !prompt) {
                 const errorMsg = 'Both agentId and prompt parameters are required.';
@@ -108,6 +116,7 @@ export class AgentDelegationTool implements ToolProvider {
             }
 
             let newSession;
+            let childModelDisposable: Disposable | undefined;
             try {
                 // FIXME: this creates a new conversation visible in the UI (Panel), which we don't want
                 // It is not possible to start a session without specifying a location (default=Panel)
@@ -121,19 +130,27 @@ export class AgentDelegationTool implements ToolProvider {
                     { focus: false },
                     agent
                 );
+
                 // Set root session ID to enable task context sharing across delegation chains
                 // Root is either the current root (for nested delegation) or current session (for first-level delegation)
                 const rootId = ctx.rootSessionId || ctx.request.session.id;
                 newSession.rootSessionId = rootId;
                 newSession.model.rootSessionId = rootId;
 
+                if (taskContextId) {
+                    newSession.model.context.addVariables({
+                        variable: TASK_CONTEXT_VARIABLE,
+                        arg: taskContextId
+                    });
+                }
+
                 // Immediately restore the original active session to avoid confusing the user
                 if (currentActiveSession) {
                     chatService.setActiveSession(currentActiveSession.id, { focus: false });
                 }
 
-                // Setup ChangeSet bubbling from delegated session to parent session
-                this.setupChangeSetBubbling(newSession, ctx.request.session);
+                // Setup bubbling of child session events to parent session
+                childModelDisposable = this.setupChildSessionBubbling(newSession.model as MutableChatModel, ctx.request.session, ctx.response);
             } catch (sessionError) {
                 const errorMsg = `Failed to create chat session for agent '${agentId}': ${sessionError instanceof Error ? sessionError.message : sessionError}`;
                 console.error(errorMsg, sessionError);
@@ -176,7 +193,6 @@ export class AgentDelegationTool implements ToolProvider {
                 // Store the invocation in the registry so the renderer can access it
                 if (ctx.toolCallId) {
                     this.pendingDelegations.set(ctx.toolCallId, {
-                        agentName: agent.name,
                         prompt,
                         invocation: response
                     });
@@ -196,7 +212,8 @@ export class AgentDelegationTool implements ToolProvider {
                     const result = await response.responseCompleted;
                     const stringResult = result.response.asString();
 
-                    // Clean up the session after completion (no need to await)
+                    // Clean up the session and parent-child link after completion
+                    childModelDisposable?.dispose();
                     const chatService = this.getChatService();
                     chatService.deleteSession(newSession.id).catch(error => {
                         console.error('Failed to delete delegated session', error);
@@ -229,33 +246,40 @@ export class AgentDelegationTool implements ToolProvider {
     }
 
     /**
-     * Sets up monitoring of the ChangeSet in the delegated session and bubbles changes to the parent session.
-     * @param delegatedSession The session created for the delegated agent
-     * @param parentModel The parent session model that should receive the bubbled changes
+     * Sets up all event bubbling from a delegated child session to the parent session:
+     * - Interaction forwarding: child interactionNeeded events are forwarded to the parent response
+     * - ChangeSet bubbling: child changeset changes are forwarded to the parent model
      */
-    private setupChangeSetBubbling(
-        delegatedSession: ChatSession,
-        parentModel: MutableChatModel
-    ): void {
-        // Monitor ChangeSet for bubbling
-        delegatedSession.model.changeSet.onDidChange(_event => {
-            this.bubbleChangeSet(delegatedSession, parentModel);
-        });
-    }
+    private setupChildSessionBubbling(
+        childModel: MutableChatModel,
+        parentModel: MutableChatModel,
+        parentResponse: MutableChatResponseModel
+    ): Disposable {
 
-    /**
-     * Bubbles the ChangeSet from the delegated session to the parent session.
-     * @param delegatedSession The session from which to bubble changes
-     * @param parentModel The parent session model to receive the bubbled changes
-     */
-    private bubbleChangeSet(
-        delegatedSession: ChatSession,
-        parentModel: MutableChatModel
-    ): void {
-        const delegatedElements = delegatedSession.model.changeSet.getElements();
-        if (delegatedElements.length > 0) {
-            parentModel.changeSet.setTitle(delegatedSession.model.changeSet.title);
-            parentModel.changeSet.addElements(...delegatedElements);
-        }
+        // Forward interactionNeeded events to the parent response model
+        // so the UI (which subscribes to response.onInteractionNeeded) can display them.
+        // Also watch for each forwarded interaction's resolution to trigger cleanup.
+        const eventForwarding = childModel.onDidChange(event => {
+            if (ChatChangeEvent.isInteractionNeededEvent(event)) {
+                parentResponse.fireInteractionNeeded(event.contentPart);
+                event.contentPart.whenResolved.then(() => parentResponse.notifyChanged());
+            }
+        });
+
+        // Bubble ChangeSet changes to the parent model
+        const changeSetForwarding = childModel.changeSet.onDidChange(() => {
+            const delegatedElements = childModel.changeSet.getElements();
+            if (delegatedElements.length > 0) {
+                parentModel.changeSet.setTitle(childModel.changeSet.title);
+                parentModel.changeSet.addElements(...delegatedElements);
+            }
+        });
+
+        return {
+            dispose: () => {
+                eventForwarding.dispose();
+                changeSetForwarding.dispose();
+            }
+        };
     }
 }

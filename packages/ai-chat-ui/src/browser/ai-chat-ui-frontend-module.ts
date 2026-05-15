@@ -15,6 +15,7 @@
 // *****************************************************************************
 
 import '../../src/browser/style/index.css';
+import '../../src/browser/style/tool-call-rendering.css';
 import { bindRootContributionProvider, CommandContribution, MenuContribution } from '@theia/core';
 import { bindViewContribution, FrontendApplicationContribution, WidgetFactory, KeybindingContribution } from '@theia/core/lib/browser';
 import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
@@ -52,6 +53,7 @@ import { createChatViewTreeWidget, ChatWelcomeMessageProvider } from './chat-tre
 import { ChatViewTreeWidget } from './chat-tree-view/chat-view-tree-widget';
 import { ChatViewMenuContribution } from './chat-view-contribution';
 import { ChatViewLanguageContribution } from './chat-view-language-contribution';
+import { bindChatViewPreferences } from './chat-view-preferences';
 import { ChatViewWidget } from './chat-view-widget';
 import { ChatViewWidgetToolbarContribution } from './chat-view-widget-toolbar-contribution';
 import { ContextVariablePicker } from './context-variable-picker';
@@ -70,6 +72,8 @@ import { ChatInputCapabilitiesContribution } from './chat-input-capabilities-con
 import { GenericCapabilitiesContribution, GenericCapabilitiesService, GenericCapabilitiesServiceImpl } from './generic-capabilities-service';
 
 export default new ContainerModule((bind, _unbind, _isBound, rebind) => {
+    bindChatViewPreferences(bind);
+
     bind(AIChatNavigationService).toSelf().inSingletonScope();
 
     bindViewContribution(bind, AIChatContribution);
