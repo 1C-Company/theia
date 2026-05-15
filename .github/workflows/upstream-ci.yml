@@ -1,0 +1,78 @@
+name: Test Upstream Changes
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *' # Runs every day at 4am: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule
+
+jobs:
+
+  pull-upstream-and-test:
+    name: Pull Upstream and Test (${{ matrix.os }}, node-${{ matrix.node }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-22.04, macos-15]
+        node: [22.x, 24.x]
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0 # Fetches full history to allow merging
+
+      - name: Pull Upstream Changes
+        shell: bash
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/eclipse-theia/theia.git
+          git fetch upstream
+          git merge upstream/master --no-edit # Fails workflow early if conflicts occur
+
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: ${{ matrix.node }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Use Python 3.13
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
+
+      - name: Build
+        shell: bash
+        run: |
+          npm ci
+          npm run build
+          git status
+          ./scripts/check_git_status.sh
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # https://github.com/microsoft/vscode-ripgrep/issues/9
+
+      - name: Download Plugins
+        shell: bash
+        run: |
+          npm run download:plugins -- --rate-limit 3
+
+      - name: Test (headless)
+        if: matrix.tests != 'skip'
+        shell: bash
+        run: |
+          npm run rebuild:browser
+          npm run test:theia
+
+      - name: Test (browser)
+        run: |
+          npm run test:browser
+
+      - name: Test (electron)
+        if: runner.os == 'Linux'
+        run: |
+          xvfb-run -a npm run test:electron
