@@ -19,6 +19,6 @@
   mask-position: center;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
-  mask-image: url("~octicons/build/svg/git-commit.svg");
-  -webkit-mask-image: url("~octicons/build/svg/git-commit.svg");
+  mask-image: url("octicons/build/svg/git-commit.svg");
+  -webkit-mask-image: url("octicons/build/svg/git-commit.svg");
 }
