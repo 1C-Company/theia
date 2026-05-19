@@ -96,7 +96,6 @@ jobs:
           npm run download:plugins -- --rate-limit 3
           
       - name: Test (headless)
-        if: matrix.tests != 'skip'
         shell: bash
         run: |
           npm run rebuild:browser
@@ -109,4 +108,5 @@ jobs:
       - name: Test (electron)
         if: runner.os == 'Linux'
         run: |
+          npm run rebuild:electron
           xvfb-run -a npm run test:electron
