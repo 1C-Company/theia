@@ -80,6 +80,7 @@ export class DirtyDiffManager {
         const uri = editor.uri.toString();
         this.models.set(uri, model);
         toDispose.push(editor.onDocumentContentChanged(throttle((event: TextDocumentChangeEvent) => model.handleDocumentChanged(event.document), 1000)));
+        toDispose.push(editorWidget.onDidChangeVisibility(visible => visible && model.update()));
         if (editor.onShouldDisplayDirtyDiffChanged) {
             toDispose.push(editor.onShouldDisplayDirtyDiffChanged(() => model.update()));
         }
