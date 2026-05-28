@@ -24,6 +24,7 @@ import {
     MenuAction,
     MenuContribution,
     MenuModelRegistry,
+    MenuPath,
     MessageService,
     Mutable
 } from '@theia/core';
@@ -75,11 +76,6 @@ export namespace GIT_COMMANDS {
         category: GIT_CATEGORY,
         label: 'Pull'
     }, 'vscode.git/package/command.pull', GIT_CATEGORY_KEY);
-    export const PULL_DEFAULT_FAVORITE: Command = {
-        id: PULL_DEFAULT.id + '.favorite',
-        label: PULL_DEFAULT.label,
-        originalLabel: PULL_DEFAULT.originalLabel
-    };
     export const PULL = Command.toLocalizedCommand({
         id: 'git.pull',
         category: GIT_CATEGORY,
@@ -90,11 +86,6 @@ export namespace GIT_COMMANDS {
         category: GIT_CATEGORY,
         label: 'Push'
     }, 'vscode.git/package/command.push', GIT_CATEGORY_KEY);
-    export const PUSH_DEFAULT_FAVORITE: Command = {
-        id: PUSH_DEFAULT.id + '.favorite',
-        label: PUSH_DEFAULT.label,
-        originalLabel: PUSH_DEFAULT.originalLabel
-    };
     export const PUSH = Command.toLocalizedCommand({
         id: 'git.push',
         category: GIT_CATEGORY,
@@ -206,7 +197,7 @@ export namespace GIT_COMMANDS {
     export const UNSTAGE_ALL = Command.toLocalizedCommand({
         id: 'git.unstage.all',
         category: GIT_CATEGORY,
-        label: 'Unstage All',
+        label: 'Unstage All Changes',
         iconClass: codicon('dash')
     }, 'vscode.git/package/command.unstageAll', GIT_CATEGORY_KEY);
     export const DISCARD = Command.toLocalizedCommand({
@@ -265,26 +256,37 @@ export namespace GIT_COMMANDS {
     }, 'vscode.git/package/command.init', GIT_CATEGORY_KEY);
 }
 export namespace GIT_MENUS {
+    export const SCM_TITLE_MENU = ['git_scm/title'];
     // Top level Groups
     export const FAV_GROUP = '2_favorites';
     export const COMMANDS_GROUP = '3_commands';
 
     export const SUBMENU_COMMIT = {
+        id: 'git_commit',
         group: COMMANDS_GROUP,
         label: nls.localizeByDefault('Commit'),
         menuGroups: ['1_commit'],
     };
     export const SUBMENU_CHANGES = {
+        id: 'git_changes',
         group: COMMANDS_GROUP,
         label: nls.localizeByDefault('Changes'),
         menuGroups: ['1_changes']
     };
     export const SUBMENU_PULL_PUSH = {
+        id: 'git_pull_push',
         group: COMMANDS_GROUP,
         label: nls.localize('vscode.git/package/submenu.pullpush', 'Pull, Push'),
         menuGroups: ['2_pull', '3_push', '4_fetch']
     };
+    export const SUBMENU_BRANCH = {
+        id: 'git_branch',
+        group: COMMANDS_GROUP,
+        label: nls.localizeByDefault('Branch'),
+        menuGroups: ['1_branch']
+    };
     export const SUBMENU_STASH = {
+        id: 'git_stash',
         group: COMMANDS_GROUP,
         label: nls.localizeByDefault('Stash'),
         menuGroups: ['1_stash']
@@ -440,6 +442,81 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             commandId: GIT_COMMANDS.REVERT_CHANGE.id,
             when: 'scmProvider == git'
         });
+
+        [GIT_COMMANDS.PULL_DEFAULT, GIT_COMMANDS.PUSH_DEFAULT].forEach((command, index) =>
+            menus.registerMenuAction([...GIT_MENUS.SCM_TITLE_MENU, GIT_MENUS.FAV_GROUP], {
+                commandId: command.id,
+                when: 'scmProvider == git',
+                order: String(index)
+            })
+        );
+
+        [
+            GIT_MENUS.SUBMENU_COMMIT,
+            GIT_MENUS.SUBMENU_CHANGES,
+            GIT_MENUS.SUBMENU_PULL_PUSH,
+            GIT_MENUS.SUBMENU_BRANCH,
+            GIT_MENUS.SUBMENU_STASH
+        ].forEach((submenu, index) => {
+            menus.registerSubmenu([submenu.id], submenu.label, { when: 'scmProvider == git' });
+            menus.linkCompoundMenuNode({
+                newParentPath: [...GIT_MENUS.SCM_TITLE_MENU, submenu.group],
+                submenuPath: [submenu.id],
+                order: String(index)
+            });
+        });
+
+        menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_COMMIT), {
+            commandId: GIT_COMMANDS.COMMIT_AMEND.id,
+            label: nls.localize('vscode.git/package/command.commitStagedAmend', 'Commit (Amend)'),
+            order: '1'
+        });
+        menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_COMMIT), {
+            commandId: GIT_COMMANDS.COMMIT_SIGN_OFF.id,
+            label: nls.localize('vscode.git/package/command.commitStagedSigned', 'Commit (Signed Off)'),
+            order: '2'
+        });
+
+        [GIT_COMMANDS.STAGE_ALL, GIT_COMMANDS.UNSTAGE_ALL, GIT_COMMANDS.DISCARD_ALL].forEach((command, index) =>
+            menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_CHANGES), {
+                commandId: command.id,
+                order: String(index)
+            })
+        );
+
+        [GIT_COMMANDS.PULL_DEFAULT, GIT_COMMANDS.PULL].forEach((command, index) =>
+            menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_PULL_PUSH), {
+                commandId: command.id,
+                order: String(index)
+            })
+        );
+        [GIT_COMMANDS.PUSH_DEFAULT, GIT_COMMANDS.PUSH].forEach((command, index) =>
+            menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_PULL_PUSH, 1), {
+                commandId: command.id,
+                order: String(index)
+            })
+        );
+        menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_PULL_PUSH, 2), {
+            commandId: GIT_COMMANDS.FETCH.id
+        });
+
+        menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_BRANCH), {
+            commandId: GIT_COMMANDS.MERGE.id
+        });
+
+        [
+            GIT_COMMANDS.STASH,
+            GIT_COMMANDS.APPLY_LATEST_STASH,
+            GIT_COMMANDS.APPLY_STASH,
+            GIT_COMMANDS.POP_LATEST_STASH,
+            GIT_COMMANDS.POP_STASH,
+            GIT_COMMANDS.DROP_STASH
+        ].forEach((command, index) =>
+            menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_STASH), {
+                commandId: command.id,
+                order: String(index)
+            })
+        );
     }
 
     registerCommands(registry: CommandRegistry): void {
@@ -451,20 +528,12 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             execute: () => this.withProgress(() => this.quickOpenService.performDefaultGitAction(GitAction.PULL)),
             isEnabled: () => !!this.repositoryTracker.selectedRepository
         });
-        registry.registerCommand(GIT_COMMANDS.PULL_DEFAULT_FAVORITE, {
-            execute: () => registry.executeCommand(GIT_COMMANDS.PULL_DEFAULT.id),
-            isEnabled: () => !!this.repositoryTracker.selectedRepository
-        });
         registry.registerCommand(GIT_COMMANDS.PULL, {
             execute: () => this.withProgress(() => this.quickOpenService.pull()),
             isEnabled: () => !!this.repositoryTracker.selectedRepository
         });
         registry.registerCommand(GIT_COMMANDS.PUSH_DEFAULT, {
             execute: () => this.withProgress(() => this.quickOpenService.performDefaultGitAction(GitAction.PUSH)),
-            isEnabled: () => !!this.repositoryTracker.selectedRepository
-        });
-        registry.registerCommand(GIT_COMMANDS.PUSH_DEFAULT_FAVORITE, {
-            execute: () => registry.executeCommand(GIT_COMMANDS.PUSH_DEFAULT.id),
             isEnabled: () => !!this.repositoryTracker.selectedRepository
         });
         registry.registerCommand(GIT_COMMANDS.PUSH, {
@@ -808,96 +877,11 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             tooltip: GIT_COMMANDS.COMMIT_ADD_SIGN_OFF.label
         });
 
-        // Favorites menu group
-        [GIT_COMMANDS.PULL_DEFAULT_FAVORITE, GIT_COMMANDS.PUSH_DEFAULT_FAVORITE].forEach((command, index) =>
-            registerItem({
-                id: command.id + '_fav',
-                command: command.id,
-                tooltip: command.label,
-                group: GIT_MENUS.FAV_GROUP,
-                priority: 100 - index
-            })
-        );
-
-        registerItem({
-            id: GIT_COMMANDS.COMMIT_AMEND.id,
-            command: GIT_COMMANDS.COMMIT_AMEND.id,
-            tooltip: nls.localize('vscode.git/package/command.commitStagedAmend', 'Commit (Amend)'),
-            group: this.asSubMenuItemOf(GIT_MENUS.SUBMENU_COMMIT)
-        });
-        registerItem({
-            id: GIT_COMMANDS.COMMIT_SIGN_OFF.id,
-            command: GIT_COMMANDS.COMMIT_SIGN_OFF.id,
-            tooltip: nls.localize('vscode.git/package/command.commitStagedSigned', 'Commit (Signed Off)'),
-            group: this.asSubMenuItemOf(GIT_MENUS.SUBMENU_COMMIT)
-        });
-        [GIT_COMMANDS.PULL_DEFAULT, GIT_COMMANDS.PULL].forEach(command =>
-            registerItem({
-                id: command.id,
-                command: command.id,
-                tooltip: command.label,
-                group: this.asSubMenuItemOf(GIT_MENUS.SUBMENU_PULL_PUSH)
-            })
-        );
-        [GIT_COMMANDS.PUSH_DEFAULT, GIT_COMMANDS.PUSH].forEach(command =>
-            registerItem({
-                id: command.id,
-                command: command.id,
-                tooltip: command.label,
-                group: this.asSubMenuItemOf(GIT_MENUS.SUBMENU_PULL_PUSH, 1)
-            })
-        );
-        registerItem({
-            id: GIT_COMMANDS.FETCH.id,
-            command: GIT_COMMANDS.FETCH.id,
-            tooltip: GIT_COMMANDS.FETCH.label,
-            group: this.asSubMenuItemOf(GIT_MENUS.SUBMENU_PULL_PUSH, 2)
-        });
-
-        [
-            GIT_COMMANDS.STASH, GIT_COMMANDS.APPLY_STASH,
-            GIT_COMMANDS.APPLY_LATEST_STASH, GIT_COMMANDS.POP_STASH,
-            GIT_COMMANDS.POP_LATEST_STASH, GIT_COMMANDS.DROP_STASH
-        ].forEach((command, index) =>
-            registerItem({
-                id: command.id,
-                command: command.id,
-                tooltip: command.label,
-                group: this.asSubMenuItemOf(GIT_MENUS.SUBMENU_STASH),
-                priority: 100 - index
-            })
-        );
-        registerItem({
-            id: GIT_COMMANDS.STAGE_ALL.id,
-            command: GIT_COMMANDS.STAGE_ALL.id,
-            tooltip: GIT_COMMANDS.STAGE_ALL.label,
-            group: this.asSubMenuItemOf(GIT_MENUS.SUBMENU_CHANGES),
-            priority: 30
-        });
-        registerItem({
-            id: GIT_COMMANDS.UNSTAGE_ALL.id,
-            command: GIT_COMMANDS.UNSTAGE_ALL.id,
-            tooltip: GIT_COMMANDS.UNSTAGE_ALL.label,
-            group: this.asSubMenuItemOf(GIT_MENUS.SUBMENU_CHANGES),
-            priority: 20
-        });
-        registerItem({
-            id: GIT_COMMANDS.DISCARD_ALL.id,
-            command: GIT_COMMANDS.DISCARD_ALL.id,
-            tooltip: GIT_COMMANDS.DISCARD_ALL.label,
-            group: this.asSubMenuItemOf(GIT_MENUS.SUBMENU_CHANGES),
-            priority: 10
-        });
-        registerItem({
-            id: GIT_COMMANDS.MERGE.id,
-            command: GIT_COMMANDS.MERGE.id,
-            tooltip: GIT_COMMANDS.MERGE.label,
-            group: GIT_MENUS.COMMANDS_GROUP
-        });
+        registry.registerMenuDelegate(GIT_MENUS.SCM_TITLE_MENU, widget => widget instanceof ScmWidget);
     }
 
-    protected asSubMenuItemOf(submenu: { group: string; label: string; menuGroups: string[]; }, groupIdx: number = 0): string {
-        return submenu.group + '/' + submenu.label + '/' + submenu.menuGroups[groupIdx];
+    protected asSubMenuItemOf(submenu: { id: string; menuGroups: string[]; }, groupIdx: number = 0): MenuPath {
+        return [submenu.id, submenu.menuGroups[groupIdx]];
     }
 
     protected hasConflicts(changes: GitFileChange[]): boolean {
