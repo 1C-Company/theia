@@ -76,11 +76,10 @@ import { ContextFilesVariableContribution } from '../common/context-files-variab
 import { AIToolsConfigurationWidget } from './ai-configuration/tools-configuration-widget';
 import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { TemplatePreferenceContribution } from './template-preference-contribution';
-import { AIMCPConfigurationWidget } from './ai-configuration/mcp-configuration-widget';
 import { ChatWelcomeMessageProvider } from '@theia/ai-chat-ui/lib/browser/chat-tree-view';
 import { IdeChatWelcomeMessageProvider } from './ide-chat-welcome-message-provider';
 import { ChatSessionsWelcomeMessageProvider } from './chat-sessions-welcome-message-provider';
-import { ChatSessionCardActionContribution, DefaultChatSessionCardActionContribution } from './chat-session-card-action-contribution';
+import { ChatSessionItemActionContribution, DefaultChatSessionItemActionContribution } from './chat-session-item-action-contribution';
 import { DefaultChatAgentRecommendationService } from './default-chat-agent-recommendation-service';
 import { AITokenUsageConfigurationWidget } from './ai-configuration/token-usage-configuration-widget';
 import { AISkillsConfigurationWidget } from './ai-configuration/skills-configuration-widget';
@@ -88,7 +87,7 @@ import { TaskContextSummaryVariableContribution } from './task-background-summar
 import { GitHubRepoVariableContribution } from './github-repo-variable-contribution';
 import { TaskContextFileStorageService } from './task-context-file-storage-service';
 import { TaskContextStorageService } from '@theia/ai-chat/lib/browser/task-context-service';
-import { bindContributionProvider, CommandContribution, PreferenceContribution } from '@theia/core';
+import { bindRootContributionProvider, CommandContribution, PreferenceContribution } from '@theia/core';
 import { AIPromptFragmentsConfigurationWidget } from './ai-configuration/prompt-fragments-configuration-widget';
 import { BrowserAutomation, browserAutomationPath } from '../common/browser-automation-protocol';
 import { GitHubRepoService, githubRepoServicePath } from '../common/github-repo-protocol';
@@ -195,9 +194,9 @@ export default new ContainerModule((bind, _unbind, _isBound, rebind) => {
 
     bind(ChatWelcomeMessageProvider).to(IdeChatWelcomeMessageProvider).inSingletonScope();
     bind(ChatWelcomeMessageProvider).to(ChatSessionsWelcomeMessageProvider).inSingletonScope();
-    bindContributionProvider(bind, ChatSessionCardActionContribution);
-    bind(DefaultChatSessionCardActionContribution).toSelf().inSingletonScope();
-    bind(ChatSessionCardActionContribution).toService(DefaultChatSessionCardActionContribution);
+    bindRootContributionProvider(bind, ChatSessionItemActionContribution);
+    bind(DefaultChatSessionItemActionContribution).toSelf().inSingletonScope();
+    bind(ChatSessionItemActionContribution).toService(DefaultChatSessionItemActionContribution);
     bind(ChatAgentRecommendationService).to(DefaultChatAgentRecommendationService).inSingletonScope();
 
     bindToolProvider(GetWorkspaceFileList, bind);
@@ -294,13 +293,6 @@ export default new ContainerModule((bind, _unbind, _isBound, rebind) => {
 
     bind(FrontendApplicationContribution).to(TemplatePreferenceContribution);
 
-    bind(AIMCPConfigurationWidget).toSelf();
-    bind(WidgetFactory)
-        .toDynamicValue(ctx => ({
-            id: AIMCPConfigurationWidget.ID,
-            createWidget: () => ctx.container.get(AIMCPConfigurationWidget)
-        }))
-        .inSingletonScope();
     // Register the token usage configuration widget
     bind(AITokenUsageConfigurationWidget).toSelf();
     bind(WidgetFactory)

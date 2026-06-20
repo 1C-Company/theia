@@ -23,6 +23,7 @@
     "@theia/core": "1.72.0",
     "@theia/debug": "1.72.0",
     "@theia/editor": "1.72.0",
+    "@theia/file-search": "1.72.0",
     "@theia/filesystem": "1.72.0",
     "@theia/markers": "1.72.0",
     "@theia/monaco": "1.72.0",
@@ -35,7 +36,7 @@
     "@theia/workspace": "1.72.0",
     "date-fns": "^4.1.0",
     "ignore": "^6.0.2",
-    "js-yaml": "^4.1.1",
+    "js-yaml": "^4.2.0",
     "minimatch": "^10.2.5",
     "puppeteer-core": "^25.1.0",
     "simple-git": "^3.36.0"
