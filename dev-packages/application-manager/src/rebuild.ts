@@ -33,7 +33,6 @@ type NodeABI = string | number;
 export const DEFAULT_MODULES = [
     'node-pty',
     'native-keymap',
-    'find-git-repositories',
     'drivelist',
     'keytar',
     'ssh2',
