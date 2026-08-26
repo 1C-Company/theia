@@ -14,7 +14,7 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import { injectable, inject } from '@theia/core/shared/inversify';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
 import findGit from 'find-git-exec';
 import { dirname } from 'path';
 import { pathExists } from '@theia/core/shared/fs-extra';
@@ -45,7 +45,7 @@ export class DefaultGitInit implements GitInit {
 
     protected readonly toDispose = new DisposableCollection();
 
-    @inject(ILogger)
+    @inject(ILogger) @named('git:DefaultGitInit')
     protected readonly logger: ILogger;
 
     @inject(MessageService)

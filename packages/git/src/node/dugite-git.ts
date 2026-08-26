@@ -16,7 +16,7 @@
 
 import * as fs from '@theia/core/shared/fs-extra';
 import * as Path from 'path';
-import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
+import { injectable, inject, postConstruct, named } from '@theia/core/shared/inversify';
 import { git } from 'dugite-extra/lib/core/git';
 import { push } from 'dugite-extra/lib/command/push';
 import { pull } from 'dugite-extra/lib/command/pull';
@@ -290,7 +290,7 @@ export class DugiteGit implements Git {
 
     protected readonly limit = 1000;
 
-    @inject(ILogger)
+    @inject(ILogger) @named('git:DugiteGit')
     protected readonly logger: ILogger;
 
     @inject(GitLocator)

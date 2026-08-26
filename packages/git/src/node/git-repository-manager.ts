@@ -14,13 +14,16 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import { injectable, inject } from '@theia/core/shared/inversify';
-import { ReferenceCollection, Reference } from '@theia/core';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
+import { ReferenceCollection, Reference, ILogger } from '@theia/core';
 import { Repository } from '../common';
 import { GitRepositoryWatcher, GitRepositoryWatcherFactory } from './git-repository-watcher';
 
 @injectable()
 export class GitRepositoryManager {
+
+    @inject(ILogger) @named('git:GitRepositoryManager')
+    protected readonly logger: ILogger;
 
     @inject(GitRepositoryWatcherFactory)
     protected readonly watcherFactory: GitRepositoryWatcherFactory;
@@ -30,7 +33,7 @@ export class GitRepositoryManager {
 
     run<T>(repository: Repository, op: () => Promise<T>): Promise<T> {
         const result = op();
-        result.then(() => this.sync(repository).catch(e => console.log(e)));
+        result.then(() => this.sync(repository).catch(e => this.logger.info(e)));
 
         return result;
     }

@@ -14,9 +14,10 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import { injectable, inject, optional } from '@theia/core/shared/inversify';
+import { injectable, inject, optional, named } from '@theia/core/shared/inversify';
 import { Git, Repository, Branch, BranchType, Tag, Remote, StashEntry } from '../common';
 import { GitRepositoryProvider } from './git-repository-provider';
+import { ILogger } from '@theia/core';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { GitErrorHandler } from './git-error-handler';
@@ -40,6 +41,7 @@ export enum GitAction {
 @injectable()
 export class GitQuickOpenService {
 
+    @inject(ILogger) @named('git:GitQuickOpenService') protected readonly logger: ILogger;
     @inject(GitErrorHandler) protected readonly gitErrorHandler: GitErrorHandler;
     @inject(ProgressService) protected readonly progressService: ProgressService;
     @inject(LabelProvider) protected readonly labelProvider: LabelProvider;
@@ -112,7 +114,7 @@ export class GitQuickOpenService {
             }
         } catch (err) {
             quickPick.items = [new GitQuickPickItem('$(error) ' + nls.localizeByDefault('Error: {0}', err.message))];
-            console.error(err);
+            this.logger.error(err);
         } finally {
             quickPick.busy = false;
         }
@@ -162,10 +164,10 @@ export class GitQuickOpenService {
             try {
                 if (action === GitAction.PULL) {
                     await this.git.pull(repository, { remote: defaultRemote });
-                    console.log(`Git Pull: successfully completed from ${defaultRemote}.`);
+                    this.logger.info(`Git Pull: successfully completed from ${defaultRemote}.`);
                 } else if (action === GitAction.PUSH) {
                     await this.git.push(repository, { remote: defaultRemote, setUpstream: true });
-                    console.log(`Git Push: successfully completed to ${defaultRemote}.`);
+                    this.logger.info(`Git Push: successfully completed to ${defaultRemote}.`);
                 }
             } catch (error) {
                 this.gitErrorHandler.handleError(error);

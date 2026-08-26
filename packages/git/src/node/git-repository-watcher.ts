@@ -14,7 +14,7 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
+import { injectable, inject, postConstruct, named } from '@theia/core/shared/inversify';
 import { Disposable, Event, Emitter, ILogger } from '@theia/core';
 import { Git, Repository, WorkingDirectoryStatus, GitUtils } from '../common';
 import { GitStatusChangeEvent } from '../common/git-watcher';
@@ -37,7 +37,7 @@ export class GitRepositoryWatcher implements Disposable {
     @inject(Git)
     protected readonly git: Git;
 
-    @inject(ILogger)
+    @inject(ILogger) @named('git:GitRepositoryWatcher')
     protected readonly logger: ILogger;
 
     @inject(GitRepositoryWatcherOptions)
@@ -50,7 +50,7 @@ export class GitRepositoryWatcher implements Disposable {
 
     watch(): void {
         if (this.watching) {
-            console.debug('Repository watcher is already active.');
+            this.logger.debug('Repository watcher is already active.');
             return;
         }
         this.watching = true;
