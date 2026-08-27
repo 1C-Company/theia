@@ -77,7 +77,7 @@ export class GitQuickOpenService {
                     )
                 ],
                 {
-                    placeholder: nls.localize('vscode.git/dist/commands/selectFolder', 'Select Repository Location'),
+                    placeholder: nls.localize('vscode.git-base/bundle/Provide repository URL', 'Provide repository URL'),
                     onDidChangeValue: (quickPick: QuickPick<QuickPickItem>, filter: string) => this.query(quickPick, filter, folder)
                 });
         });
@@ -182,6 +182,9 @@ export class GitQuickOpenService {
         }
         return this.withProgress(async () => {
             const [remotes, currentBranch] = await Promise.all([this.getRemotes(), this.getCurrentBranch()]);
+            if (!currentBranch) {
+                return;
+            }
             const execute = async (item: GitQuickPickItem<Remote>) => {
                 try {
                     await this.git.push(repository, { remote: item.label, setUpstream: true });
@@ -190,9 +193,11 @@ export class GitQuickOpenService {
                 }
             };
             const items = remotes.map(remote => new GitQuickPickItem<Remote>(remote.name, execute, remote, remote.push));
-            const branchName = currentBranch ? `'${currentBranch.name}' ` : '';
             this.quickInputService?.showQuickPick(items, {
-                placeholder: nls.localize('vscode.git/dist/commands/pick remote', "Pick a remote to publish the branch '{0}' to:", branchName)
+                placeholder: nls.localize(
+                    'vscode.git/bundle/Pick a remote to publish the branch "{0}" to:', 'Pick a remote to publish the branch "{0}" to:',
+                    currentBranch.name
+                )
             });
         });
     }
@@ -229,13 +234,13 @@ export class GitQuickOpenService {
                         .map(branch => new GitQuickPickItem(branch.name, executeBranch, branch));
 
                     this.quickInputService?.showQuickPick(branchItems, {
-                        placeholder: nls.localize('vscode.git/dist/commands/pick branch pull', 'Pick a branch to pull from')
+                        placeholder: nls.localize('vscode.git/bundle/Pick a branch to pull from', 'Pick a branch to pull from')
                     });
                 }
             };
             const remoteItems = remotes.map(remote => new GitQuickPickItem(remote.name, executeRemote, remote, remote.fetch));
             this.quickInputService?.showQuickPick(remoteItems, {
-                placeholder: nls.localize('vscode.git/dist/commands/pick remote pull repo', 'Pick a remote to pull the branch from')
+                placeholder: nls.localize('vscode.git/bundle/Pick a remote to pull the branch from', 'Pick a remote to pull the branch from')
             });
         });
     }
@@ -289,7 +294,7 @@ export class GitQuickOpenService {
                 branch.type === BranchType.Remote ? branch.name : branch.nameWithoutRemote, switchBranch,
                 branch,
                 branch.type === BranchType.Remote
-                    ? nls.localize('vscode.git/dist/commands/remote branch at', 'Remote branch at {0}', (branch.tip.sha.length > 8 ? ` ${branch.tip.sha.slice(0, 7)}` : ''))
+                    ? nls.localize('vscode.git/bundle/Remote branch at {0}', 'Remote branch at {0}', (branch.tip.sha.length > 8 ? ` ${branch.tip.sha.slice(0, 7)}` : ''))
                     : (branch.tip.sha.length > 8 ? ` ${branch.tip.sha.slice(0, 7)}` : '')));
 
             const createBranchItem = async <T>() => {
@@ -321,14 +326,14 @@ export class GitQuickOpenService {
                     return dynamicItems;
                 };
                 this.quickInputService?.showQuickPick(getItems(), {
-                    placeholder: nls.localize('vscode.git/dist/commands/branch name', 'Branch name'),
+                    placeholder: nls.localize('vscode.git/bundle/Branch name', 'Branch name'),
                     onDidChangeValue: (quickPick: QuickPick<QuickPickItem>, filter: string) => {
                         quickPick.items = getItems(filter);
                     }
                 });
             };
 
-            items.unshift(new GitQuickPickItem(nls.localize('vscode.git/dist/commands/create branch', 'Create new branch...'), createBranchItem));
+            items.unshift(new GitQuickPickItem(nls.localize('vscode.git/bundle/{0} Create new branch...', '{0} Create new branch...', '$(plus)'), createBranchItem));
             this.quickInputService?.showQuickPick(items, { placeholder: nls.localize('theia/git/checkoutSelectRef', 'Select a ref to checkout or create a new local branch:') });
         });
     }
@@ -410,7 +415,7 @@ export class GitQuickOpenService {
                 quickPick.items = getItems(filter);
             };
             this.quickInputService?.showQuickPick(getItems(), {
-                placeholder: nls.localize('vscode.git/dist/commands/stash message', 'Stash message'), onDidChangeValue: updateItems
+                placeholder: nls.localize('vscode.git/bundle/Stash message', 'Stash message'), onDidChangeValue: updateItems
             });
         });
     }
@@ -440,11 +445,11 @@ export class GitQuickOpenService {
     }
 
     async applyStash(): Promise<void> {
-        this.doStashAction('apply', nls.localize('vscode.git/dist/commands/pick stash to apply', 'Pick a stash to apply'));
+        this.doStashAction('apply', nls.localize('vscode.git/bundle/Pick a stash to apply', 'Pick a stash to apply'));
     }
 
     async popStash(): Promise<void> {
-        this.doStashAction('pop', nls.localize('vscode.git/dist/commands/pick stash to pop', 'Pick a stash to pop'));
+        this.doStashAction('pop', nls.localize('vscode.git/bundle/Pick a stash to pop', 'Pick a stash to pop'));
     }
 
     async dropStash(): Promise<void> {
@@ -454,7 +459,7 @@ export class GitQuickOpenService {
         }
         this.doStashAction(
             'drop',
-            nls.localize('vscode.git/dist/commands/pick stash to drop', 'Pick a stash to drop'),
+            nls.localize('vscode.git/bundle/Pick a stash to drop', 'Pick a stash to drop'),
             async () => nls.localize('theia/git/dropStashMessage', 'Stash successfully removed.')
         );
     }
@@ -495,7 +500,9 @@ export class GitQuickOpenService {
         const wsRoots = await this.workspaceService.roots;
         if (wsRoots && wsRoots.length > 1) {
             const items = wsRoots.map<GitQuickPickItem<URI>>(root => this.toRepositoryPathQuickOpenItem(root));
-            this.quickInputService?.showQuickPick(items, { placeholder: nls.localize('vscode.git/dist/commands/init', 'Pick workspace folder to initialize git repo in') });
+            this.quickInputService?.showQuickPick(items, {
+                placeholder: nls.localize('vscode.git/bundle/Pick workspace folder to initialize git repo in', 'Pick workspace folder to initialize git repo in')
+            });
         } else {
             const rootUri = wsRoots[0].resource;
             this.doInitRepository(rootUri.toString());
