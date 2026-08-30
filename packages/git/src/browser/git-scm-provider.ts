@@ -28,7 +28,7 @@ import { Repository, Git, CommitWithChanges, GitFileChange, WorkingDirectoryStat
 import { GIT_RESOURCE_SCHEME } from './git-resource';
 import { GitErrorHandler } from './git-error-handler';
 import { EditorWidget } from '@theia/editor/lib/browser';
-import { ScmProvider, ScmCommand, ScmResourceGroup, ScmAmendSupport, ScmCommit } from '@theia/scm/lib/browser/scm-provider';
+import { ScmProvider, ScmCommand, ScmResourceGroup, ScmAmendSupport, ScmCommit, ScmHistoryProvider } from '@theia/scm/lib/browser/scm-provider';
 import { ScmHistoryCommit, ScmFileChange } from '@theia/scm-extra/lib/browser/scm-file-change-node';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { GitCommitDetailWidgetOptions } from './history/git-commit-detail-widget-options';
@@ -46,7 +46,8 @@ export class GitScmProviderOptions {
 @injectable()
 export class GitScmProvider implements ScmProvider {
 
-    public input: ScmInput;
+    input?: ScmInput;
+    historyProvider?: ScmHistoryProvider;
 
     protected readonly onDidChangeEmitter = new Emitter<void>();
     readonly onDidChange = this.onDidChangeEmitter.event;
@@ -190,10 +191,14 @@ export class GitScmProvider implements ScmProvider {
         state.groups.push(this.createGroup('workingTree', nls.localizeByDefault('Changes'), forWorkingTree, hideWorkingIfEmpty));
         state.groups.push(this.createGroup('untrackedChanges', nls.localize('vscode.git/repository/untracked changes', 'Untracked Changes'), forUntracked, true));
         this.state = state;
-        if (status && status.branch) {
-            this.input.placeholder = nls.localize('vscode.git/repository/commitMessageWithHeadLabel', 'Message (press {0} to commit on {1})', '{0}', status.branch);
-        } else {
-            this.input.placeholder = nls.localize('vscode.git/repository/commitMessage', 'Message (press {0} to commit)');
+
+        const { input } = this;
+        if (input) {
+            if (status && status.branch) {
+                input.placeholder = nls.localize('vscode.git/repository/commitMessageWithHeadLabel', 'Message (press {0} to commit on {1})', '{0}', status.branch);
+            } else {
+                input.placeholder = nls.localize('vscode.git/repository/commitMessage', 'Message (press {0} to commit)');
+            }
         }
 
         this.fireDidChange();
@@ -326,7 +331,7 @@ export class GitScmProvider implements ScmProvider {
             const getCommitInfo = async (ref: string) => {
                 const hash = await this.git.revParse(this.repository, { ref });
                 if (hash) {
-                    const refNames = (await this.git.exec(this.repository, ['log', '-n', '1', '--decorate=full', '--format=%D', hash])).stdout.trim();
+                    const refNames = (await this.git.exec(this.repository, ['log', '-n', '1', '--decorate=full', '--format=%D', hash], { readOnly: true })).stdout.trim();
                     return { hash, refNames };
                 }
             };
@@ -601,7 +606,7 @@ export class GitAmendSupport implements ScmAmendSupport {
     }
 
     public async getMessage(commit: string): Promise<string> {
-        return (await this.git.exec(this.repository, ['log', '-n', '1', '--format=%B', commit])).stdout.trim();
+        return (await this.git.exec(this.repository, ['log', '-n', '1', '--format=%B', commit], { readOnly: true })).stdout.trim();
     }
 
     public async reset(commit: string): Promise<void> {

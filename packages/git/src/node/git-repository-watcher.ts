@@ -16,7 +16,7 @@
 
 import { injectable, inject, postConstruct, named } from '@theia/core/shared/inversify';
 import { Disposable, Event, Emitter, ILogger } from '@theia/core';
-import { Git, Repository, WorkingDirectoryStatus, GitUtils } from '../common';
+import { Git, Repository, WorkingDirectoryStatus, GitUtils, Branch, Tag } from '../common';
 import { GitStatusChangeEvent } from '../common/git-watcher';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 
@@ -113,10 +113,25 @@ export class GitRepositoryWatcher implements Disposable {
 
     protected status: WorkingDirectoryStatus | undefined;
     protected async syncStatus(): Promise<void> {
+        if (this.disposed) {
+            return;
+        }
+
         try {
             const source = this.options.repository;
             const oldStatus = this.status;
-            const newStatus = await this.git.status(source);
+
+            const [status, branches, tags] = await Promise.all([
+                this.getStatus(source),
+                this.getBranches(source),
+                this.getTags(source)
+            ]);
+
+            if (this.disposed) {
+                return;
+            }
+
+            const newStatus = { ...status, branches, tags };
             if (!WorkingDirectoryStatus.equals(newStatus, oldStatus)) {
                 this.status = newStatus;
                 this.onGitStatusChangedEmitter.fire({ source, status: newStatus, oldStatus });
@@ -129,4 +144,29 @@ export class GitRepositoryWatcher implements Disposable {
         }
     }
 
+    protected async getStatus(repository: Repository): Promise<WorkingDirectoryStatus> {
+        return this.git.status(repository);
+    }
+
+    protected async getBranches(repository: Repository): Promise<Branch[]> {
+        // sort branches by their refname to ensure a stable order (branches returned by `Git.branch` are ordered by their commit date)
+        return (await this.git.branch(repository, { type: 'all' })).sort((a, b) => a.type === b.type ? a.name.localeCompare(b.name) : a.type - b.type);
+    }
+
+    protected async getTags(repository: Repository): Promise<Tag[]> {
+        const result: Tag[] = [];
+
+        const { stdout } = await this.git.exec(repository, ['tag', '--sort=version:refname'], // sort tags by their refname to ensure a stable order
+            { readOnly: true } // it is critical to mark this operation as read-only to avoid syncing immediately over and over again
+        );
+
+        const lines = stdout.trim().split('\n');
+        for (const line of lines) {
+            const tag = line.trim();
+            if (tag) {
+                result.push({ name: tag });
+            }
+        }
+        return result;
+    }
 }

@@ -34,7 +34,8 @@ export class GitResource implements Resource {
             if ([':2', ':3'].includes(commitish)) { // special case: index stage number for a merge side
                 const path = Repository.relativePath(this.repository, this.uri.withScheme('file'))?.toString();
                 if (path) {
-                    const stages = (await this.git.exec(this.repository, ['ls-files', '--format=%(stage)', '--', path])).stdout.split('\n').map(line => line.trim());
+                    const { stdout } = await this.git.exec(this.repository, ['ls-files', '--format=%(stage)', '--', path], { readOnly: true });
+                    const stages = stdout.split('\n').map(line => line.trim());
                     if (stages.includes('1') && !stages.includes(commitish.substring(1))) { // the file was deleted by that side of a merge conflict
                         return '';
                     }
@@ -51,7 +52,8 @@ export class GitResource implements Resource {
             if (path) {
                 const commitish = this.uri.query || 'index';
                 if ([':1', ':2', ':3'].includes(commitish)) { // special case: index stage number during merge
-                    const lines = (await this.git.exec(this.repository, ['ls-files', '--format=%(stage) %(objectsize)', '--', path])).stdout.split('\n');
+                    const { stdout } = await this.git.exec(this.repository, ['ls-files', '--format=%(stage) %(objectsize)', '--', path], { readOnly: true });
+                    const lines = stdout.split('\n');
                     for (const line of lines) {
                         const [stage, size] = line.trim().split(' ');
                         if (stage === commitish.substring(1) && size) {
@@ -60,7 +62,7 @@ export class GitResource implements Resource {
                     }
                 } else {
                     const args = commitish !== 'index' ? ['ls-tree', '--format=%(objectsize)', commitish, path] : ['ls-files', '--format=%(objectsize)', '--', path];
-                    const size = (await this.git.exec(this.repository, args)).stdout.split('\n').filter(line => !!line.trim())[0];
+                    const size = (await this.git.exec(this.repository, args, { readOnly: true })).stdout.split('\n').find(line => line.trim())?.trim();
                     if (size) {
                         return parseInt(size);
                     }

@@ -24,9 +24,11 @@ import { GitErrorHandler } from './git-error-handler';
 import { ProgressService } from '@theia/core/lib/common/progress-service';
 import URI from '@theia/core/lib/common/uri';
 import { nls } from '@theia/core/lib/common/nls';
-import { LabelProvider, QuickInputService, QuickPick, QuickPickItem } from '@theia/core/lib/browser';
+import { ConfirmDialog, Dialog, LabelProvider, QuickInputService, QuickPick, QuickPickItem } from '@theia/core/lib/browser';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { FileStat } from '@theia/filesystem/lib/common/files';
+import { ScmHistoryItemRef, ScmHistoryProvider } from '@theia/scm/lib/browser/scm-provider';
+import { parseRemoteRefName } from './git-history-provider';
 
 export enum GitAction {
     PULL,
@@ -153,6 +155,20 @@ export class GitQuickOpenService {
         });
     }
 
+    async fetchAll(): Promise<void> {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+        return this.withProgress(async () => {
+            try {
+                await this.git.exec(repository, ['fetch', '--all']);
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
+        });
+    }
+
     async performDefaultGitAction(action: GitAction): Promise<void> {
         const remote = await this.getRemotes();
         const defaultRemote = remote[0]?.name;
@@ -245,6 +261,46 @@ export class GitQuickOpenService {
         });
     }
 
+    async pushCurrentHistoryItemRef(): Promise<void> {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+        const historyProvider = this.repositoryProvider.selectedScmProvider?.historyProvider;
+        const localBranch = historyProvider?.currentHistoryItemRef?.name;
+        const remoteRefName = historyProvider?.currentHistoryItemRemoteRef?.name;
+        if (!localBranch || !remoteRefName) {
+            return;
+        }
+        const { remote, branch: remoteBranch } = parseRemoteRefName(remoteRefName);
+        return this.withProgress(async () => {
+            try {
+                await this.git.push(repository, { remote, localBranch, remoteBranch });
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
+        });
+    }
+
+    async pullCurrentHistoryItemRef(): Promise<void> {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+        const remoteRefName = this.repositoryProvider.selectedScmProvider?.historyProvider?.currentHistoryItemRemoteRef?.name;
+        if (!remoteRefName) {
+            return;
+        }
+        const { remote, branch } = parseRemoteRefName(remoteRefName);
+        return this.withProgress(async () => {
+            try {
+                await this.git.pull(repository, { remote, branch });
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
+        });
+    }
+
     async merge(): Promise<void> {
         const repository = this.getRepository();
         if (!repository) {
@@ -297,44 +353,219 @@ export class GitQuickOpenService {
                     ? nls.localize('vscode.git/bundle/Remote branch at {0}', 'Remote branch at {0}', (branch.tip.sha.length > 8 ? ` ${branch.tip.sha.slice(0, 7)}` : ''))
                     : (branch.tip.sha.length > 8 ? ` ${branch.tip.sha.slice(0, 7)}` : '')));
 
-            const createBranchItem = async <T>() => {
-                const { git, gitErrorHandler, wrapWithProgress } = this;
-                const getItems = (lookFor?: string) => {
-                    const dynamicItems: GitQuickPickItem<T>[] = [];
-                    if (lookFor === undefined || lookFor.length === 0) {
-                        dynamicItems.push(new GitQuickPickItem(
-                            nls.localize('theia/git/checkoutProvideBranchName', 'Please provide a branch name. '),
-                            () => { })
-                        );
-                    } else {
-                        dynamicItems.push(new GitQuickPickItem(
-                            nls.localize(
-                                'theia/git/checkoutCreateLocalBranchWithName',
-                                "Create a new local branch with name: {0}. Press 'Enter' to confirm or 'Escape' to cancel.",
-                                lookFor
-                            ),
-                            wrapWithProgress(async () => {
-                                try {
-                                    await git.branch(repository, { toCreate: lookFor });
-                                    await git.checkout(repository, { branch: lookFor });
-                                } catch (error) {
-                                    gitErrorHandler.handleError(error);
-                                }
-                            })
-                        ));
-                    }
-                    return dynamicItems;
-                };
-                this.quickInputService?.showQuickPick(getItems(), {
-                    placeholder: nls.localize('vscode.git/bundle/Branch name', 'Branch name'),
-                    onDidChangeValue: (quickPick: QuickPick<QuickPickItem>, filter: string) => {
-                        quickPick.items = getItems(filter);
-                    }
-                });
-            };
-
-            items.unshift(new GitQuickPickItem(nls.localize('vscode.git/bundle/{0} Create new branch...', '{0} Create new branch...', '$(plus)'), createBranchItem));
+            items.unshift(new GitQuickPickItem(nls.localize('vscode.git/bundle/{0} Create new branch...', '{0} Create new branch...', '$(plus)'), () => this.createBranch()));
             this.quickInputService?.showQuickPick(items, { placeholder: nls.localize('theia/git/checkoutSelectRef', 'Select a ref to checkout or create a new local branch:') });
+        });
+    }
+
+    async checkoutHistoryItemRef(ref: ScmHistoryItemRef): Promise<void> {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+        return this.withProgress(async () => {
+            try {
+                if (ref.id.startsWith('refs/remotes/')) { // remote branch
+                    const findTrackingBranches = async (upstreamBranch: string): Promise<string[]> => {
+                        const result: string[] = [];
+                        const { stdout } = await this.git.exec(repository, ['for-each-ref', '--format', '%(refname:short)%00%(upstream:short)', 'refs/heads'], { readOnly: true });
+                        const lines = stdout.trim().split('\n');
+                        for (const line of lines) {
+                            const entry = line.trim();
+                            if (entry) {
+                                const [refName, upstream] = entry.split('\0');
+                                if (upstream === upstreamBranch) {
+                                    result.push(refName);
+                                }
+                            }
+                        }
+                        return result;
+                    };
+
+                    const trackingBranches = await findTrackingBranches(ref.name);
+                    if (trackingBranches.length > 0) {
+                        await this.git.checkout(repository, { branch: trackingBranches[0] });
+                    } else {
+                        await this.git.exec(repository, ['checkout', '-q', '--track', ref.name]);
+                    }
+                } else {
+                    await this.git.checkout(repository, { branch: ref.name });
+                }
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
+        });
+    }
+
+    async checkoutDetached(treeish: string): Promise<void> {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+        return this.withProgress(async () => {
+            try {
+                await this.git.exec(repository, ['checkout', '-q', '--detach', treeish]);
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
+        });
+    }
+
+    async createBranch(startPoint?: string): Promise<void> {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+        const branch = await this.quickInputService?.input({
+            placeHolder: nls.localize('vscode.git/bundle/Branch name', 'Branch name'),
+            prompt: nls.localize('vscode.git/bundle/Please provide a new branch name', 'Please provide a new branch name'),
+            ignoreFocusLost: true
+        });
+        if (!branch) {
+            return;
+        }
+        return this.withProgress(async () => {
+            try {
+                await this.git.branch(repository, { toCreate: branch, startPoint });
+                await this.git.checkout(repository, { branch });
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
+        });
+    }
+
+    async createTag(ref?: string): Promise<void> {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+
+        const name = await this.quickInputService?.input({
+            placeHolder: nls.localize('vscode.git/bundle/Tag name', 'Tag name'),
+            prompt: nls.localize('vscode.git/bundle/Please provide a tag name', 'Please provide a tag name'),
+            ignoreFocusLost: true
+        });
+        if (!name) {
+            return;
+        }
+
+        const message = await this.quickInputService?.input({
+            placeHolder: nls.localizeByDefault('Message'),
+            prompt: nls.localize('vscode.git/bundle/Please provide a message to annotate the tag', 'Please provide a message to annotate the tag'),
+            ignoreFocusLost: true
+        });
+
+        return this.withProgress(async () => {
+            try {
+                let args = ['tag'];
+                if (message) {
+                    args = [...args, '-a', name, '-m', message];
+                } else {
+                    args = [...args, name];
+                }
+                if (ref) {
+                    args.push(ref);
+                }
+                await this.git.exec(repository, args);
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
+        });
+    }
+
+    async cherryPick(commitHash?: string): Promise<void> {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+        if (!commitHash) {
+            commitHash = await this.quickInputService?.input({
+                placeHolder: nls.localize('vscode.git/bundle/Commit Hash', 'Commit Hash'),
+                prompt: nls.localize('vscode.git/bundle/Please provide the commit hash', 'Please provide the commit hash'),
+                ignoreFocusLost: true
+            });
+        }
+        if (!commitHash) {
+            return;
+        }
+        return this.withProgress(async () => {
+            try {
+                await this.git.exec(repository, ['cherry-pick', commitHash]);
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
+        });
+    }
+
+    async deleteHistoryItemRef(ref: ScmHistoryItemRef): Promise<void> {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+
+        if (ref.id.startsWith('refs/heads/')) {
+            if (ref.id === this.getHistoryProvider()?.currentHistoryItemRef?.id) {
+                this.messageService.info(nls.localize('vscode.git/bundle/The active branch cannot be deleted.', 'The active branch cannot be deleted.'));
+                return;
+            }
+
+            return this.deleteLocalBranch(ref.name, repository);
+        }
+
+        if (ref.id.startsWith('refs/remotes/')) {
+            if (ref.id === this.getHistoryProvider()?.currentHistoryItemRemoteRef?.id) {
+                this.messageService.info(nls.localize('vscode.git/bundle/The remote branch of the active branch cannot be deleted.',
+                    'The remote branch of the active branch cannot be deleted.'));
+                return;
+            }
+
+            const { remote, branch } = parseRemoteRefName(ref.name);
+            return this.deleteRemoteBranch(remote, branch, repository);
+        }
+
+        if (ref.id.startsWith('refs/tags/')) {
+            return this.deleteTag(ref.name, repository);
+        }
+    }
+
+    protected async deleteLocalBranch(branchName: string, repository: Repository, force?: boolean): Promise<void> {
+        try {
+            await this.withProgress(async () => this.git.branch(repository, { toDelete: branchName, force }));
+        } catch (error) {
+            if (!force && error.message && /branch '.+' is not fully merged/.test(error.message)) {
+                const confirmed = await new ConfirmDialog({
+                    title: nls.localize('vscode.git/bundle/Delete Branch', 'Delete Branch'),
+                    msg: nls.localize('vscode.git/bundle/The branch "{0}" is not fully merged. Delete anyway?',
+                        'The branch "{0}" is not fully merged. Delete anyway?', branchName),
+                    ok: Dialog.YES,
+                    cancel: Dialog.NO
+                }).open();
+                if (confirmed) {
+                    await this.deleteLocalBranch(branchName, repository, true);
+                }
+            } else {
+                this.gitErrorHandler.handleError(error);
+            }
+        }
+    }
+
+    protected async deleteRemoteBranch(remoteName: string, branchName: string, repository: Repository): Promise<void> {
+        return this.withProgress(async () => {
+            try {
+                await this.git.exec(repository, ['push', remoteName, '--delete', branchName]);
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
+        });
+    }
+
+    protected async deleteTag(tagName: string, repository: Repository): Promise<void> {
+        return this.withProgress(async () => {
+            try {
+                await this.git.exec(repository, ['tag', '-d', tagName]);
+            } catch (error) {
+                this.gitErrorHandler.handleError(error);
+            }
         });
     }
 
@@ -362,7 +593,7 @@ export class GitQuickOpenService {
             throw new Error(nls.localize('theia/git/noRepositoriesSelected', 'No repositories were selected.'));
         }
         return this.withProgress(async () => {
-            const lastMessage = (await this.git.exec(repository, ['log', '--format=%B', '-n', '1'])).stdout.trim();
+            const lastMessage = (await this.git.exec(repository, ['log', '--format=%B', '-n', '1'], { readOnly: true })).stdout.trim();
             if (lastMessage.length === 0) {
                 throw new Error(nls.localize('theia/git/repositoryNotInitialized', 'Repository {0} is not yet initialized.', repository.localUri));
             }
@@ -526,6 +757,10 @@ export class GitQuickOpenService {
         return this.repositoryProvider.selectedRepository;
     }
 
+    private getHistoryProvider(): ScmHistoryProvider | undefined {
+        return this.repositoryProvider.selectedScmProvider?.historyProvider;
+    }
+
     private async getRemotes(): Promise<Remote[]> {
         const repository = this.getRepository();
         if (!repository) {
@@ -546,8 +781,16 @@ export class GitQuickOpenService {
             return [];
         }
         return this.withProgress(async () => {
-            const result = await this.git.exec(repository, ['tag', '--sort=-creatordate']);
-            return result.stdout !== '' ? result.stdout.trim().split('\n').map(tag => ({ name: tag })) : [];
+            const result: Tag[] = [];
+            const { stdout } = await this.git.exec(repository, ['tag', '--sort=-creatordate'], { readOnly: true });
+            const lines = stdout.trim().split('\n');
+            for (const line of lines) {
+                const tag = line.trim();
+                if (tag) {
+                    result.push({ name: tag });
+                }
+            }
+            return result;
         });
     }
 

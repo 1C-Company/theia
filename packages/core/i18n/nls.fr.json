@@ -2308,8 +2308,6 @@
       "added": "Ajouté",
       "amendReuseMessage": "Pour réutiliser le dernier message de validation, appuyez sur « Entrée » ou « Échap » pour annuler.",
       "amendRewrite": "Réécrivez le message de validation précédent. Appuyez sur « Entrée » pour confirmer ou sur « Échap » pour annuler.",
-      "checkoutCreateLocalBranchWithName": "Créez une nouvelle branche locale nommée : {0}. Appuyez sur « Entrée » pour confirmer ou sur « Échap » pour annuler.",
-      "checkoutProvideBranchName": "Veuillez fournir un nom de branche. ",
       "checkoutSelectRef": "Sélectionnez une référence pour vérifier ou créer une nouvelle branche locale :",
       "cloneQuickInputLabel": "Veuillez indiquer l'emplacement du dépôt Git. Appuyez sur « Entrée » pour confirmer ou sur « Échap » pour annuler.",
       "cloneRepository": "Clonez le dépôt Git : {0}. Appuyez sur « Entrée » pour confirmer ou sur « Échap » pour annuler.",

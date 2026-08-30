@@ -322,7 +322,14 @@ export class DugiteGit implements Git {
 
     @postConstruct()
     protected init(): void {
-        this.envProvider.getEnv().then(env => this.gitEnv.resolve(env));
+        this.envProvider.getEnv().then(env => this.gitEnv.resolve({
+            ...env,
+            // just as in vscode.git, enforce the English locale for Git to ensure correct parsing of the process output in @theia/git
+            // (https://github.com/microsoft/vscode/blob/cac1904de606481e41cb7051a79c229e9a82517a/extensions/git/src/git.ts#L691-L693)
+            LANGUAGE: 'en',
+            LC_ALL: 'en_US.UTF-8',
+            LANG: 'en_US.UTF-8',
+        }));
         this.gitInit.init()
             .catch(err => {
                 this.logger.error('An error occurred during the Git initialization.', err);
@@ -611,7 +618,7 @@ export class DugiteGit implements Git {
     async exec(repository: Repository, args: string[], options?: Git.Options.Execution): Promise<GitResult> {
         await this.ready.promise;
         const repositoryPath = this.getFsPath(repository);
-        return this.manager.run(repository, async () => {
+        const op = async () => {
             const name = options && options.name ? options.name : '';
             const [exec, env] = await Promise.all([this.execProvider.exec(), this.gitEnv.promise]);
             let opts = {};
@@ -632,7 +639,8 @@ export class DugiteGit implements Git {
                 env
             };
             return git(args, repositoryPath, name, opts);
-        });
+        };
+        return options?.readOnly ? op() : this.manager.run(repository, op);
     }
 
     async diff(repository: Repository, options?: Git.Options.Diff): Promise<GitFileChange[]> {
@@ -643,7 +651,7 @@ export class DugiteGit implements Git {
             const relativePath = Path.relative(this.getFsPath(repository), this.getFsPath(options.uri));
             args.push(...['--', relativePath !== '' ? relativePath : '.']);
         }
-        const result = await this.exec(repository, args);
+        const result = await this.exec(repository, args, { readOnly: true });
         return this.nameStatusParser.parse(repository.localUri, result.stdout.trim());
     }
 
@@ -671,7 +679,7 @@ export class DugiteGit implements Git {
         }
 
         const successExitCodes = [0, 128];
-        let result = await this.exec(repository, args, { successExitCodes });
+        let result = await this.exec(repository, args, { successExitCodes, readOnly: true });
         if (result.exitCode !== 0) {
             // Note that if no range specified then the 'to revision' defaults to HEAD
             const rangeInvolvesHead = !options || !options.range || options.range.toRevision === 'HEAD';
@@ -684,7 +692,7 @@ export class DugiteGit implements Git {
             }
             // Either the range did not involve HEAD or HEAD exists.  The error must be something else,
             // so re-run but this time we don't ignore the error.
-            result = await this.exec(repository, args);
+            result = await this.exec(repository, args, { readOnly: true });
         }
 
         return this.commitDetailsParser.parse(
@@ -696,7 +704,7 @@ export class DugiteGit implements Git {
     async revParse(repository: Repository, options: Git.Options.RevParse): Promise<string | undefined> {
         const ref = options.ref;
         const successExitCodes = [0, 128];
-        const result = await this.exec(repository, ['rev-parse', ref], { successExitCodes });
+        const result = await this.exec(repository, ['rev-parse', ref], { successExitCodes, readOnly: true });
         if (result.exitCode === 0) {
             return result.stdout.trim(); // sha
         }
@@ -718,13 +726,13 @@ export class DugiteGit implements Git {
         if (stdin) {
             args.push('--contents', '-');
         }
-        const gitResult = await this.exec(repository, [...args, '--', file], { stdin });
+        const gitResult = await this.exec(repository, [...args, '--', file], { stdin, readOnly: true });
         const output = gitResult.stdout.trim();
         const commitBodyReader = async (sha: string) => {
             if (GitBlameParser.isUncommittedSha(sha)) {
                 return '';
             }
-            const revResult = await this.exec(repository, ['rev-list', '--format=%B', '--max-count=1', sha]);
+            const revResult = await this.exec(repository, ['rev-list', '--format=%B', '--max-count=1', sha], { readOnly: true });
             const revOutput = revResult.stdout;
             let nl = revOutput.indexOf('\n');
             if (nl > 0) {
@@ -746,7 +754,7 @@ export class DugiteGit implements Git {
             args.push('--error-unmatch', file);
             const successExitCodes = [0, 1];
             const expectedErrors = [GitError.OutsideRepository];
-            const result = await this.exec(repository, args, { successExitCodes, expectedErrors });
+            const result = await this.exec(repository, args, { successExitCodes, expectedErrors, readOnly: true });
             const { exitCode } = result;
             return exitCode === 0;
         }

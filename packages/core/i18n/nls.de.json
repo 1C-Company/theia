@@ -2308,8 +2308,6 @@
       "added": "Hinzugefügt",
       "amendReuseMessage": "Um die letzte Commit-Meldung wiederzuverwenden, drücken Sie die Eingabetaste oder „Escape“, um den Vorgang abzubrechen.",
       "amendRewrite": "Vorherige Commit-Meldung neu schreiben. Drücken Sie „Enter“, um zu bestätigen, oder „Escape“, um abzubrechen.",
-      "checkoutCreateLocalBranchWithName": "Erstellen Sie einen neuen lokalen Zweig mit dem Namen: {0}. Drücken Sie die Eingabetaste, um zu bestätigen, oder die Escape-Taste, um abzubrechen.",
-      "checkoutProvideBranchName": "Bitte geben Sie einen Zweignamen an. ",
       "checkoutSelectRef": "Wählen Sie eine Referenz zum Auschecken oder erstellen Sie einen neuen lokalen Zweig:",
       "cloneQuickInputLabel": "Bitte geben Sie den Speicherort des Git-Repositorys an. Drücken Sie die Eingabetaste, um zu bestätigen, oder die Escape-Taste, um abzubrechen.",
       "cloneRepository": "Klonen Sie das Git-Repository: {0}. Drücken Sie die Eingabetaste, um zu bestätigen, oder die Escape-Taste, um abzubrechen.",

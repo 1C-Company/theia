@@ -2308,8 +2308,6 @@
       "added": "Adicionado",
       "amendReuseMessage": "Para reutilizar a última mensagem de commit, pressione “Enter” ou “Escape” para cancelar.",
       "amendRewrite": "Reescreva a mensagem de commit anterior. Pressione “Enter” para confirmar ou “Escape” para cancelar.",
-      "checkoutCreateLocalBranchWithName": "Crie um novo ramo local com o nome: {0}. Pressione “Enter” para confirmar ou “Escape” para cancelar.",
-      "checkoutProvideBranchName": "Forneça um nome de ramificação. ",
       "checkoutSelectRef": "Selecione uma referência para verificar ou criar um novo ramo local:",
       "cloneQuickInputLabel": "Forneça a localização do repositório Git. Pressione “Enter” para confirmar ou “Escape” para cancelar.",
       "cloneRepository": "Clone o repositório Git: {0}. Pressione “Enter” para confirmar ou “Escape” para cancelar.",

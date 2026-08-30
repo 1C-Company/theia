@@ -2308,8 +2308,6 @@
       "added": "Dodano",
       "amendReuseMessage": "Aby ponownie użyć ostatniego komunikatu zatwierdzenia, naciśnij klawisz „Enter” lub „Escape”, aby anulować.",
       "amendRewrite": "Przepisz poprzedni komunikat zatwierdzenia. Naciśnij „Enter”, aby potwierdzić, lub „Escape”, aby anulować.",
-      "checkoutCreateLocalBranchWithName": "Utwórz nową lokalną gałąź o nazwie: {0}. Naciśnij klawisz „Enter”, aby potwierdzić, lub „Escape”, aby anulować.",
-      "checkoutProvideBranchName": "Podaj nazwę gałęzi. ",
       "checkoutSelectRef": "Wybierz ref, aby dokonać wypłaty lub utworzyć nową lokalną gałąź:",
       "cloneQuickInputLabel": "Podaj lokalizację repozytorium Git. Naciśnij klawisz „Enter”, aby potwierdzić, lub „Escape”, aby anulować.",
       "cloneRepository": "Sklonuj repozytorium Git: {0}. Naciśnij „Enter”, aby potwierdzić, lub „Escape”, aby anulować.",

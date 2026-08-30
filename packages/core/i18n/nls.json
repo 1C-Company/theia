@@ -2308,8 +2308,6 @@
       "added": "Added",
       "amendReuseMessage": "To reuse the last commit message, press 'Enter' or 'Escape' to cancel.",
       "amendRewrite": "Rewrite previous commit message. Press 'Enter' to confirm or 'Escape' to cancel.",
-      "checkoutCreateLocalBranchWithName": "Create a new local branch with name: {0}. Press 'Enter' to confirm or 'Escape' to cancel.",
-      "checkoutProvideBranchName": "Please provide a branch name. ",
       "checkoutSelectRef": "Select a ref to checkout or create a new local branch:",
       "cloneQuickInputLabel": "Please provide a Git repository location. Press 'Enter' to confirm or 'Escape' to cancel.",
       "cloneRepository": "Clone the Git repository: {0}. Press 'Enter' to confirm or 'Escape' to cancel.",

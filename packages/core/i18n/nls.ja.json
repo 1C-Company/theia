@@ -2308,8 +2308,6 @@
       "added": "追加",
       "amendReuseMessage": "前回のコミットメッセージを再利用するには「Enter」キーを押すか、「Escape」キーを押してキャンセルしてください。",
       "amendRewrite": "前回のコミットメッセージを書き換えます。確認するには「Enter」キーを、キャンセルするには「Escape」キーを押してください。",
-      "checkoutCreateLocalBranchWithName": "新しいローカルブランチを作成します。名前: `{0}`。確認するには「Enter」キーを、キャンセルするには「Escape」キーを押してください。",
-      "checkoutProvideBranchName": "ブランチ名をご提供ください。 ",
       "checkoutSelectRef": "参照を選択してチェックアウトするか、新しいローカルブランチを作成してください:",
       "cloneQuickInputLabel": "Gitリポジトリの場所を指定してください。確認するには「Enter」キーを、キャンセルするには「Escape」キーを押してください。",
       "cloneRepository": "Gitリポジトリをクローンします: {0}。確認するには「Enter」キーを、キャンセルするには「Escape」キーを押してください。",

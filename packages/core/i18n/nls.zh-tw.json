@@ -2308,8 +2308,6 @@
       "added": "新增",
       "amendReuseMessage": "若要重複使用上次提交訊息,請按下「Enter」鍵;若要取消,請按下「Escape」鍵。",
       "amendRewrite": "重新編寫先前提交訊息。按下「Enter」確認或「Escape」取消。",
-      "checkoutCreateLocalBranchWithName": "建立名為「{0}」的新本地分支。按下「Enter」確認或「Escape」取消。",
-      "checkoutProvideBranchName": "請提供分支名稱。 ",
       "checkoutSelectRef": "選擇要檢出的參考資料或建立新的本地分支:",
       "cloneQuickInputLabel": "請提供 Git 儲存庫位置。按下「Enter」確認或「Escape」取消。",
       "cloneRepository": "複製 Git 儲存庫:{0}。按下「Enter」鍵確認或「Escape」鍵取消。",

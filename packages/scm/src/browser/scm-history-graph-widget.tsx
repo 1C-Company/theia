@@ -774,7 +774,7 @@ export class ScmHistoryGraphWidget extends ReactWidget implements DynamicToolbar
         const sourceControlHandle = repo.provider.handle;
         const args = sourceControlHandle !== undefined
             ? [{ sourceControlHandle }, { sourceControlHandle, id: item.id, type: 'historyItem' as const }]
-            : [];
+            : [repo, item];
         this.contextMenuRenderer.render({
             menuPath: SCM_HISTORY_ITEM_CONTEXT_MENU,
             anchor: e.nativeEvent,
@@ -794,7 +794,7 @@ export class ScmHistoryGraphWidget extends ReactWidget implements DynamicToolbar
         const sourceControlHandle = repo.provider.handle;
         const args = sourceControlHandle !== undefined
             ? [{ sourceControlHandle }, { sourceControlHandle, id: ref.id, type: 'historyItemRef' as const }]
-            : [];
+            : [repo, ref];
         this.contextMenuRenderer.render({
             menuPath: SCM_HISTORY_ITEM_REF_CONTEXT_MENU,
             anchor: e.nativeEvent,

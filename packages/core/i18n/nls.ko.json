@@ -2308,8 +2308,6 @@
       "added": "추가됨",
       "amendReuseMessage": "마지막 커밋 메시지를 재사용하려면 'Enter' 키를 누르거나 'Escape' 키를 눌러 취소하십시오.",
       "amendRewrite": "이전 커밋 메시지를 다시 작성하십시오. 'Enter'를 눌러 확인하거나 'Escape'를 눌러 취소하십시오.",
-      "checkoutCreateLocalBranchWithName": "{0}이라는 이름의 새 로컬 브랜치를 생성합니다. 'Enter'를 눌러 확인하거나 'Escape'를 눌러 취소하세요.",
-      "checkoutProvideBranchName": "브랜치 이름을 입력해 주세요. ",
       "checkoutSelectRef": "체크아웃할 참조를 선택하거나 새 로컬 브랜치를 생성하세요:",
       "cloneQuickInputLabel": "Git 저장소 위치를 입력해 주세요. 'Enter' 키를 눌러 확인하거나 'Escape' 키를 눌러 취소하세요.",
       "cloneRepository": "Git 저장소 복제: {0}. 확인하려면 'Enter'를, 취소하려면 'Escape'를 누르세요.",

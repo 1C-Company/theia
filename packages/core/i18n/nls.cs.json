@@ -2308,8 +2308,6 @@
       "added": "Přidáno",
       "amendReuseMessage": "Chcete-li znovu použít poslední zprávu o potvrzení, stiskněte klávesu „Enter“ nebo „Escape“ pro zrušení.",
       "amendRewrite": "Přepište předchozí zprávu o potvrzení. Stiskněte klávesu „Enter“ pro potvrzení nebo „Escape“ pro zrušení.",
-      "checkoutCreateLocalBranchWithName": "Vytvořte novou místní větev s názvem: {0}. Stiskněte klávesu „Enter“ pro potvrzení nebo „Escape“ pro zrušení.",
-      "checkoutProvideBranchName": "Uveďte název větve. ",
       "checkoutSelectRef": "Vyberte odkaz pro kontrolu nebo vytvořte novou místní větev:",
       "cloneQuickInputLabel": "Uveďte umístění repozitáře Git. Stiskněte klávesu „Enter“ pro potvrzení nebo „Escape“ pro zrušení.",
       "cloneRepository": "Klonujte repozitář Git: {0}. Stiskněte klávesu „Enter“ pro potvrzení nebo „Escape“ pro zrušení.",

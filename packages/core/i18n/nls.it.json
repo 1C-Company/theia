@@ -2308,8 +2308,6 @@
       "added": "Aggiunto",
       "amendReuseMessage": "Per riutilizzare l'ultimo messaggio di commit, premere \"Invio\" o \"Esc\" per annullare.",
       "amendRewrite": "Riscrivi il messaggio di commit precedente. Premi \"Invio\" per confermare o \"Esc\" per annullare.",
-      "checkoutCreateLocalBranchWithName": "Crea un nuovo ramo locale con il nome: {0}. Premi \"Invio\" per confermare o \"Esc\" per annullare.",
-      "checkoutProvideBranchName": "Fornire un nome di ramo. ",
       "checkoutSelectRef": "Seleziona un riferimento per effettuare il checkout o creare un nuovo ramo locale:",
       "cloneQuickInputLabel": "Fornire la posizione del repository Git. Premere \"Invio\" per confermare o \"Esc\" per annullare.",
       "cloneRepository": "Clona il repository Git: {0}. Premi \"Invio\" per confermare o \"Esc\" per annullare.",

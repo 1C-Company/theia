@@ -2308,8 +2308,6 @@
       "added": "已添加",
       "amendReuseMessage": "要重复使用上次提交信息,请按'Enter'键;若要取消,请按'Escape'键。",
       "amendRewrite": "重写上一次提交信息。按'Enter'键确认或按'Escape'键取消。",
-      "checkoutCreateLocalBranchWithName": "创建名为{0}的新本地分支。按'Enter'键确认或按'Escape'键取消。",
-      "checkoutProvideBranchName": "请提供分支名称。 ",
       "checkoutSelectRef": "选择要检出的引用或创建新本地分支:",
       "cloneQuickInputLabel": "请提供 Git 仓库位置。按 'Enter' 键确认或按 'Escape' 键取消。",
       "cloneRepository": "克隆 Git 仓库:{0}。按 'Enter' 键确认或按 'Escape' 键取消。",

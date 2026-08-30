@@ -2308,8 +2308,6 @@
       "added": "Añadido",
       "amendReuseMessage": "Para reutilizar el último mensaje de confirmación, pulse «Intro» o «Esc» para cancelar.",
       "amendRewrite": "Reescribir el mensaje de confirmación anterior. Pulse «Intro» para confirmar o «Esc» para cancelar.",
-      "checkoutCreateLocalBranchWithName": "Cree una nueva rama local con el nombre: {0}. Pulse «Intro» para confirmar o «Esc» para cancelar.",
-      "checkoutProvideBranchName": "Por favor, proporcione un nombre de rama. ",
       "checkoutSelectRef": "Seleccione una referencia para revisar o cree una nueva rama local:",
       "cloneQuickInputLabel": "Proporcione la ubicación del repositorio Git. Pulse «Intro» para confirmar o «Esc» para cancelar.",
       "cloneRepository": "Clona el repositorio Git: {0}. Pulsa «Intro» para confirmar o «Esc» para cancelar.",

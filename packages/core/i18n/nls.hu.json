@@ -2308,8 +2308,6 @@
       "added": "Hozzáadva",
       "amendReuseMessage": "Az utolsó commit üzenet újrafelhasználásához nyomja meg az „Enter” vagy az „Escape” gombot a törléshez.",
       "amendRewrite": "Írja át az előző commit üzenetet. A megerősítéshez nyomja meg az „Enter” gombot, a lemondáshoz az „Escape” gombot.",
-      "checkoutCreateLocalBranchWithName": "Hozzon létre egy új helyi ágot a következő névvel: {0}. A megerősítéshez nyomja meg az „Enter” gombot, a lemondáshoz pedig az „Escape” gombot.",
-      "checkoutProvideBranchName": "Kérjük, adjon meg egy ágnevet. ",
       "checkoutSelectRef": "Válasszon ki egy ref-et a kijelentkezéshez, vagy hozzon létre egy új helyi ágat:",
       "cloneQuickInputLabel": "Kérjük, adja meg a Git-tárhely helyét. A megerősítéshez nyomja meg az „Enter” gombot, a lemondáshoz pedig az „Escape” gombot.",
       "cloneRepository": "Másolja a Git-tárat: {0}. A megerősítéshez nyomja meg az „Enter” gombot, a lemondáshoz pedig az „Escape” gombot.",

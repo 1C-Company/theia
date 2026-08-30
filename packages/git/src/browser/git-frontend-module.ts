@@ -46,6 +46,7 @@ import { GitDecorationProvider } from './git-decoration-provider';
 import { GitFileSystemProvider } from './git-file-system-provider';
 import { GitFileServiceContribution } from './git-file-service-contribution';
 import { FileServiceContribution } from '@theia/filesystem/lib/browser/file-service';
+import { GitHistoryItemChangesParser, GitHistoryItemRefsParser, GitHistoryItemsParser, GitHistoryItemStatisticsParser, GitHistoryProvider } from './git-history-provider';
 
 export default new ContainerModule(bind => {
     bindGitPreferences(bind);
@@ -89,9 +90,16 @@ export function createGitScmProviderFactory(ctx: interfaces.Context): GitScmProv
         const container = ctx.container.createChild();
         container.bind(GitScmProviderOptions).toConstantValue(options);
         container.bind(GitScmProvider).toSelf().inSingletonScope();
+        container.bind(GitHistoryItemRefsParser).toSelf().inSingletonScope();
+        container.bind(GitHistoryItemStatisticsParser).toSelf().inSingletonScope();
+        container.bind(GitHistoryItemsParser).toSelf().inSingletonScope();
+        container.bind(GitHistoryItemChangesParser).toSelf().inSingletonScope();
+        container.bind(GitHistoryProvider).toSelf().inSingletonScope();
         container.bind(GitHistorySupport).toSelf().inSingletonScope();
         container.bind(ScmHistorySupport).toService(GitHistorySupport);
         const provider = container.get(GitScmProvider);
+        const historyProvider = container.get(GitHistoryProvider);
+        provider.historyProvider = historyProvider;
         const historySupport = container.get(GitHistorySupport);
         (provider as ScmHistoryProvider).historySupport = historySupport;
         return provider;

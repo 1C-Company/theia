@@ -2308,8 +2308,6 @@
       "added": "Eklendi",
       "amendReuseMessage": "Son commit mesajını yeniden kullanmak için 'Enter' tuşuna basın veya iptal etmek için 'Escape' tuşuna basın.",
       "amendRewrite": "Önceki taahhüt mesajını yeniden yazın. Onaylamak için 'Enter' tuşuna, iptal etmek için 'Escape' tuşuna basın.",
-      "checkoutCreateLocalBranchWithName": "{0} adında yeni bir yerel dal oluşturun. Onaylamak için 'Enter' tuşuna, iptal etmek için 'Escape' tuşuna basın.",
-      "checkoutProvideBranchName": "Lütfen bir dal adı girin. ",
       "checkoutSelectRef": "Ödeme yapmak için bir referans seçin veya yeni bir yerel dal oluşturun:",
       "cloneQuickInputLabel": "Lütfen bir Git deposu konumu belirtin. Onaylamak için 'Enter' tuşuna, iptal etmek için 'Escape' tuşuna basın.",
       "cloneRepository": "Git deposunu klonlayın: {0}. Onaylamak için 'Enter' tuşuna, iptal etmek için 'Escape' tuşuna basın.",

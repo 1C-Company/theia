@@ -488,6 +488,10 @@ export namespace Git {
              */
             readonly name?: string;
 
+            /**
+             * Indicates whether the executed Git command is read-only. Defaults to `false`.
+             */
+            readonly readOnly?: boolean;
         }
 
         /**

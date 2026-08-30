@@ -54,6 +54,15 @@ export interface WorkingDirectoryStatus {
      */
     readonly incomplete?: boolean;
 
+    /**
+     * Optional information about branches.
+     */
+    readonly branches?: readonly Branch[];
+
+    /**
+     * Optional information about tags.
+     */
+    readonly tags?: readonly Tag[];
 }
 
 export namespace WorkingDirectoryStatus {
@@ -71,6 +80,8 @@ export namespace WorkingDirectoryStatus {
                 && (left.aheadBehind ? left.aheadBehind.behind : -1) === (right.aheadBehind ? right.aheadBehind.behind : -1)
                 && left.changes.length === right.changes.length
                 && !!left.incomplete === !!right.incomplete
+                && left.branches?.length === right.branches?.length
+                && left.tags?.length === right.tags?.length
                 && JSON.stringify(left) === JSON.stringify(right);
         } else {
             return left === right;

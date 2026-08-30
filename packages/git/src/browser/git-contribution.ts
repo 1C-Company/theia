@@ -25,7 +25,6 @@ import {
     MenuAction,
     MenuContribution,
     MenuModelRegistry,
-    MenuPath,
     MessageService,
     Mutable
 } from '@theia/core';
@@ -45,7 +44,7 @@ import { GitRepositoryProvider } from './git-repository-provider';
 import { GitErrorHandler } from '../browser/git-error-handler';
 import { ScmWidget } from '@theia/scm/lib/browser/scm-widget';
 import { ScmTreeWidget } from '@theia/scm/lib/browser/scm-tree-widget';
-import { ScmCommand, ScmResource } from '@theia/scm/lib/browser/scm-provider';
+import { ScmCommand, ScmHistoryItem, ScmHistoryItemRef, ScmResource } from '@theia/scm/lib/browser/scm-provider';
 import { LineRange } from '@theia/scm/lib/browser/dirty-diff/diff-computer';
 import { DirtyDiffWidget, SCM_CHANGE_TITLE_MENU } from '@theia/scm/lib/browser/dirty-diff/dirty-diff-widget';
 import { ProgressService } from '@theia/core/lib/common/progress-service';
@@ -56,6 +55,8 @@ import { ScmInputIssueType } from '@theia/scm/lib/browser/scm-input';
 import { DecorationsService } from '@theia/core/lib/browser/decorations-service';
 import { GitDecorationProvider } from './git-decoration-provider';
 import { nls } from '@theia/core/lib/common/nls';
+import { SCM_HISTORY_ITEM_CONTEXT_MENU, SCM_HISTORY_ITEM_REF_CONTEXT_MENU, SCM_HISTORY_TITLE_MENU } from '@theia/scm/lib/browser/scm-history-graph-widget';
+import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 
 export namespace GIT_COMMANDS {
 
@@ -72,6 +73,12 @@ export namespace GIT_COMMANDS {
         category: GIT_CATEGORY,
         label: 'Fetch...'
     }, 'vscode.git/package/command.fetch', GIT_CATEGORY_KEY);
+    export const FETCH_ALL = Command.toLocalizedCommand({
+        id: 'git.fetchAll',
+        category: GIT_CATEGORY,
+        label: 'Fetch From All Remotes',
+        iconClass: codicon('git-fetch')
+    }, 'vscode.git/package/command.fetchAll', GIT_CATEGORY_KEY);
     export const PULL_DEFAULT = Command.toLocalizedCommand({
         id: 'git.pull.default',
         category: GIT_CATEGORY,
@@ -82,6 +89,12 @@ export namespace GIT_COMMANDS {
         category: GIT_CATEGORY,
         label: 'Pull from...'
     }, 'vscode.git/package/command.pullFrom', GIT_CATEGORY_KEY);
+    export const PULL_CURRENT_HISTORY_ITEM_REF = Command.toLocalizedCommand({
+        id: 'git.pullCurrentHistoryItemRef',
+        category: GIT_CATEGORY,
+        label: 'Pull',
+        iconClass: codicon('repo-pull')
+    }, 'vscode.git/package/command.pull', GIT_CATEGORY_KEY);
     export const PUSH_DEFAULT = Command.toLocalizedCommand({
         id: 'git.push.default',
         category: GIT_CATEGORY,
@@ -92,6 +105,12 @@ export namespace GIT_COMMANDS {
         category: GIT_CATEGORY,
         label: 'Push to...'
     }, 'vscode.git/package/command.pushTo', GIT_CATEGORY_KEY);
+    export const PUSH_CURRENT_HISTORY_ITEM_REF = Command.toLocalizedCommand({
+        id: 'git.pushCurrentHistoryItemRef',
+        category: GIT_CATEGORY,
+        label: 'Push',
+        iconClass: codicon('repo-push')
+    }, 'vscode.git/package/command.push', GIT_CATEGORY_KEY);
     export const MERGE = Command.toLocalizedCommand({
         id: 'git.merge',
         category: GIT_CATEGORY,
@@ -102,6 +121,36 @@ export namespace GIT_COMMANDS {
         category: GIT_CATEGORY,
         label: 'Checkout'
     }, 'vscode.git/package/command.checkout', GIT_CATEGORY_KEY);
+    export const CHECKOUT_HISTORY_ITEM_REF = Command.toLocalizedCommand({
+        id: 'git.checkoutHistoryItemRef',
+        category: GIT_CATEGORY,
+        label: 'Checkout'
+    }, 'vscode.git/package/command.graphCheckout', GIT_CATEGORY_KEY);
+    export const CHECKOUT_HISTORY_ITEM = Command.toLocalizedCommand({
+        id: 'git.checkoutHistoryItem',
+        category: GIT_CATEGORY,
+        label: 'Checkout (Detached)'
+    }, 'vscode.git/package/command.graphCheckoutDetached', GIT_CATEGORY_KEY);
+    export const CHERRY_PICK_HISTORY_ITEM = Command.toLocalizedCommand({
+        id: 'git.cherryPickHistoryItem',
+        category: GIT_CATEGORY,
+        label: 'Cherry Pick'
+    }, 'vscode.git/package/command.graphCherryPick', GIT_CATEGORY_KEY);
+    export const CREATE_BRANCH = Command.toLocalizedCommand({
+        id: 'git.createBranch',
+        category: GIT_CATEGORY,
+        label: 'Create Branch...'
+    }, 'vscode.git/package/command.branch', GIT_CATEGORY_KEY);
+    export const CREATE_TAG = Command.toLocalizedCommand({
+        id: 'git.createTag',
+        category: GIT_CATEGORY,
+        label: 'Create Tag...'
+    }, 'vscode.git/package/command.createTag', GIT_CATEGORY_KEY);
+    export const DELETE_HISTORY_ITEM_REF = Command.toDefaultLocalizedCommand({
+        id: 'git.deleteHistoryItemRef',
+        category: GIT_CATEGORY,
+        label: 'Delete'
+    });
     export const COMMIT = {
         ...Command.toLocalizedCommand({
             id: 'git.commit.all',
@@ -163,7 +212,8 @@ export namespace GIT_COMMANDS {
     export const PUBLISH = Command.toLocalizedCommand({
         id: 'git.publish',
         category: GIT_CATEGORY,
-        label: 'Publish Branch'
+        label: 'Publish Branch...',
+        iconClass: codicon('cloud-upload')
     }, 'vscode.git/package/command.publish', GIT_CATEGORY_KEY);
     export const STAGE = Command.toLocalizedCommand({
         id: 'git.stage',
@@ -255,6 +305,16 @@ export namespace GIT_COMMANDS {
         category: GIT_CATEGORY,
         iconClass: codicon('add')
     }, 'vscode.git/package/command.init', GIT_CATEGORY_KEY);
+    export const COPY_HISTORY_ITEM_ID = Command.toLocalizedCommand({
+        id: 'git.copyHistoryItemId',
+        label: 'Copy Commit ID',
+        category: GIT_CATEGORY
+    }, 'vscode.git/package/command.timelineCopyCommitId', GIT_CATEGORY_KEY);
+    export const COPY_HISTORY_ITEM_MESSAGE = Command.toLocalizedCommand({
+        id: 'git.copyHistoryItemMessage',
+        label: 'Copy Commit Message',
+        category: GIT_CATEGORY
+    }, 'vscode.git/package/command.timelineCopyCommitMessage', GIT_CATEGORY_KEY);
 }
 export namespace GIT_MENUS {
     export const SCM_TITLE_MENU = ['git_scm/title'];
@@ -265,32 +325,32 @@ export namespace GIT_MENUS {
     export const SUBMENU_COMMIT = {
         id: 'git_commit',
         group: COMMANDS_GROUP,
-        label: nls.localizeByDefault('Commit'),
-        menuGroups: ['1_commit'],
+        label: nls.localizeByDefault('Commit')
     };
     export const SUBMENU_CHANGES = {
         id: 'git_changes',
         group: COMMANDS_GROUP,
-        label: nls.localizeByDefault('Changes'),
-        menuGroups: ['1_changes']
+        label: nls.localizeByDefault('Changes')
     };
     export const SUBMENU_PULL_PUSH = {
         id: 'git_pull_push',
         group: COMMANDS_GROUP,
-        label: nls.localize('vscode.git/package/submenu.pullpush', 'Pull, Push'),
-        menuGroups: ['2_pull', '3_push', '4_fetch']
+        label: nls.localize('vscode.git/package/submenu.pullpush', 'Pull, Push')
     };
     export const SUBMENU_BRANCH = {
         id: 'git_branch',
         group: COMMANDS_GROUP,
-        label: nls.localizeByDefault('Branch'),
-        menuGroups: ['1_branch']
+        label: nls.localizeByDefault('Branch')
     };
     export const SUBMENU_STASH = {
         id: 'git_stash',
         group: COMMANDS_GROUP,
-        label: nls.localizeByDefault('Stash'),
-        menuGroups: ['1_stash']
+        label: nls.localizeByDefault('Stash')
+    };
+    export const SUBMENU_TAGS = {
+        id: 'git_tags',
+        group: COMMANDS_GROUP,
+        label: nls.localizeByDefault('Tags')
     };
 }
 @injectable()
@@ -318,6 +378,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
     @inject(DecorationsService) protected readonly decorationsService: DecorationsService;
     @inject(GitDecorationProvider) protected readonly gitDecorationProvider: GitDecorationProvider;
     @inject(GitWatcher) protected readonly gitWatcher: GitWatcher;
+    @inject(ClipboardService) protected readonly clipboardService: ClipboardService;
 
     onStart(): void {
         this.updateStatusBar();
@@ -436,14 +497,59 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             when: 'scmProvider == git && scmResourceGroup == workingTree || scmProvider == git && scmResourceGroup == untrackedChanges',
         });
 
-        menus.registerMenuAction(SCM_CHANGE_TITLE_MENU, {
-            commandId: GIT_COMMANDS.STAGE_CHANGE.id,
+        [GIT_COMMANDS.STAGE_CHANGE, GIT_COMMANDS.REVERT_CHANGE].forEach((command, index) =>
+            menus.registerMenuAction(SCM_CHANGE_TITLE_MENU, {
+                commandId: command.id,
+                when: 'scmProvider == git',
+                order: String(index)
+            })
+        );
+
+        [
+            { command: GIT_COMMANDS.FETCH_ALL, when: 'scmProvider == git' },
+            { command: GIT_COMMANDS.PULL_CURRENT_HISTORY_ITEM_REF, when: 'scmProvider == git && scmCurrentHistoryItemRefInFilter && scmCurrentHistoryItemRefHasRemote' },
+            { command: GIT_COMMANDS.PUSH_CURRENT_HISTORY_ITEM_REF, when: 'scmProvider == git && scmCurrentHistoryItemRefInFilter && scmCurrentHistoryItemRefHasRemote' },
+            { command: GIT_COMMANDS.PUBLISH, when: 'scmProvider == git && scmCurrentHistoryItemRefInFilter && !scmCurrentHistoryItemRefHasRemote' }
+        ].forEach(({ command, when }, index) =>
+            menus.registerMenuAction([...SCM_HISTORY_TITLE_MENU, 'navigation'], {
+                commandId: command.id,
+                when,
+                order: String(index + 900) // same as in vscode.git
+            })
+        );
+
+        menus.registerMenuAction([...SCM_HISTORY_ITEM_REF_CONTEXT_MENU, '1_checkout'], {
+            commandId: GIT_COMMANDS.CHECKOUT_HISTORY_ITEM_REF.id,
             when: 'scmProvider == git'
         });
-        menus.registerMenuAction(SCM_CHANGE_TITLE_MENU, {
-            commandId: GIT_COMMANDS.REVERT_CHANGE.id,
+        menus.registerMenuAction([...SCM_HISTORY_ITEM_REF_CONTEXT_MENU, '4_modify'], {
+            commandId: GIT_COMMANDS.DELETE_HISTORY_ITEM_REF.id,
             when: 'scmProvider == git'
         });
+
+        menus.registerMenuAction([...SCM_HISTORY_ITEM_CONTEXT_MENU, '1_checkout'], {
+            commandId: GIT_COMMANDS.CHECKOUT_HISTORY_ITEM.id,
+            when: 'scmProvider == git'
+        });
+        menus.registerMenuAction([...SCM_HISTORY_ITEM_CONTEXT_MENU, '2_branch'], {
+            commandId: GIT_COMMANDS.CREATE_BRANCH.id,
+            when: 'scmProvider == git'
+        });
+        menus.registerMenuAction([...SCM_HISTORY_ITEM_CONTEXT_MENU, '3_tag'], {
+            commandId: GIT_COMMANDS.CREATE_TAG.id,
+            when: 'scmProvider == git'
+        });
+        menus.registerMenuAction([...SCM_HISTORY_ITEM_CONTEXT_MENU, '4_modify'], {
+            commandId: GIT_COMMANDS.CHERRY_PICK_HISTORY_ITEM.id,
+            when: 'scmProvider == git'
+        });
+        [GIT_COMMANDS.COPY_HISTORY_ITEM_ID, GIT_COMMANDS.COPY_HISTORY_ITEM_MESSAGE].forEach((command, index) =>
+            menus.registerMenuAction([...SCM_HISTORY_ITEM_CONTEXT_MENU, '9_copy'], {
+                commandId: command.id,
+                when: 'scmProvider == git',
+                order: String(index)
+            })
+        );
 
         [GIT_COMMANDS.PULL_DEFAULT, GIT_COMMANDS.PUSH_DEFAULT].forEach((command, index) =>
             menus.registerMenuAction([...GIT_MENUS.SCM_TITLE_MENU, GIT_MENUS.FAV_GROUP], {
@@ -458,7 +564,8 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             GIT_MENUS.SUBMENU_CHANGES,
             GIT_MENUS.SUBMENU_PULL_PUSH,
             GIT_MENUS.SUBMENU_BRANCH,
-            GIT_MENUS.SUBMENU_STASH
+            GIT_MENUS.SUBMENU_STASH,
+            GIT_MENUS.SUBMENU_TAGS
         ].forEach((submenu, index) => {
             menus.registerSubmenu([submenu.id], submenu.label, { when: 'scmProvider == git' });
             menus.linkCompoundMenuNode({
@@ -468,42 +575,48 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             });
         });
 
-        menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_COMMIT), {
+        menus.registerMenuAction([GIT_MENUS.SUBMENU_COMMIT.id, '1_commit'], {
             commandId: GIT_COMMANDS.COMMIT_AMEND.id,
             label: nls.localize('vscode.git/package/command.commitStagedAmend', 'Commit (Amend)'),
             order: '1'
         });
-        menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_COMMIT), {
+        menus.registerMenuAction([GIT_MENUS.SUBMENU_COMMIT.id, '1_commit'], {
             commandId: GIT_COMMANDS.COMMIT_SIGN_OFF.id,
             label: nls.localize('vscode.git/package/command.commitStagedSigned', 'Commit (Signed Off)'),
             order: '2'
         });
 
         [GIT_COMMANDS.STAGE_ALL, GIT_COMMANDS.UNSTAGE_ALL, GIT_COMMANDS.DISCARD_ALL].forEach((command, index) =>
-            menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_CHANGES), {
+            menus.registerMenuAction([GIT_MENUS.SUBMENU_CHANGES.id, '1_changes'], {
                 commandId: command.id,
                 order: String(index)
             })
         );
 
         [GIT_COMMANDS.PULL_DEFAULT, GIT_COMMANDS.PULL].forEach((command, index) =>
-            menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_PULL_PUSH), {
+            menus.registerMenuAction([GIT_MENUS.SUBMENU_PULL_PUSH.id, '2_pull'], {
                 commandId: command.id,
                 order: String(index)
             })
         );
         [GIT_COMMANDS.PUSH_DEFAULT, GIT_COMMANDS.PUSH].forEach((command, index) =>
-            menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_PULL_PUSH, 1), {
+            menus.registerMenuAction([GIT_MENUS.SUBMENU_PULL_PUSH.id, '3_push'], {
                 commandId: command.id,
                 order: String(index)
             })
         );
-        menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_PULL_PUSH, 2), {
-            commandId: GIT_COMMANDS.FETCH.id
-        });
+        [GIT_COMMANDS.FETCH, GIT_COMMANDS.FETCH_ALL].forEach((command, index) =>
+            menus.registerMenuAction([GIT_MENUS.SUBMENU_PULL_PUSH.id, '4_fetch'], {
+                commandId: command.id,
+                order: String(index)
+            })
+        );
 
-        menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_BRANCH), {
+        menus.registerMenuAction([GIT_MENUS.SUBMENU_BRANCH.id, '1_merge'], {
             commandId: GIT_COMMANDS.MERGE.id
+        });
+        menus.registerMenuAction([GIT_MENUS.SUBMENU_BRANCH.id, '2_branch'], {
+            commandId: GIT_COMMANDS.CREATE_BRANCH.id
         });
 
         [
@@ -514,16 +627,24 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             GIT_COMMANDS.POP_STASH,
             GIT_COMMANDS.DROP_STASH
         ].forEach((command, index) =>
-            menus.registerMenuAction(this.asSubMenuItemOf(GIT_MENUS.SUBMENU_STASH), {
+            menus.registerMenuAction([GIT_MENUS.SUBMENU_STASH.id, '1_stash'], {
                 commandId: command.id,
                 order: String(index)
             })
         );
+
+        menus.registerMenuAction([GIT_MENUS.SUBMENU_TAGS.id, '1_tags'], {
+            commandId: GIT_COMMANDS.CREATE_TAG.id
+        });
     }
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(GIT_COMMANDS.FETCH, {
             execute: () => this.withProgress(() => this.quickOpenService.fetch()),
+            isEnabled: () => !!this.repositoryTracker.selectedRepository
+        });
+        registry.registerCommand(GIT_COMMANDS.FETCH_ALL, {
+            execute: () => this.quickOpenService.fetchAll(),
             isEnabled: () => !!this.repositoryTracker.selectedRepository
         });
         registry.registerCommand(GIT_COMMANDS.PULL_DEFAULT, {
@@ -534,6 +655,10 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             execute: () => this.withProgress(() => this.quickOpenService.pull()),
             isEnabled: () => !!this.repositoryTracker.selectedRepository
         });
+        registry.registerCommand(GIT_COMMANDS.PULL_CURRENT_HISTORY_ITEM_REF, {
+            execute: () => this.quickOpenService.pullCurrentHistoryItemRef(),
+            isEnabled: () => !!this.repositoryProvider.selectedScmProvider?.historyProvider?.currentHistoryItemRemoteRef
+        });
         registry.registerCommand(GIT_COMMANDS.PUSH_DEFAULT, {
             execute: () => this.withProgress(() => this.quickOpenService.performDefaultGitAction(GitAction.PUSH)),
             isEnabled: () => !!this.repositoryTracker.selectedRepository
@@ -542,12 +667,56 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             execute: () => this.withProgress(() => this.quickOpenService.push()),
             isEnabled: () => !!this.repositoryTracker.selectedRepository
         });
+        registry.registerCommand(GIT_COMMANDS.PUSH_CURRENT_HISTORY_ITEM_REF, {
+            execute: () => this.quickOpenService.pushCurrentHistoryItemRef(),
+            isEnabled: () => !!this.repositoryProvider.selectedScmProvider?.historyProvider?.currentHistoryItemRemoteRef
+        });
         registry.registerCommand(GIT_COMMANDS.MERGE, {
             execute: () => this.withProgress(() => this.quickOpenService.merge()),
             isEnabled: () => !!this.repositoryTracker.selectedRepository
         });
         registry.registerCommand(GIT_COMMANDS.CHECKOUT, {
             execute: () => this.withProgress(() => this.quickOpenService.checkout()),
+            isEnabled: () => !!this.repositoryTracker.selectedRepository
+        });
+        registry.registerCommand(GIT_COMMANDS.CHECKOUT_HISTORY_ITEM_REF, {
+            execute: (_, historyItemRef: ScmHistoryItemRef) => {
+                if (historyItemRef && historyItemRef.id && historyItemRef.name) {
+                    this.quickOpenService.checkoutHistoryItemRef(historyItemRef);
+                }
+            },
+            isEnabled: () => !!this.repositoryTracker.selectedRepository
+        });
+        registry.registerCommand(GIT_COMMANDS.CHECKOUT_HISTORY_ITEM, {
+            execute: (_, historyItem: ScmHistoryItem) => {
+                if (historyItem && historyItem.id) {
+                    this.quickOpenService.checkoutDetached(historyItem.id);
+                }
+            },
+            isEnabled: () => !!this.repositoryTracker.selectedRepository
+        });
+        registry.registerCommand(GIT_COMMANDS.CHERRY_PICK_HISTORY_ITEM, {
+            execute: (_, historyItem: ScmHistoryItem) => {
+                if (historyItem && historyItem.id) {
+                    this.quickOpenService.cherryPick(historyItem.id);
+                }
+            },
+            isEnabled: () => !!this.repositoryTracker.selectedRepository
+        });
+        registry.registerCommand(GIT_COMMANDS.CREATE_BRANCH, {
+            execute: (_, historyItem?: ScmHistoryItem) => this.quickOpenService.createBranch(historyItem?.id),
+            isEnabled: () => !!this.repositoryTracker.selectedRepository
+        });
+        registry.registerCommand(GIT_COMMANDS.CREATE_TAG, {
+            execute: (_, historyItem?: ScmHistoryItem) => this.quickOpenService.createTag(historyItem?.id),
+            isEnabled: () => !!this.repositoryTracker.selectedRepository
+        });
+        registry.registerCommand(GIT_COMMANDS.DELETE_HISTORY_ITEM_REF, {
+            execute: (_, historyItemRef: ScmHistoryItemRef) => {
+                if (historyItemRef && historyItemRef.id && historyItemRef.name) {
+                    this.quickOpenService.deleteHistoryItemRef(historyItemRef);
+                }
+            },
             isEnabled: () => !!this.repositoryTracker.selectedRepository
         });
         registry.registerCommand(GIT_COMMANDS.COMMIT_SIGN_OFF, {
@@ -799,6 +968,20 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             execute: (widget: DirtyDiffWidget) => this.withProgress(() => this.revertChange(widget)),
             isEnabled: widget => widget instanceof DirtyDiffWidget
         });
+        registry.registerCommand(GIT_COMMANDS.COPY_HISTORY_ITEM_ID, {
+            execute: (_, historyItem: ScmHistoryItem) => {
+                if (historyItem && historyItem.id) {
+                    this.clipboardService.writeText(historyItem.id);
+                }
+            }
+        });
+        registry.registerCommand(GIT_COMMANDS.COPY_HISTORY_ITEM_MESSAGE, {
+            execute: (_, historyItem: ScmHistoryItem) => {
+                if (historyItem && historyItem.message) {
+                    this.clipboardService.writeText(historyItem.message);
+                }
+            }
+        });
     }
     async amend(): Promise<void> {
         {
@@ -880,10 +1063,6 @@ export class GitContribution implements CommandContribution, MenuContribution, T
         });
 
         registry.registerMenuDelegate(GIT_MENUS.SCM_TITLE_MENU, widget => widget instanceof ScmWidget);
-    }
-
-    protected asSubMenuItemOf(submenu: { id: string; menuGroups: string[]; }, groupIdx: number = 0): MenuPath {
-        return [submenu.id, submenu.menuGroups[groupIdx]];
     }
 
     protected hasConflicts(changes: GitFileChange[]): boolean {
@@ -1042,8 +1221,8 @@ export class GitContribution implements CommandContribution, MenuContribution, T
         try {
             const repository = scmRepository.provider.repository;
             const [username, email] = (await Promise.all([
-                this.git.exec(repository, ['config', 'user.name']),
-                this.git.exec(repository, ['config', 'user.email'])
+                this.git.exec(repository, ['config', 'user.name'], { readOnly: true }),
+                this.git.exec(repository, ['config', 'user.email'], { readOnly: true })
             ])).map(result => result.stdout.trim());
 
             const signOff = `\n\nSigned-off-by: ${username} <${email}>`;
@@ -1084,12 +1263,14 @@ export class GitContribution implements CommandContribution, MenuContribution, T
         const dataToStage = await widget.getContentWithSelectedChanges(change => change === currentChange);
 
         try {
-            const hash = (await this.git.exec(repository, ['hash-object', '--stdin', '-w', '--path', path], { stdin: dataToStage, stdinEncoding: 'utf8' })).stdout.trim();
+            const hash = (
+                await this.git.exec(repository, ['hash-object', '--stdin', '-w', '--path', path], { stdin: dataToStage, stdinEncoding: 'utf8', readOnly: true })
+            ).stdout.trim();
 
-            let mode = (await this.git.exec(repository, ['ls-files', '--format=%(objectmode)', '--', path])).stdout.split('\n').filter(line => !!line.trim())[0];
-            if (!mode) {
-                mode = '100644'; // regular non-executable file
-            }
+            const mode = (
+                await this.git.exec(repository, ['ls-files', '--format=%(objectmode)', '--', path], { readOnly: true })
+            ).stdout.split('\n').find(line => line.trim())?.trim()
+                || '100644'; // regular non-executable file
 
             await this.git.exec(repository, ['update-index', '--add', '--cacheinfo', mode, hash, path]);
 
