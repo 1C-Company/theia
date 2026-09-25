@@ -129,7 +129,7 @@ export class GitScmProvider implements ScmProvider {
     get acceptInputCommand(): ScmCommand | undefined {
         return {
             command: 'git.commit.all',
-            tooltip: nls.localizeByDefault('Commit Changes'),
+            tooltip: nls.localize('vscode.git/bundle/Commit Changes', 'Commit Changes'),
             title: nls.localizeByDefault('Commit')
         };
     }

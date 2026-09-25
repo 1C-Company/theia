@@ -124,7 +124,7 @@ export class GitSyncService {
 
         const method = await this.quickInputService?.showQuickPick(methods, { placeholder: nls.localize('theia/git/pickSyncMethod', 'Pick how changes should be synchronized:') });
         if (method &&
-            await this.confirm(nls.localize('vscode.git/bundle/Synchronize Changes', 'Synchronize Changes'), methods.find(({ detail }) => detail === method.detail)!.warning)
+            await this.confirm(nls.localizeByDefault('Synchronize Changes'), methods.find(({ detail }) => detail === method.detail)!.warning)
         ) {
             return method.detail;
         }

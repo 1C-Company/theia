@@ -1160,7 +1160,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
         if (this.syncService.isSyncing()) {
             return {
                 title: '$(codicon-sync~spin)',
-                tooltip: nls.localize('vscode.git/bundle/Synchronizing Changes...', 'Synchronizing Changes...')
+                tooltip: nls.localizeByDefault('Synchronizing Changes...')
             };
         }
         const { upstreamBranch, aheadBehind } = status;
@@ -1168,7 +1168,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             return {
                 title: '$(codicon-sync)' + (aheadBehind && (aheadBehind.ahead + aheadBehind.behind) > 0 ? ` ${aheadBehind.behind}↓ ${aheadBehind.ahead}↑` : ''),
                 command: GIT_COMMANDS.SYNC.id,
-                tooltip: nls.localize('vscode.git/bundle/Synchronize Changes', 'Synchronize Changes')
+                tooltip: nls.localizeByDefault('Synchronize Changes')
             };
         }
         return {
