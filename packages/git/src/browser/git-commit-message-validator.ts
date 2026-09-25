@@ -17,6 +17,7 @@
 import { injectable } from '@theia/core/shared/inversify';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ScmInputIssueType } from '@theia/scm/lib/browser/scm-input';
+import { nls } from '@theia/core';
 
 @injectable()
 export class GitCommitMessageValidator {
@@ -44,14 +45,14 @@ export class GitCommitMessageValidator {
         if (index === 1 && line.length !== 0) {
             return {
                 status: ScmInputIssueType.Warning,
-                message: 'The second line should be empty to separate the commit message from the body'
+                message: nls.localize('theia/git/commitMessageSecondLineIsNotEmpty', 'The second line should be empty to separate the commit message subject from the body')
             };
         }
         const diff = line.length - this.maxCharsPerLine();
         if (diff > 0) {
             return {
                 status: ScmInputIssueType.Warning,
-                message: `${diff} characters over ${this.maxCharsPerLine()} in current line`
+                message: nls.localize('vscode.git/bundle/{0} characters over {1} in current line', '{0} characters over {1} in current line', diff, this.maxCharsPerLine())
             };
         }
         return undefined;

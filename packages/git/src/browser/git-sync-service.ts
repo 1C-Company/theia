@@ -15,7 +15,7 @@
 // *****************************************************************************
 
 import { injectable, inject, optional } from '@theia/core/shared/inversify';
-import { MessageService, Emitter, Event } from '@theia/core';
+import { MessageService, Emitter, Event, nls } from '@theia/core';
 import { ConfirmDialog, QuickInputService } from '@theia/core/lib/browser';
 import { GitRepositoryTracker } from './git-repository-tracker';
 import { Git, Repository, WorkingDirectoryStatus } from '../common';
@@ -101,7 +101,7 @@ export class GitSyncService {
         }
         const { branch, upstreamBranch } = status;
         if (!this.shouldPull(status) && !this.shouldPush(status)) {
-            this.messageService.info(`${branch} is already in sync with ${upstreamBranch}`);
+            this.messageService.info(nls.localize('theia/git/alreadyInSync', '{0} is already in sync with {1}', branch, upstreamBranch));
             return undefined;
         }
         const methods: {
@@ -109,25 +109,26 @@ export class GitSyncService {
             warning: string
             detail: GitSyncService.SyncMethod
         }[] = [{
-            label: `Pull and push commits from and to '${upstreamBranch}'`,
-            warning: `This action will pull and push commits from and to '${upstreamBranch}'.`,
+            label: nls.localize('theia/git/pullPush.label', "Pull and push commits from and to '{0}'", upstreamBranch),
+            warning: nls.localize('theia/git/pullPush.warning', "This action will pull and push commits from and to '{0}'.", upstreamBranch),
             detail: 'pull-push'
         }, {
-            label: `Fetch, rebase and push commits from and to '${upstreamBranch}'`,
-            warning: `This action will fetch, rebase and push commits from and to '${upstreamBranch}'.`,
+            label: nls.localize('theia/git/rebasePush.label', "Fetch, rebase and push commits from and to '{0}'", upstreamBranch),
+            warning: nls.localize('theia/git/rebasePush.warning', "This action will fetch, rebase and push commits from and to '{0}'.", upstreamBranch),
             detail: 'rebase-push'
         }, {
-            label: `Force push commits to '${upstreamBranch}'`,
-            warning: `This action will override commits in '${upstreamBranch}'.`,
+            label: nls.localize('theia/git/forcePush.label', "Force push commits to '{0}'", upstreamBranch),
+            warning: nls.localize('theia/git/forcePush.warning', "This action will override commits in '{0}'.", upstreamBranch),
             detail: 'force-push'
         }];
 
-        const selectedCWD = await this.quickInputService?.showQuickPick(methods, { placeholder: 'Select current working directory for new terminal' });
-        if (selectedCWD && await this.confirm('Synchronize Changes', methods.find(({ detail }) => detail === selectedCWD.detail)!.warning)) {
-            return (selectedCWD.detail as GitSyncService.SyncMethod);
-        } else {
-            return (undefined);
+        const method = await this.quickInputService?.showQuickPick(methods, { placeholder: nls.localize('theia/git/pickSyncMethod', 'Pick how changes should be synchronized:') });
+        if (method &&
+            await this.confirm(nls.localize('vscode.git/bundle/Synchronize Changes', 'Synchronize Changes'), methods.find(({ detail }) => detail === method.detail)!.warning)
+        ) {
+            return method.detail;
         }
+        return undefined;
     }
 
     canPublish(): boolean {
@@ -146,7 +147,8 @@ export class GitSyncService {
         }
         const remote = await this.getRemote(repository, localBranch);
         if (remote &&
-            await this.confirm('Publish changes', `This action will push commits to '${remote}/${localBranch}' and track it as an upstream branch.`)
+            await this.confirm(nls.localize('vscode.git/bundle/Publish Branch', 'Publish Branch'),
+                nls.localize('theia/git/publishBranch.warning', "This action will push commits to '{0}' and track it as an upstream branch.", `${remote}/${localBranch}`))
         ) {
             try {
                 await this.git.push(repository, {
@@ -160,11 +162,14 @@ export class GitSyncService {
     protected async getRemote(repository: Repository, branch: string): Promise<string | undefined> {
         const remotes = await this.git.remote(repository);
         if (remotes.length === 0) {
-            this.messageService.warn('Your repository has no remotes configured to publish to.');
+            this.messageService.warn(nls.localize(
+                'vscode.git/bundle/Your repository has no remotes configured to publish to.',
+                'Your repository has no remotes configured to publish to.'
+            ));
         }
 
         const selectedRemote = await this.quickInputService?.showQuickPick(remotes.map(remote => ({ label: remote })),
-            { placeholder: `Pick a remote to publish the branch ${branch} to:` });
+            { placeholder: nls.localize('vscode.git/bundle/Pick a remote to publish the branch \"{0}\" to:', 'Pick a remote to publish the branch \"{0}\" to:', branch) });
         return selectedRemote?.label;
     }
 

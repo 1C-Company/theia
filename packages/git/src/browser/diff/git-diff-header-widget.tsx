@@ -22,6 +22,7 @@ import { ScmFileChangeLabelProvider } from '@theia/scm-extra/lib/browser/scm-fil
 import { ReactWidget, StatefulWidget, KeybindingRegistry, codicon } from '@theia/core/lib/browser';
 import { Git } from '../../common';
 import * as React from '@theia/core/shared/react';
+import { nls } from '@theia/core';
 
 /* eslint-disable no-null/no-null */
 
@@ -77,7 +78,7 @@ export class GitDiffHeaderWidget extends ReactWidget implements StatefulWidget {
 
     protected renderRepositoryHeader(): React.ReactNode {
         if (this.options && this.options.uri) {
-            return this.renderHeaderRow({ name: 'repository', value: this.getRepositoryLabel(this.options.uri) });
+            return this.renderHeaderRow({ name: nls.localizeByDefault('Repository'), value: this.getRepositoryLabel(this.options.uri) });
         }
         return undefined;
     }
@@ -91,7 +92,7 @@ export class GitDiffHeaderWidget extends ReactWidget implements StatefulWidget {
     protected renderPathHeader(): React.ReactNode {
         return this.renderHeaderRow({
             classNames: ['diff-header'],
-            name: 'path',
+            name: nls.localizeByDefault('Path'),
             value: this.renderPath()
         });
     }
@@ -110,7 +111,7 @@ export class GitDiffHeaderWidget extends ReactWidget implements StatefulWidget {
     protected renderRevisionHeader(): React.ReactNode {
         return this.renderHeaderRow({
             classNames: ['diff-header'],
-            name: 'revision: ',
+            name: nls.localize('theia/git/revision', 'Revision'),
             value: this.renderRevision()
         });
     }

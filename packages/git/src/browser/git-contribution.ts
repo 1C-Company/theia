@@ -1160,7 +1160,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
         if (this.syncService.isSyncing()) {
             return {
                 title: '$(codicon-sync~spin)',
-                tooltip: nls.localize('vscode.git/statusbar/syncing changes', 'Synchronizing Changes...')
+                tooltip: nls.localize('vscode.git/bundle/Synchronizing Changes...', 'Synchronizing Changes...')
             };
         }
         const { upstreamBranch, aheadBehind } = status;
@@ -1168,13 +1168,13 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             return {
                 title: '$(codicon-sync)' + (aheadBehind && (aheadBehind.ahead + aheadBehind.behind) > 0 ? ` ${aheadBehind.behind}↓ ${aheadBehind.ahead}↑` : ''),
                 command: GIT_COMMANDS.SYNC.id,
-                tooltip: nls.localize('vscode.git/repository/sync changes', 'Synchronize Changes')
+                tooltip: nls.localize('vscode.git/bundle/Synchronize Changes', 'Synchronize Changes')
             };
         }
         return {
             title: '$(codicon-cloud-upload)',
             command: GIT_COMMANDS.PUBLISH.id,
-            tooltip: nls.localize('vscode.git/statusbar/publish changes', 'Publish Changes')
+            tooltip: nls.localize('vscode.git/bundle/Publish Branch', 'Publish Branch')
         };
     }
 
@@ -1187,7 +1187,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
         if (!message.trim()) {
             scmRepository.input.issue = {
                 type: ScmInputIssueType.Error,
-                message: nls.localize('vscode.git/repository/commitMessageWhitespacesOnlyWarning', 'Please provide a commit message')
+                message: nls.localize('vscode.git/bundle/Please provide a commit message', 'Please provide a commit message')
             };
             scmRepository.input.focus();
             return;
@@ -1195,7 +1195,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
         if (!scmRepository.provider.stagedChanges.length) {
             scmRepository.input.issue = {
                 type: ScmInputIssueType.Error,
-                message: nls.localize('vscode.git/commands/no changes', 'No changes added to commit')
+                message: nls.localize('vscode.git/bundle/There are no changes to commit.', 'There are no changes to commit.')
             };
             scmRepository.input.focus();
             return;
@@ -1306,7 +1306,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
     registerColors(colors: ColorRegistry): void {
         colors.register({
             id: 'gitDecoration.addedResourceForeground',
-            description: 'Color for added resources.',
+            description: nls.localize('vscode.git/package/colors.added', 'Color for added resources.'),
             defaults: {
                 light: '#587c0c',
                 dark: '#81b88b',
@@ -1315,7 +1315,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             }
         }, {
             id: 'gitDecoration.modifiedResourceForeground',
-            description: 'Color for modified resources.',
+            description: nls.localize('vscode.git/package/colors.modified', 'Color for modified resources.'),
             defaults: {
                 light: '#895503',
                 dark: '#E2C08D',
@@ -1324,7 +1324,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             }
         }, {
             id: 'gitDecoration.deletedResourceForeground',
-            description: 'Color for deleted resources.',
+            description: nls.localize('vscode.git/package/colors.deleted', 'Color for deleted resources.'),
             defaults: {
                 light: '#ad0707',
                 dark: '#c74e39',
@@ -1333,7 +1333,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             }
         }, {
             id: 'gitDecoration.untrackedResourceForeground',
-            description: 'Color for untracked resources.',
+            description: nls.localize('vscode.git/package/colors.untracked', 'Color for untracked resources.'),
             defaults: {
                 light: '#007100',
                 dark: '#73C991',
@@ -1342,7 +1342,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             }
         }, {
             id: 'gitDecoration.conflictingResourceForeground',
-            description: 'Color for resources with conflicts.',
+            description: nls.localize('vscode.git/package/colors.conflict', 'Color for resources with conflicts.'),
             defaults: {
                 light: '#6c6cc4',
                 dark: '#6c6cc4',
@@ -1351,7 +1351,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             }
         }, {
             id: 'gitlens.gutterBackgroundColor',
-            description: 'Specifies the background color of the gutter blame annotations',
+            description: nls.localize('theia/git/colors/blame.gutterBackground', 'Specifies the background color of the gutter blame annotations'),
             defaults: {
                 dark: '#FFFFFF13',
                 light: '#0000000C',
@@ -1359,7 +1359,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             }
         }, {
             id: 'gitlens.gutterForegroundColor',
-            description: 'Specifies the foreground color of the gutter blame annotations',
+            description: nls.localize('theia/git/colors/blame.gutterForeground', 'Specifies the foreground color of the gutter blame annotations'),
             defaults: {
                 dark: '#BEBEBE',
                 light: '#747474',
@@ -1367,7 +1367,7 @@ export class GitContribution implements CommandContribution, MenuContribution, T
             }
         }, {
             id: 'gitlens.lineHighlightBackgroundColor',
-            description: 'Specifies the background color of the associated line highlights in blame annotations',
+            description: nls.localize('theia/git/colors/blame.lineHighlightBackground', 'Specifies the background color of the associated line highlights in blame annotations'),
             defaults: {
                 dark: '#00BCF233',
                 light: '#00BCF233',

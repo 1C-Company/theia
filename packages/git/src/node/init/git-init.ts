@@ -20,7 +20,7 @@ import { dirname } from 'path';
 import { pathExists } from '@theia/core/shared/fs-extra';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
-import { MessageService } from '@theia/core';
+import { MessageService, nls } from '@theia/core';
 
 /**
  * Initializer hook for Git.
@@ -63,12 +63,18 @@ export class DefaultGitInit implements GitInit {
                 if (execPathOk && pathOk && dirOk) {
                     if (typeof env.LOCAL_GIT_DIRECTORY !== 'undefined' && env.LOCAL_GIT_DIRECTORY !== dir) {
                         this.logger.error(`Misconfigured env.LOCAL_GIT_DIRECTORY: ${env.LOCAL_GIT_DIRECTORY}. dir was: ${dir}`);
-                        this.messages.error('The LOCAL_GIT_DIRECTORY env variable was already set to a different value.', { timeout: 0 });
+                        this.messages.error(
+                            nls.localize('theia/git/misconfiguredLocalGitDirectory', 'The LOCAL_GIT_DIRECTORY env variable was already set to a different value.'),
+                            { timeout: 0 }
+                        );
                         return;
                     }
                     if (typeof env.GIT_EXEC_PATH !== 'undefined' && env.GIT_EXEC_PATH !== execPath) {
                         this.logger.error(`Misconfigured env.GIT_EXEC_PATH: ${env.GIT_EXEC_PATH}. execPath was: ${execPath}`);
-                        this.messages.error('The GIT_EXEC_PATH env variable was already set to a different value.', { timeout: 0 });
+                        this.messages.error(
+                            nls.localize('theia/git/misconfiguredGitExecPath', 'The GIT_EXEC_PATH env variable was already set to a different value.'),
+                            { timeout: 0 }
+                        );
                         return;
                     }
                     process.env.LOCAL_GIT_DIRECTORY = dir;
@@ -77,10 +83,10 @@ export class DefaultGitInit implements GitInit {
                     return;
                 }
             }
-            this.messages.error('Could not find Git on the PATH.', { timeout: 0 });
+            this.messages.error(nls.localize('theia/git/couldNotFindGitExecutable', 'Could not find Git on the PATH.'), { timeout: 0 });
         } catch (err) {
             this.logger.error(err);
-            this.messages.error('An unexpected error occurred when locating the Git executable.', { timeout: 0 });
+            this.messages.error(nls.localize('theia/git/errorLocatingGitExecutable', 'An unexpected error occurred when locating the Git executable.'), { timeout: 0 });
         }
     }
 

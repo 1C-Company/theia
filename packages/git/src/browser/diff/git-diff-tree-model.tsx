@@ -15,7 +15,7 @@
 // *****************************************************************************
 
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { DisposableCollection } from '@theia/core/lib/common';
+import { DisposableCollection, nls } from '@theia/core/lib/common';
 import URI from '@theia/core/lib/common/uri';
 import { ScmTreeModel } from '@theia/scm/lib/browser/scm-tree-model';
 import { Git, GitFileStatus } from '../../common';
@@ -65,7 +65,7 @@ export class GitDiffTreeModel extends ScmTreeModel {
 
         const gitFileChanges = await this.git.diff(repository, this.diffOptions);
 
-        const group: ScmResourceGroup = { id: 'changes', label: 'Files Changed', resources: [], provider, dispose: () => {} };
+        const group: ScmResourceGroup = { id: 'changes', label: nls.localizeByDefault('File Changes'), resources: [], provider, dispose: () => { } };
         const resources: ScmResource[] = gitFileChanges
             .map(change => new GitScmFileChange(change, provider, this.diffOptions.range))
             .map(change => ({

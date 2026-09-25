@@ -26,6 +26,7 @@ import { GitScmProvider } from './git-scm-provider';
 import { ScmService } from '@theia/scm/lib/browser/scm-service';
 import { ScmRepository } from '@theia/scm/lib/browser/scm-repository';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import { nls } from '@theia/core';
 
 export interface GitRefreshOptions {
     readonly maxCount: number
@@ -171,7 +172,7 @@ export class GitRepositoryProvider {
         const provider = this.scmProviderFactory({ repository });
         const scmRepository = this.scmService.registerScmProvider(provider, {
             input: {
-                placeholder: 'Message (press {0} to commit)',
+                placeholder: nls.localize('vscode.git/bundle/Message ({0} to commit)', 'Message ({0} to commit)'),
                 validator: async value => {
                     const issue = await this.commitMessageValidator.validate(value);
                     return issue && {

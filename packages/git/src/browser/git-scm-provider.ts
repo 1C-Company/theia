@@ -129,7 +129,7 @@ export class GitScmProvider implements ScmProvider {
     get acceptInputCommand(): ScmCommand | undefined {
         return {
             command: 'git.commit.all',
-            tooltip: nls.localize('vscode.git/package/command.commitAll', 'Commit all the staged changes'),
+            tooltip: nls.localizeByDefault('Commit Changes'),
             title: nls.localizeByDefault('Commit')
         };
     }
@@ -187,17 +187,17 @@ export class GitScmProvider implements ScmProvider {
             : [];
         const hideWorkingIfEmpty = forUntracked.length > 0;
         state.groups.push(this.createGroup('merge', nls.localizeByDefault('Merge Changes'), state.mergeChanges, true));
-        state.groups.push(this.createGroup('index', nls.localize('vscode.git/repository/staged changes', 'Staged changes'), state.stagedChanges, true));
+        state.groups.push(this.createGroup('index', nls.localize('vscode.git/bundle/Staged Changes', 'Staged Changes'), state.stagedChanges, true));
         state.groups.push(this.createGroup('workingTree', nls.localizeByDefault('Changes'), forWorkingTree, hideWorkingIfEmpty));
-        state.groups.push(this.createGroup('untrackedChanges', nls.localize('vscode.git/repository/untracked changes', 'Untracked Changes'), forUntracked, true));
+        state.groups.push(this.createGroup('untrackedChanges', nls.localize('vscode.git/bundle/Untracked Changes', 'Untracked Changes'), forUntracked, true));
         this.state = state;
 
         const { input } = this;
         if (input) {
             if (status && status.branch) {
-                input.placeholder = nls.localize('vscode.git/repository/commitMessageWithHeadLabel', 'Message (press {0} to commit on {1})', '{0}', status.branch);
+                input.placeholder = nls.localize('vscode.git/bundle/Message ({0} to commit on \"{1}\")', 'Message ({0} to commit on \"{1}\")', '{0}', status.branch);
             } else {
-                input.placeholder = nls.localize('vscode.git/repository/commitMessage', 'Message (press {0} to commit)');
+                input.placeholder = nls.localize('vscode.git/bundle/Message ({0} to commit)', 'Message ({0} to commit)');
             }
         }
 
@@ -482,18 +482,18 @@ export class GitScmProvider implements ScmProvider {
         if (paths.length <= 3) {
             fileText = paths.map(path => this.labelProvider.getName(new URI(path))).join(', ');
         } else {
-            fileText = `${paths.length} files`;
+            fileText = nls.localizeByDefault('{0} files', paths.length);
         }
         return new ConfirmDialog({
             title: nls.localizeByDefault('Discard Changes'),
-            msg: nls.localize('vscode.git/commands/confirm discard', 'Do you really want to discard changes in {0}?', fileText)
+            msg: nls.localize('theia/git/confirmDiscardChanges', 'Do you really want to discard changes in {0}?', fileText)
         }).open();
     }
 
     protected confirmAll(): Promise<boolean | undefined> {
         return new ConfirmDialog({
             title: nls.localize('vscode.git/package/command.cleanAll', 'Discard All Changes'),
-            msg: nls.localize('vscode.git/commands/confirm discard all', 'Do you really want to discard all changes?')
+            msg: nls.localize('theia/git/confirmDiscardAllChanges', 'Do you really want to discard all changes?')
         }).open();
     }
 
