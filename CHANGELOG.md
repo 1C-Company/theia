@@ -4,6 +4,10 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.76.100 (based on 1.76.0a) - 9/28/2026
+
+- Fix [#14484](https://github.com/eclipse-theia/theia/issues/14484) by partially reverting [#13887](https://github.com/eclipse-theia/theia/pull/13887)
+
 ## 1.76.0a - 9/25/2026
 
 - [git] enhanced i18n [4c793d6](https://github.com/1C-Company/theia/commit/4c793d6a66bcc1ebdb14cf6ae4ba3e9fa63bbade)
