@@ -4,6 +4,16 @@
 
 - [Previous Changelogs](https://github.com/eclipse-theia/theia/tree/master/doc/changelogs/)
 
+## 1.77.0 - tbd
+
+<a name="breaking_changes_1.77.0">[Breaking Changes:](#breaking_changes_1.77.0)</a>
+
+- [ai-anthropic, ai-google, ai-ollama, ai-openai] `AnthropicModel`, `GoogleModel`, `OllamaModel` and `OpenAiModel` no longer take constructor arguments; they are `@injectable`, configured by an injected `<provider>ModelParams`, and created via `<provider>LanguageModelFactory` [#17623](https://github.com/eclipse-theia/theia/pull/17623)
+- [ai-ollama, ai-openai] removed the unused `OllamaModelFactory` and `OpenAiModelFactory` symbols; use `OllamaLanguageModelFactory` and `OpenAiLanguageModelFactory` [#17623](https://github.com/eclipse-theia/theia/pull/17623)
+- [ai-openai] moved `OpenAiModelUtils` from `openai-language-model.ts` to `openai-model-utils.ts` [#17623](https://github.com/eclipse-theia/theia/pull/17623)
+- [ai-openai] replaced the SDK `runTools` runner: `OpenAiModel.createTools()` returns `ChatCompletionTool[]`, and `OpenAiModel.runnerOptions` and the `runnerOptions` parameter of `OpenAiResponseApiUtils.handleRequest` were removed [#17623](https://github.com/eclipse-theia/theia/pull/17623)
+- [ai-openai] removed the `openAiModelUtils` and `responseApiUtils` fields of `OpenAiLanguageModelsManagerImpl` [#17623](https://github.com/eclipse-theia/theia/pull/17623)
+
 ## 1.76.0a - 9/25/2026
 
 - [git] enhanced i18n [4c793d6](https://github.com/1C-Company/theia/commit/4c793d6a66bcc1ebdb14cf6ae4ba3e9fa63bbade)
