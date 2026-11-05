@@ -21,10 +21,10 @@ import { injectable, inject, postConstruct } from '@theia/core/shared/inversify'
 import {
     BaseWidget, Widget, StatefulWidget, Panel, PanelLayout, MessageLoop, codicon
 } from '@theia/core/lib/browser';
-import { GitCommitDetailWidgetOptions } from './git-commit-detail-widget-options';
-import { GitCommitDetailHeaderWidget } from './git-commit-detail-header-widget';
+import { GitCommitDetailWidgetOptions } from './git-commit-detail-widget-options.js';
+import { GitCommitDetailHeaderWidget } from './git-commit-detail-header-widget.js';
 import { ScmService } from '@theia/scm/lib/browser/scm-service';
-import { GitDiffTreeModel } from '../diff/git-diff-tree-model';
+import { GitDiffTreeModel } from '../diff/git-diff-tree-model.js';
 import { ScmTreeWidget } from '@theia/scm/lib/browser/scm-tree-widget';
 import { ScmPreferences } from '@theia/scm/lib/common/scm-preferences';
 

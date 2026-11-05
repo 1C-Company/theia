@@ -14,6 +14,6 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-export * from './git';
-export * from './git-model';
-export * from './git-watcher';
+export * from './git.js';
+export * from './git-model.js';
+export * from './git-watcher.js';

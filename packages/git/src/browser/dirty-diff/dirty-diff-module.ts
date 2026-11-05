@@ -16,8 +16,8 @@
 
 import { interfaces } from '@theia/core/shared/inversify';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
-import { DirtyDiffContribution } from './dirty-diff-contribution';
-import { DirtyDiffManager } from './dirty-diff-manager';
+import { DirtyDiffContribution } from './dirty-diff-contribution.js';
+import { DirtyDiffManager } from './dirty-diff-manager.js';
 
 export function bindDirtyDiff(bind: interfaces.Bind): void {
     bind(DirtyDiffManager).toSelf().inSingletonScope();

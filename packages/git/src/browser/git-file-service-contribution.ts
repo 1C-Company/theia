@@ -16,8 +16,8 @@
 
 import { interfaces } from '@theia/core/shared/inversify';
 import { FileService, FileServiceContribution } from '@theia/filesystem/lib/browser/file-service';
-import { GitFileSystemProvider } from './git-file-system-provider';
-import { GIT_RESOURCE_SCHEME } from './git-resource';
+import { GitFileSystemProvider } from './git-file-system-provider.js';
+import { GIT_RESOURCE_SCHEME } from './git-resource.js';
 
 export class GitFileServiceContribution implements FileServiceContribution {
 

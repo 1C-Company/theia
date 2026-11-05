@@ -20,10 +20,10 @@ import { injectable, inject } from '@theia/core/shared/inversify';
 import { NavigatorContextMenu } from '@theia/navigator/lib/browser/navigator-contribution';
 import { UriCommandHandler, UriAwareCommandHandler } from '@theia/core/lib/common/uri-command-handler';
 import URI from '@theia/core/lib/common/uri';
-import { ScmHistoryWidget } from './scm-history-widget';
+import { ScmHistoryWidget } from './scm-history-widget.js';
 import { ScmService } from '@theia/scm/lib/browser/scm-service';
-import { EDITOR_CONTEXT_MENU_SCM } from '../scm-extra-contribution';
-import { SCM_HISTORY_ID, SCM_HISTORY_LABEL, ScmHistoryCommands, SCM_HISTORY_TOGGLE_KEYBINDING, ScmHistoryOpenViewArguments } from './scm-history-constants';
+import { EDITOR_CONTEXT_MENU_SCM } from '../scm-extra-contribution.js';
+import { SCM_HISTORY_ID, SCM_HISTORY_LABEL, ScmHistoryCommands, SCM_HISTORY_TOGGLE_KEYBINDING, ScmHistoryOpenViewArguments } from './scm-history-constants.js';
 export { SCM_HISTORY_ID, SCM_HISTORY_LABEL, ScmHistoryCommands, SCM_HISTORY_TOGGLE_KEYBINDING, ScmHistoryOpenViewArguments };
 
 @injectable()

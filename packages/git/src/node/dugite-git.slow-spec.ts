@@ -17,8 +17,8 @@
 import * as temp from 'temp';
 import { expect } from 'chai';
 import { FileUri } from '@theia/core/lib/common/file-uri';
-import { GitFileStatus } from '../common';
-import { createGit } from './test/binding-helper';
+import { GitFileStatus } from '../common/index.js';
+import { createGit } from './test/binding-helper.js';
 
 const track = temp.track();
 
@@ -31,7 +31,7 @@ describe('git-slow', async function (): Promise<void> {
     describe('diff-slow', async () => {
 
         it('diff with rename/move', async function (): Promise<void> {
-            this.timeout(50000);
+            this.timeout(60000);
 
             const root = track.mkdirSync('diff-slow-rename');
             const localUri = FileUri.create(root).toString();

@@ -19,7 +19,7 @@ import { Disposable, isObject } from '@theia/core';
 import {
     Repository, WorkingDirectoryStatus, Branch, GitResult, GitError, GitFileStatus,
     GitFileChange, CommitWithChanges, GitFileBlame, Remote as RemoteModel, StashEntry
-} from './git-model';
+} from './git-model.js';
 
 /**
  * The WS endpoint path to the Git service.

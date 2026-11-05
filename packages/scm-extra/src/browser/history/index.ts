@@ -14,8 +14,8 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-export * from './scm-history-provider';
-import { ScmHistorySupport } from './scm-history-widget';
+export * from './scm-history-provider.js';
+import { ScmHistorySupport } from './scm-history-widget.js';
 
 export { ScmHistorySupport };
 

@@ -15,7 +15,7 @@
 // *****************************************************************************
 
 import { injectable, inject, named } from '@theia/core/shared/inversify';
-import findGit from 'find-git-exec';
+import findGitExec from 'find-git-exec';
 import { dirname } from 'path';
 import { pathExists } from '@theia/core/shared/fs-extra';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -54,7 +54,9 @@ export class DefaultGitInit implements GitInit {
     async init(): Promise<void> {
         const { env } = process;
         try {
-            const { execPath, path, version } = await findGit();
+            // `find-git-exec` is a CommonJS module whose `module.exports` is `{ __esModule: true, default: fn }`;
+            // under ESM, the default import binds to `module.exports`, so the callable function is at `.default`.
+            const { execPath, path, version } = await findGitExec.default();
             if (!!execPath && !!path && !!version) {
                 // https://github.com/desktop/dugite/issues/111#issuecomment-323222834
                 // Instead of the executable path, we need the root directory of Git.

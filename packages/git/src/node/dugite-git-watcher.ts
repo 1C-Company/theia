@@ -16,9 +16,9 @@
 
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { DisposableCollection, Disposable } from '@theia/core';
-import { Repository } from '../common';
-import { GitWatcherServer, GitWatcherClient } from '../common/git-watcher';
-import { GitRepositoryManager } from './git-repository-manager';
+import { Repository } from '../common/index.js';
+import { GitWatcherServer, GitWatcherClient } from '../common/git-watcher.js';
+import { GitRepositoryManager } from './git-repository-manager.js';
 
 @injectable()
 export class DugiteGitWatcherServer implements GitWatcherServer {

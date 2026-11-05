@@ -17,7 +17,7 @@
 import '@theia/core/shared/reflect-metadata';
 import { RpcProxyFactory } from '@theia/core';
 import { IPCEntryPoint } from '@theia/core/lib/node/messaging/ipc-protocol';
-import { GitLocatorImpl } from './git-locator-impl';
+import { GitLocatorImpl } from './git-locator-impl.js';
 
 export default <IPCEntryPoint>(connection =>
     new RpcProxyFactory(new GitLocatorImpl()).listen(connection)

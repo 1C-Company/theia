@@ -16,9 +16,9 @@
 
 import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
 import { ScmAvatarService } from '@theia/scm/lib/browser/scm-avatar-service';
-import { GitCommitDetailWidgetOptions } from './git-commit-detail-widget-options';
+import { GitCommitDetailWidgetOptions } from './git-commit-detail-widget-options.js';
 import { ReactWidget, KeybindingRegistry, codicon } from '@theia/core/lib/browser';
-import { Git } from '../../common';
+import { Git } from '../../common/index.js';
 import * as React from '@theia/core/shared/react';
 
 @injectable()

@@ -15,7 +15,7 @@
 // *****************************************************************************
 
 import { ScmProvider } from '@theia/scm/lib/browser/scm-provider';
-import { ScmHistorySupport } from './scm-history-constants';
+import { ScmHistorySupport } from './scm-history-constants.js';
 
 /**
  * @deprecated since 1.75.0 - superseded by the SCM history graph in `@theia/scm`

@@ -21,25 +21,25 @@ import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/front
 FrontendApplicationConfigProvider.set({});
 
 import { Container } from '@theia/core/shared/inversify';
-import { Git, Repository } from '../common';
-import { DugiteGit } from '../node/dugite-git';
+import { Git, Repository } from '../common/index.js';
+import { DugiteGit } from '../node/dugite-git.js';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { FileStat, FileChangesEvent } from '@theia/filesystem/lib/common/files';
 import { Emitter, CommandService, Disposable, ILogger } from '@theia/core';
 import { LocalStorageService, StorageService, LabelProvider, OpenerService } from '@theia/core/lib/browser';
-import { GitRepositoryProvider } from './git-repository-provider';
+import { GitRepositoryProvider } from './git-repository-provider.js';
 import * as sinon from 'sinon';
 import * as chai from 'chai';
-import { GitCommitMessageValidator } from './git-commit-message-validator';
+import { GitCommitMessageValidator } from './git-commit-message-validator.js';
 import { ScmService } from '@theia/scm/lib/browser/scm-service';
 import { ScmContextKeyService } from '@theia/scm/lib/browser/scm-context-key-service';
 import { ContextKeyService, ContextKeyServiceDummyImpl } from '@theia/core/lib/browser/context-key-service';
-import { GitScmProvider } from './git-scm-provider';
-import { createGitScmProviderFactory } from './git-frontend-module';
+import { GitScmProvider } from './git-scm-provider.js';
+import { createGitScmProviderFactory } from './git-frontend-module.js';
 import { EditorManager } from '@theia/editor/lib/browser';
-import { GitErrorHandler } from './git-error-handler';
-import { GitPreferences } from '../common/git-preferences';
-import { GitRepositoryTracker } from './git-repository-tracker';
+import { GitErrorHandler } from './git-error-handler.js';
+import { GitPreferences } from '../common/git-preferences.js';
+import { GitRepositoryTracker } from './git-repository-tracker.js';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 const expect = chai.expect;
 

@@ -16,8 +16,8 @@
 
 import { injectable, inject, postConstruct, named } from '@theia/core/shared/inversify';
 import { Disposable, Event, Emitter, ILogger } from '@theia/core';
-import { Git, Repository, WorkingDirectoryStatus, GitUtils, Branch, Tag } from '../common';
-import { GitStatusChangeEvent } from '../common/git-watcher';
+import { Git, Repository, WorkingDirectoryStatus, GitUtils, Branch, Tag } from '../common/index.js';
+import { GitStatusChangeEvent } from '../common/git-watcher.js';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 
 export const GitRepositoryWatcherFactory = Symbol('GitRepositoryWatcherFactory');

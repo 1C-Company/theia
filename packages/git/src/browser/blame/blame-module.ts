@@ -17,9 +17,9 @@
 import { interfaces } from '@theia/core/shared/inversify';
 import { KeybindingContribution } from '@theia/core/lib/browser';
 import { CommandContribution, MenuContribution } from '@theia/core/lib/common';
-import { BlameContribution } from './blame-contribution';
-import { BlameDecorator } from './blame-decorator';
-import { BlameManager } from './blame-manager';
+import { BlameContribution } from './blame-contribution.js';
+import { BlameDecorator } from './blame-decorator.js';
+import { BlameManager } from './blame-manager.js';
 
 export function bindBlame(bind: interfaces.Bind): void {
     bind(BlameContribution).toSelf().inSingletonScope();

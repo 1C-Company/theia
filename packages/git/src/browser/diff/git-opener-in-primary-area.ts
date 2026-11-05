@@ -16,7 +16,7 @@
 
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
-import { GitResourceOpener } from './git-resource-opener';
+import { GitResourceOpener } from './git-resource-opener.js';
 import URI from '@theia/core/lib/common/uri';
 
 @injectable()

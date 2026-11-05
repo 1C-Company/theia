@@ -15,12 +15,12 @@
 // *****************************************************************************
 
 import { Container, interfaces } from '@theia/core/shared/inversify';
-import { Git } from '../../common/git';
-import { DugiteGit } from '../dugite-git';
-import { bindGit, GitBindingOptions } from '../git-backend-module';
+import { Git } from '../../common/git.js';
+import { DugiteGit } from '../dugite-git.js';
+import { bindGit, GitBindingOptions } from '../git-backend-module.js';
 import { bindLogger } from '@theia/core/lib/node/logger-backend-module';
-import { NoSyncRepositoryManager } from '.././test/no-sync-repository-manager';
-import { GitEnvProvider, DefaultGitEnvProvider } from '../env/git-env-provider';
+import { NoSyncRepositoryManager } from '.././test/no-sync-repository-manager.js';
+import { GitEnvProvider, DefaultGitEnvProvider } from '../env/git-env-provider.js';
 import { MessageService, LogLevel } from '@theia/core/lib/common';
 import { MessageClient } from '@theia/core';
 import { ILogger } from '@theia/core/lib/common/logger';

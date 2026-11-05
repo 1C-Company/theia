@@ -24,19 +24,19 @@ import { CommandService } from '@theia/core/lib/common/command';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { EditorOpenerOptions, EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { WorkspaceCommands } from '@theia/workspace/lib/browser';
-import { Repository, Git, CommitWithChanges, GitFileChange, WorkingDirectoryStatus, GitFileStatus } from '../common';
-import { GIT_RESOURCE_SCHEME } from './git-resource';
-import { GitErrorHandler } from './git-error-handler';
+import { Repository, Git, CommitWithChanges, GitFileChange, WorkingDirectoryStatus, GitFileStatus } from '../common/index.js';
+import { GIT_RESOURCE_SCHEME } from './git-resource.js';
+import { GitErrorHandler } from './git-error-handler.js';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { ScmProvider, ScmCommand, ScmResourceGroup, ScmAmendSupport, ScmCommit, ScmHistoryProvider } from '@theia/scm/lib/browser/scm-provider';
-import { ScmHistoryCommit, ScmFileChange } from '@theia/scm-extra/lib/browser/scm-file-change-node';
+import { ScmHistoryCommit, ScmFileChange } from '@theia/scm-extra/lib/browser/scm-file-change-node.js';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
-import { GitCommitDetailWidgetOptions } from './history/git-commit-detail-widget-options';
+import { GitCommitDetailWidgetOptions } from './history/git-commit-detail-widget-options.js';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { ScmInput } from '@theia/scm/lib/browser/scm-input';
 import { MergeEditorOpenerOptions, MergeEditorSideWidgetState, MergeEditorUri } from '@theia/scm/lib/browser/merge-editor/merge-editor';
 import { nls } from '@theia/core/lib/common/nls';
-import { GitPreferences } from '../common/git-preferences';
+import { GitPreferences } from '../common/git-preferences.js';
 
 @injectable()
 export class GitScmProviderOptions {

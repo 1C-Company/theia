@@ -18,9 +18,9 @@ import { injectable, inject } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ScmService } from '@theia/scm/lib/browser/scm-service';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
-import { ScmFileChangeLabelProvider } from '@theia/scm-extra/lib/browser/scm-file-change-label-provider';
+import { ScmFileChangeLabelProvider } from '@theia/scm-extra/lib/browser/scm-file-change-label-provider.js';
 import { ReactWidget, StatefulWidget, KeybindingRegistry, codicon } from '@theia/core/lib/browser';
-import { Git } from '../../common';
+import { Git } from '../../common/index.js';
 import * as React from '@theia/core/shared/react';
 import { nls } from '@theia/core';
 

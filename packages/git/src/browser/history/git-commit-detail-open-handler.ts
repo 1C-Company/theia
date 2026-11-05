@@ -17,9 +17,9 @@
 import { injectable } from '@theia/core/shared/inversify';
 import { WidgetOpenHandler, WidgetOpenerOptions } from '@theia/core/lib/browser';
 import URI from '@theia/core/lib/common/uri';
-import { GitCommitDetailWidgetOptions } from './git-commit-detail-widget-options';
-import { GitCommitDetailWidget } from './git-commit-detail-widget';
-import { GitScmProvider } from '../git-scm-provider';
+import { GitCommitDetailWidgetOptions } from './git-commit-detail-widget-options.js';
+import { GitCommitDetailWidget } from './git-commit-detail-widget.js';
+import { GitScmProvider } from '../git-scm-provider.js';
 
 export namespace GitCommitDetailUri {
     export const scheme = GitScmProvider.GIT_COMMIT_DETAIL;

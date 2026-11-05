@@ -14,18 +14,19 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import * as upath from 'upath';
+// `upath` is a CommonJS module whose named exports are not statically detectable, so use the default import.
+import upath from 'upath';
 
 import * as path from 'path';
 import * as temp from 'temp';
 import * as fs from '@theia/core/shared/fs-extra';
 import { expect } from 'chai';
-import { Git } from '../common/git';
-import { git as gitExec } from 'dugite-extra/lib/core/git';
+import { Git } from '../common/git.js';
+import { git as gitExec } from 'dugite-extra/lib/core/git.js';
 import { FileUri } from '@theia/core/lib/common/file-uri';
-import { WorkingDirectoryStatus, Repository, GitUtils, GitFileStatus, GitFileChange } from '../common';
-import { initRepository, createTestRepository } from 'dugite-extra/lib/command/test-helper';
-import { createGit } from './test/binding-helper';
+import { WorkingDirectoryStatus, Repository, GitUtils, GitFileStatus, GitFileChange } from '../common/index.js';
+import { initRepository, createTestRepository } from 'dugite-extra/lib/command/test-helper.js';
+import { createGit } from './test/binding-helper.js';
 import { isWindows } from '@theia/core/lib/common/os';
 
 /* eslint-disable max-len */

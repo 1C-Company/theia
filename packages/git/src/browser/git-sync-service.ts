@@ -17,9 +17,9 @@
 import { injectable, inject, optional } from '@theia/core/shared/inversify';
 import { MessageService, Emitter, Event, nls } from '@theia/core';
 import { ConfirmDialog, QuickInputService } from '@theia/core/lib/browser';
-import { GitRepositoryTracker } from './git-repository-tracker';
-import { Git, Repository, WorkingDirectoryStatus } from '../common';
-import { GitErrorHandler } from './git-error-handler';
+import { GitRepositoryTracker } from './git-repository-tracker.js';
+import { Git, Repository, WorkingDirectoryStatus } from '../common/index.js';
+import { GitErrorHandler } from './git-error-handler.js';
 
 @injectable()
 export class GitSyncService {

@@ -25,10 +25,10 @@ import {
     ScmHistoryItemStatistics,
     ScmHistoryOptions,
     ScmHistoryProvider } from '@theia/scm/lib/browser/scm-provider';
-import { Branch, BranchType, Git, GitStatusChangeEvent, GitUtils, Repository, Tag } from '../common';
-import { GitRepositoryTracker } from './git-repository-tracker';
-import { GitScmProvider } from './git-scm-provider';
-import { GIT_RESOURCE_SCHEME } from './git-resource';
+import { Branch, BranchType, Git, GitStatusChangeEvent, GitUtils, Repository, Tag } from '../common/index.js';
+import { GitRepositoryTracker } from './git-repository-tracker.js';
+import { GitScmProvider } from './git-scm-provider.js';
+import { GIT_RESOURCE_SCHEME } from './git-resource.js';
 
 export function parseRemoteRefName(remoteRefName: string): { remote: string, branch: string } {
     const slashIdx = remoteRefName.indexOf('/');

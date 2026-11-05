@@ -18,7 +18,7 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import { DirtyDiffDecorator } from '@theia/scm/lib/browser/dirty-diff/dirty-diff-decorator';
 import { DirtyDiffNavigator } from '@theia/scm/lib/browser/dirty-diff/dirty-diff-navigator';
 import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser';
-import { DirtyDiffManager } from './dirty-diff-manager';
+import { DirtyDiffManager } from './dirty-diff-manager.js';
 
 @injectable()
 export class DirtyDiffContribution implements FrontendApplicationContribution {

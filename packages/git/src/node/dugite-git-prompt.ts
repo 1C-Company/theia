@@ -15,7 +15,7 @@
 // *****************************************************************************
 
 import { injectable } from '@theia/core/shared/inversify';
-import { GitPromptServer, GitPromptClient, GitPrompt } from '../common/git-prompt';
+import { GitPromptServer, GitPromptClient, GitPrompt } from '../common/git-prompt.js';
 
 @injectable()
 export class DugiteGitPromptServer implements GitPromptServer, GitPromptClient {

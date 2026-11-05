@@ -16,7 +16,7 @@
 
 import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
-import { GitPrompt, GitPromptServer, GitPromptServerProxy, GitPromptServerImpl } from '../../common/git-prompt';
+import { GitPrompt, GitPromptServer, GitPromptServerProxy, GitPromptServerImpl } from '../../common/git-prompt.js';
 
 export default new ContainerModule(bind => {
     bind(GitPrompt).toSelf();

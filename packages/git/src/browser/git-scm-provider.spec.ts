@@ -28,19 +28,19 @@ import { EditorManager } from '@theia/editor/lib/browser';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { ScmInput } from '@theia/scm/lib/browser/scm-input';
 import { expect } from 'chai';
-import * as fs from 'fs-extra';
+import * as fs from '@theia/core/shared/fs-extra';
 import * as os from 'os';
 import * as path from 'path';
 import { rimraf } from 'rimraf';
 import * as sinon from 'sinon';
-import { Git, GitFileStatus, Repository } from '../common';
-import { DugiteGit } from '../node/dugite-git';
-import { DefaultGitEnvProvider, GitEnvProvider } from '../node/env/git-env-provider';
-import { bindGit } from '../node/git-backend-module';
-import { GitRepositoryWatcher, GitRepositoryWatcherFactory } from '../node/git-repository-watcher';
-import { GitErrorHandler } from './git-error-handler';
-import { GitPreferences } from '../common/git-preferences';
-import { GitScmProvider, GitScmProviderOptions } from './git-scm-provider';
+import { Git, GitFileStatus, Repository } from '../common/index.js';
+import { DugiteGit } from '../node/dugite-git.js';
+import { DefaultGitEnvProvider, GitEnvProvider } from '../node/env/git-env-provider.js';
+import { bindGit } from '../node/git-backend-module.js';
+import { GitRepositoryWatcher, GitRepositoryWatcherFactory } from '../node/git-repository-watcher.js';
+import { GitErrorHandler } from './git-error-handler.js';
+import { GitPreferences } from '../common/git-preferences.js';
+import { GitScmProvider, GitScmProviderOptions } from './git-scm-provider.js';
 
 disableJSDOM();
 

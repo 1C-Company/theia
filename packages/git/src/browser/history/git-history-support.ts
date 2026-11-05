@@ -16,11 +16,11 @@
 
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter, Disposable } from '@theia/core';
-import { Git } from '../../common';
-import { ScmHistorySupport, HistoryWidgetOptions } from '@theia/scm-extra/lib/browser/history/scm-history-widget';
-import { ScmHistoryCommit } from '@theia/scm-extra/lib/browser/scm-file-change-node';
-import { GitScmProvider } from '../git-scm-provider';
-import { GitRepositoryTracker } from '../git-repository-tracker';
+import { Git } from '../../common/index.js';
+import { ScmHistorySupport, HistoryWidgetOptions } from '@theia/scm-extra/lib/browser/history/scm-history-widget.js';
+import { ScmHistoryCommit } from '@theia/scm-extra/lib/browser/scm-file-change-node.js';
+import { GitScmProvider } from '../git-scm-provider.js';
+import { GitRepositoryTracker } from '../git-repository-tracker.js';
 
 @injectable()
 export class GitHistorySupport implements ScmHistorySupport {

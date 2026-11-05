@@ -16,7 +16,7 @@
 
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { RpcServer, RpcProxy, isObject } from '@theia/core';
-import { Repository, WorkingDirectoryStatus } from './git-model';
+import { Repository, WorkingDirectoryStatus } from './git-model.js';
 import { Disposable, DisposableCollection, Emitter, Event } from '@theia/core/lib/common';
 
 /**

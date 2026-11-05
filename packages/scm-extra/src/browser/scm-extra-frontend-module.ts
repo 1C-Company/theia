@@ -15,8 +15,8 @@
 // *****************************************************************************
 
 import { ContainerModule } from '@theia/core/shared/inversify';
-import { bindScmHistoryModule } from './history/scm-history-frontend-module';
-import { ScmFileChangeLabelProvider } from './scm-file-change-label-provider';
+import { bindScmHistoryModule } from './history/scm-history-frontend-module.js';
+import { ScmFileChangeLabelProvider } from './scm-file-change-label-provider.js';
 import { LabelProviderContribution } from '@theia/core/lib/browser';
 
 export default new ContainerModule(bind => {

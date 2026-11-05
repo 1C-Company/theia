@@ -15,22 +15,22 @@
 // *****************************************************************************
 
 import { ContainerModule, Container, interfaces } from '@theia/core/shared/inversify';
-import { Git, GitPath } from '../common/git';
-import { GitWatcherPath, GitWatcherClient, GitWatcherServer } from '../common/git-watcher';
-import { DugiteGit, OutputParser, NameStatusParser, CommitDetailsParser, GitBlameParser } from './dugite-git';
-import { DugiteGitWatcherServer } from './dugite-git-watcher';
+import { Git, GitPath } from '../common/git.js';
+import { GitWatcherPath, GitWatcherClient, GitWatcherServer } from '../common/git-watcher.js';
+import { DugiteGit, OutputParser, NameStatusParser, CommitDetailsParser, GitBlameParser } from './dugite-git.js';
+import { DugiteGitWatcherServer } from './dugite-git-watcher.js';
 import { ConnectionHandler, RpcConnectionHandler, ILogger } from '@theia/core/lib/common';
-import { GitRepositoryManager } from './git-repository-manager';
-import { GitRepositoryWatcherFactory, GitRepositoryWatcherOptions, GitRepositoryWatcher } from './git-repository-watcher';
-import { GitLocator } from './git-locator/git-locator-protocol';
-import { GitLocatorClient } from './git-locator/git-locator-client';
-import { GitLocatorImpl } from './git-locator/git-locator-impl';
-import { GitExecProvider } from './git-exec-provider';
-import { GitPromptServer, GitPromptClient, GitPrompt } from '../common/git-prompt';
-import { DugiteGitPromptServer } from './dugite-git-prompt';
+import { GitRepositoryManager } from './git-repository-manager.js';
+import { GitRepositoryWatcherFactory, GitRepositoryWatcherOptions, GitRepositoryWatcher } from './git-repository-watcher.js';
+import { GitLocator } from './git-locator/git-locator-protocol.js';
+import { GitLocatorClient } from './git-locator/git-locator-client.js';
+import { GitLocatorImpl } from './git-locator/git-locator-impl.js';
+import { GitExecProvider } from './git-exec-provider.js';
+import { GitPromptServer, GitPromptClient, GitPrompt } from '../common/git-prompt.js';
+import { DugiteGitPromptServer } from './dugite-git-prompt.js';
 import { ConnectionContainerModule } from '@theia/core/lib/node/messaging/connection-container-module';
-import { DefaultGitInit, GitInit } from './init/git-init';
-import { bindGitPreferences } from '../common/git-preferences';
+import { DefaultGitInit, GitInit } from './init/git-init.js';
+import { bindGitPreferences } from '../common/git-preferences.js';
 
 const SINGLE_THREADED = process.argv.indexOf('--no-cluster') !== -1;
 

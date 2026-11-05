@@ -17,38 +17,39 @@
 import * as fs from '@theia/core/shared/fs-extra';
 import * as Path from 'path';
 import { injectable, inject, postConstruct, named } from '@theia/core/shared/inversify';
-import { git } from 'dugite-extra/lib/core/git';
-import { push } from 'dugite-extra/lib/command/push';
-import { pull } from 'dugite-extra/lib/command/pull';
-import { clone } from 'dugite-extra/lib/command/clone';
-import { fetch } from 'dugite-extra/lib/command/fetch';
-import { stash } from 'dugite-extra/lib/command/stash';
-import { merge } from 'dugite-extra/lib/command/merge';
+import { git } from 'dugite-extra/lib/core/git.js';
+import { push } from 'dugite-extra/lib/command/push.js';
+import { pull } from 'dugite-extra/lib/command/pull.js';
+import { clone } from 'dugite-extra/lib/command/clone.js';
+import { fetch } from 'dugite-extra/lib/command/fetch.js';
+import { stash } from 'dugite-extra/lib/command/stash.js';
+import { merge } from 'dugite-extra/lib/command/merge.js';
 import { FileUri } from '@theia/core/lib/common/file-uri';
-import { getStatus } from 'dugite-extra/lib/command/status';
-import { createCommit } from 'dugite-extra/lib/command/commit';
-import { stage, unstage } from 'dugite-extra/lib/command/stage';
-import { reset, GitResetMode } from 'dugite-extra/lib/command/reset';
-import { getTextContents, getBlobContents } from 'dugite-extra/lib/command/show';
-import { checkoutBranch, checkoutPaths } from 'dugite-extra/lib/command/checkout';
-import { createBranch, deleteBranch, renameBranch, listBranch } from 'dugite-extra/lib/command/branch';
-import { IStatusResult, IAheadBehind, AppFileStatus, WorkingDirectoryStatus as DugiteStatus, FileChange as DugiteFileChange } from 'dugite-extra/lib/model/status';
-import { Branch as DugiteBranch } from 'dugite-extra/lib/model/branch';
-import { Commit as DugiteCommit, CommitIdentity as DugiteCommitIdentity } from 'dugite-extra/lib/model/commit';
+import { getStatus } from 'dugite-extra/lib/command/status.js';
+import { createCommit } from 'dugite-extra/lib/command/commit.js';
+import { stage, unstage } from 'dugite-extra/lib/command/stage.js';
+import { reset, GitResetMode } from 'dugite-extra/lib/command/reset.js';
+import { getTextContents, getBlobContents } from 'dugite-extra/lib/command/show.js';
+import { checkoutBranch, checkoutPaths } from 'dugite-extra/lib/command/checkout.js';
+import { createBranch, deleteBranch, renameBranch, listBranch } from 'dugite-extra/lib/command/branch.js';
+import { IStatusResult, IAheadBehind, AppFileStatus, WorkingDirectoryStatus as DugiteStatus, FileChange as DugiteFileChange } from 'dugite-extra/lib/model/status.js';
+import { Branch as DugiteBranch } from 'dugite-extra/lib/model/branch.js';
+import { Commit as DugiteCommit, CommitIdentity as DugiteCommitIdentity } from 'dugite-extra/lib/model/commit.js';
 import { ILogger } from '@theia/core';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import * as strings from '@theia/core/lib/common/strings';
 import {
     Git, GitUtils, Repository, WorkingDirectoryStatus, GitFileChange, GitFileStatus, Branch, Commit,
     CommitIdentity, GitResult, CommitWithChanges, GitFileBlame, CommitLine, GitError, Remote, StashEntry
-} from '../common';
-import { GitRepositoryManager } from './git-repository-manager';
-import { GitLocator } from './git-locator/git-locator-protocol';
-import { GitExecProvider } from './git-exec-provider';
-import { GitEnvProvider } from './env/git-env-provider';
-import { GitInit } from './init/git-init';
+} from '../common/index.js';
+import { GitRepositoryManager } from './git-repository-manager.js';
+import { GitLocator } from './git-locator/git-locator-protocol.js';
+import { GitExecProvider } from './git-exec-provider.js';
+import { GitEnvProvider } from './env/git-env-provider.js';
+import { GitInit } from './init/git-init.js';
 
-import upath = require('upath');
+// `upath` is a CommonJS module whose named exports are not statically detectable, so use the default import.
+import upath from 'upath';
 
 /**
  * Parsing and converting raw Git output into Git model instances.

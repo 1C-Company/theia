@@ -15,10 +15,10 @@
 // *****************************************************************************
 
 import { interfaces } from '@theia/core/shared/inversify';
-import { ScmHistoryContribution, SCM_HISTORY_ID } from './scm-history-contribution';
+import { ScmHistoryContribution, SCM_HISTORY_ID } from './scm-history-contribution.js';
 import { WidgetFactory, bindViewContribution, ApplicationShellLayoutMigration } from '@theia/core/lib/browser';
-import { ScmHistoryWidget } from './scm-history-widget';
-import { ScmExtraLayoutVersion4Migration } from '../scm-extra-layout-migrations';
+import { ScmHistoryWidget } from './scm-history-widget.js';
+import { ScmExtraLayoutVersion4Migration } from '../scm-extra-layout-migrations.js';
 
 import '../../../src/browser/style/history.css';
 

@@ -15,8 +15,8 @@
 // *****************************************************************************
 
 import { injectable } from '@theia/core/shared/inversify';
-import { Repository } from '../../common/git-model';
-import { GitRepositoryManager } from '../git-repository-manager';
+import { Repository } from '../../common/git-model.js';
+import { GitRepositoryManager } from '../git-repository-manager.js';
 
 /**
  * Repository manager that does not synchronizes the status. For testing purposes.

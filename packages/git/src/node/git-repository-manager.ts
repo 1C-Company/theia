@@ -16,8 +16,8 @@
 
 import { injectable, inject, named } from '@theia/core/shared/inversify';
 import { ReferenceCollection, Reference, ILogger } from '@theia/core';
-import { Repository } from '../common';
-import { GitRepositoryWatcher, GitRepositoryWatcherFactory } from './git-repository-watcher';
+import { Repository } from '../common/index.js';
+import { GitRepositoryWatcher, GitRepositoryWatcherFactory } from './git-repository-watcher.js';
 
 @injectable()
 export class GitRepositoryManager {

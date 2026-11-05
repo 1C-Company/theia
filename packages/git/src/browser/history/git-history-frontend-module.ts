@@ -16,15 +16,15 @@
 
 import { interfaces, Container } from '@theia/core/shared/inversify';
 import { WidgetFactory, OpenHandler, TreeModel } from '@theia/core/lib/browser';
-import { GitCommitDetailWidgetOptions } from './git-commit-detail-widget-options';
-import { GitCommitDetailWidget } from './git-commit-detail-widget';
-import { GitCommitDetailHeaderWidget } from './git-commit-detail-header-widget';
-import { GitDiffTreeModel } from '../diff/git-diff-tree-model';
-import { GitCommitDetailOpenHandler } from './git-commit-detail-open-handler';
-import { GitScmProvider } from '../git-scm-provider';
+import { GitCommitDetailWidgetOptions } from './git-commit-detail-widget-options.js';
+import { GitCommitDetailWidget } from './git-commit-detail-widget.js';
+import { GitCommitDetailHeaderWidget } from './git-commit-detail-header-widget.js';
+import { GitDiffTreeModel } from '../diff/git-diff-tree-model.js';
+import { GitCommitDetailOpenHandler } from './git-commit-detail-open-handler.js';
+import { GitScmProvider } from '../git-scm-provider.js';
 import { createScmTreeContainer } from '@theia/scm/lib/browser/scm-frontend-module';
-import { GitResourceOpener } from '../diff/git-resource-opener';
-import { GitOpenerInSecondaryArea } from './git-opener-in-secondary-area';
+import { GitResourceOpener } from '../diff/git-resource-opener.js';
+import { GitOpenerInSecondaryArea } from './git-opener-in-secondary-area.js';
 import '../../../src/browser/style/git-icons.css';
 
 export function bindGitHistoryModule(bind: interfaces.Bind): void {

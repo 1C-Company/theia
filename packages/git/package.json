@@ -2,6 +2,7 @@
   "name": "@theia/git",
   "version": "1.76.0",
   "description": "Theia - Git Integration",
+  "type": "module",
   "dependencies": {
     "@theia/core": "1.76.0",
     "@theia/editor": "1.76.0",
@@ -54,7 +55,8 @@
   "homepage": "https://github.com/eclipse-theia/theia",
   "files": [
     "lib",
-    "src"
+    "src",
+    "native-wrappers"
   ],
   "scripts": {
     "build": "theiaext build",
@@ -72,5 +74,13 @@
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./lib/common": "./lib/common/index.js",
+    "./lib/*.json": "./lib/*.json",
+    "./lib/*.js": "./lib/*.js",
+    "./lib/*": "./lib/*.js",
+    "./*": "./*"
   }
 }

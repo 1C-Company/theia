@@ -15,8 +15,8 @@
 // *****************************************************************************
 
 import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
-import { DefaultGitEnvProvider } from '../../node/env/git-env-provider';
-import { Askpass } from '../askpass/askpass';
+import { DefaultGitEnvProvider } from '../../node/env/git-env-provider.js';
+import { Askpass } from '../askpass/askpass.js';
 
 /**
  * Git environment provider for Electron.

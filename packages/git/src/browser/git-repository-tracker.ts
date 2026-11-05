@@ -15,13 +15,13 @@
 // *****************************************************************************
 
 import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
-import { Git, Repository, WorkingDirectoryStatus } from '../common';
+import { Git, Repository, WorkingDirectoryStatus } from '../common/index.js';
 import { Event, Emitter, Disposable, DisposableCollection, CancellationToken, CancellationTokenSource } from '@theia/core';
-import { GitRepositoryProvider } from './git-repository-provider';
-import { GitWatcher, GitStatusChangeEvent } from '../common/git-watcher';
+import { GitRepositoryProvider } from './git-repository-provider.js';
+import { GitWatcher, GitStatusChangeEvent } from '../common/git-watcher.js';
 import URI from '@theia/core/lib/common/uri';
 
-import debounce = require('@theia/core/shared/lodash.debounce');
+import debounce from '@theia/core/shared/lodash.debounce';
 
 /**
  * The repository tracker watches the selected repository for status changes. It provides a convenient way to listen on status updates.

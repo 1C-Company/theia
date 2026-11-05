@@ -19,13 +19,13 @@ import * as temp from 'temp';
 import * as path from 'path';
 import { expect } from 'chai';
 import { FileUri } from '@theia/core/lib/common/file-uri';
-import { Git } from '../common/git';
-import { DugiteGit } from './dugite-git';
-import { Repository } from '../common';
-import { initializeBindings } from './test/binding-helper';
-import { DugiteGitWatcherServer } from './dugite-git-watcher';
-import { bindGit, bindRepositoryWatcher } from './git-backend-module';
-import { GitWatcherServer, GitStatusChangeEvent } from '../common/git-watcher';
+import { Git } from '../common/git.js';
+import { DugiteGit } from './dugite-git.js';
+import { Repository } from '../common/index.js';
+import { initializeBindings } from './test/binding-helper.js';
+import { DugiteGitWatcherServer } from './dugite-git-watcher.js';
+import { bindGit, bindRepositoryWatcher } from './git-backend-module.js';
+import { GitWatcherServer, GitStatusChangeEvent } from '../common/git-watcher.js';
 
 const track = temp.track();
 

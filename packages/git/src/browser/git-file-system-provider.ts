@@ -27,7 +27,7 @@ import {
     Stat,
     WatchOptions
 } from '@theia/filesystem/lib/common/files';
-import { GitResourceResolver } from './git-resource-resolver';
+import { GitResourceResolver } from './git-resource-resolver.js';
 import { EncodingService } from '@theia/core/lib/common/encoding-service';
 
 @injectable()

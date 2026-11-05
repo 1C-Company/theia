@@ -15,15 +15,15 @@
 // *****************************************************************************
 
 import { interfaces, Container } from '@theia/core/shared/inversify';
-import { GitDiffContribution } from './git-diff-contribution';
+import { GitDiffContribution } from './git-diff-contribution.js';
 import { WidgetFactory, bindViewContribution, TreeModel } from '@theia/core/lib/browser';
-import { GitDiffWidget, GIT_DIFF } from './git-diff-widget';
-import { GitDiffHeaderWidget } from './git-diff-header-widget';
-import { GitDiffTreeModel } from './git-diff-tree-model';
+import { GitDiffWidget, GIT_DIFF } from './git-diff-widget.js';
+import { GitDiffHeaderWidget } from './git-diff-header-widget.js';
+import { GitDiffTreeModel } from './git-diff-tree-model.js';
 import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { createScmTreeContainer } from '@theia/scm/lib/browser/scm-frontend-module';
-import { GitResourceOpener } from './git-resource-opener';
-import { GitOpenerInPrimaryArea } from './git-opener-in-primary-area';
+import { GitResourceOpener } from './git-resource-opener.js';
+import { GitOpenerInPrimaryArea } from './git-opener-in-primary-area.js';
 import '../../../src/browser/style/diff.css';
 
 export function bindGitDiffModule(bind: interfaces.Bind): void {

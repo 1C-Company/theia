@@ -16,13 +16,13 @@
 
 import { inject, injectable, unmanaged } from '@theia/core/shared/inversify';
 import { EditorManager, TextEditor, EditorDecoration, EditorDecorationOptions, Range, Position, EditorDecorationStyle } from '@theia/editor/lib/browser';
-import { GitFileBlame } from '../../common';
+import { GitFileBlame } from '../../common/index.js';
 import { Disposable, DisposableCollection, nls } from '@theia/core';
 import { DateTime } from 'luxon';
 import URI from '@theia/core/lib/common/uri';
 import { DecorationStyle } from '@theia/core/lib/browser';
 import * as monaco from '@theia/monaco-editor-core';
-import { LanguageSelector } from '@theia/monaco-editor-core/esm/vs/editor/common/languageSelector';
+import { LanguageSelector } from '@theia/monaco-editor-core/esm/vs/editor/common/languageSelector.js';
 
 @injectable()
 export class BlameDecorator implements monaco.languages.HoverProvider {

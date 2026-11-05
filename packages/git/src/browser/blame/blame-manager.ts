@@ -15,8 +15,8 @@
 // *****************************************************************************
 
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { Git, GitFileBlame } from '../../common';
-import { GitRepositoryTracker } from '../git-repository-tracker';
+import { Git, GitFileBlame } from '../../common/index.js';
+import { GitRepositoryTracker } from '../git-repository-tracker.js';
 import URI from '@theia/core/lib/common/uri';
 
 @injectable()

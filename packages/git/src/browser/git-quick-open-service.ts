@@ -15,12 +15,12 @@
 // *****************************************************************************
 
 import { injectable, inject, optional, named } from '@theia/core/shared/inversify';
-import { Git, Repository, Branch, BranchType, Tag, Remote, StashEntry } from '../common';
-import { GitRepositoryProvider } from './git-repository-provider';
+import { Git, Repository, Branch, BranchType, Tag, Remote, StashEntry } from '../common/index.js';
+import { GitRepositoryProvider } from './git-repository-provider.js';
 import { ILogger } from '@theia/core';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { GitErrorHandler } from './git-error-handler';
+import { GitErrorHandler } from './git-error-handler.js';
 import { ProgressService } from '@theia/core/lib/common/progress-service';
 import URI from '@theia/core/lib/common/uri';
 import { nls } from '@theia/core/lib/common/nls';
@@ -28,7 +28,7 @@ import { ConfirmDialog, Dialog, LabelProvider, QuickInputService, QuickPick, Qui
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import { ScmHistoryItemRef, ScmHistoryProvider } from '@theia/scm/lib/browser/scm-provider';
-import { parseRemoteRefName } from './git-history-provider';
+import { parseRemoteRefName } from './git-history-provider.js';
 
 export enum GitAction {
     PULL,

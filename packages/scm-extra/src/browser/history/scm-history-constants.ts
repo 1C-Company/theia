@@ -16,7 +16,7 @@
 
 import { Command, Event, nls } from '@theia/core';
 import { OpenViewArguments } from '@theia/core/lib/browser';
-import { ScmFileChangeNode, ScmHistoryCommit } from '../scm-file-change-node';
+import { ScmFileChangeNode, ScmHistoryCommit } from '../scm-file-change-node.js';
 
 /**
  * @deprecated since 1.75.0 - superseded by the SCM history graph in `@theia/scm`

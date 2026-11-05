@@ -19,11 +19,11 @@ import {
     BaseWidget, Widget, StatefulWidget, Panel, PanelLayout, Message, MessageLoop, codicon
 } from '@theia/core/lib/browser';
 import { EditorManager, DiffNavigatorProvider } from '@theia/editor/lib/browser';
-import { GitDiffTreeModel } from './git-diff-tree-model';
-import { GitWatcher } from '../../common';
-import { GitDiffHeaderWidget } from './git-diff-header-widget';
+import { GitDiffTreeModel } from './git-diff-tree-model.js';
+import { GitWatcher } from '../../common/index.js';
+import { GitDiffHeaderWidget } from './git-diff-header-widget.js';
 import { ScmService } from '@theia/scm/lib/browser/scm-service';
-import { GitRepositoryProvider } from '../git-repository-provider';
+import { GitRepositoryProvider } from '../git-repository-provider.js';
 import { ScmTreeWidget } from '@theia/scm/lib/browser/scm-tree-widget';
 import { ScmPreferences } from '@theia/scm/lib/common/scm-preferences';
 import { nls } from '@theia/core';

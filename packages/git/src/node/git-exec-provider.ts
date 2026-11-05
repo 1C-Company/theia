@@ -16,7 +16,7 @@
 
 import { injectable } from '@theia/core/shared/inversify';
 import { Disposable, MaybePromise } from '@theia/core/';
-import { IGitExecutionOptions } from 'dugite-extra/lib/core/git';
+import { IGitExecutionOptions } from 'dugite-extra/lib/core/git.js';
 
 /**
  * Provides an execution function that will be used to perform the Git commands.
