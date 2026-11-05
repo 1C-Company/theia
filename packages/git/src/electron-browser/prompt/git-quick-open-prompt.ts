@@ -25,7 +25,7 @@ export class GitQuickOpenPrompt extends GitPrompt {
     @inject(QuickInputService) @optional()
     protected readonly quickInputService: QuickInputService;
 
-    protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
+    protected readonly queue: PQueue = new PQueue({ autoStart: true, concurrency: 1 });
 
     override async ask(question: GitPrompt.Question): Promise<GitPrompt.Answer> {
         return this.queue.add(() => {

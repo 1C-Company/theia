@@ -667,13 +667,13 @@ export interface Git extends Disposable {
      * @param the repository where the branch modification has to be performed.
      * @param options further Git command refinements for the branch modification.
      */
-    /* eslint-disable @typescript-eslint/indent */
+    /* eslint-disable @stylistic/indent */
     branch(repository: Repository, options:
         Git.Options.BranchCommand.Create |
         Git.Options.BranchCommand.Rename |
         Git.Options.BranchCommand.Delete
     ): Promise<void>;
-    /* eslint-enable @typescript-eslint/indent */
+    /* eslint-enable @stylistic/indent */
 
     /**
      * Switches branches or restores working tree files.
