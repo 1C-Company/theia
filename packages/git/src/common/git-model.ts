@@ -115,7 +115,7 @@ export namespace GitFileStatus {
      */
     export const toString = (status: GitFileStatus, staged?: boolean): string => {
         switch (status) {
-            case GitFileStatus.New: return !!staged ? nls.localize('theia/git/added', 'Added') : nls.localize('theia/git/unstaged', 'Unstaged');
+            case GitFileStatus.New: return !!staged ? nls.localizeByDefault('Added') : nls.localize('theia/git/unstaged', 'Unstaged');
             case GitFileStatus.Renamed: return nls.localizeByDefault('Renamed');
             case GitFileStatus.Copied: return nls.localizeByDefault('Copied');
             // eslint-disable-next-line @theia/localization-check
