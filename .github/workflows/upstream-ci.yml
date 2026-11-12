@@ -3,7 +3,7 @@ name: Test Upstream Changes
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 4 * * *' # Runs every day at 4am: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule
+    - cron: '23 4 * * *' # Runs every day at 04:23 UTC: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule
 
 jobs:
 
@@ -44,6 +44,14 @@ jobs:
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.13'
+
+      # GCC before 13 (ubuntu-22.04 ships 11 and 12) cannot compile the V8 headers of Electron 44
+      - name: Use Clang on Linux
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          echo "CC=clang-15" >> "$GITHUB_ENV"
+          echo "CXX=clang++-15" >> "$GITHUB_ENV"
 
       - name: Build
         shell: bash
