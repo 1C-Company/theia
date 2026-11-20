@@ -169,6 +169,40 @@ Use `BundledResourceProvider.resolveExternalPath(path)` for any other bundled fi
 
 If you worked around the ripgrep problem by overriding the `@vscode/ripgrep` replacement in your own esbuild configuration, that override is no longer needed.
 
+### v1.78.0
+
+#### ChatGPT authentication modes [#18156](https://github.com/eclipse-theia/theia/pull/18156)
+
+`ChatGptAuthServiceConfig` now configures OSS authentication and requires `agentName` instead of a fixed `clientId`.
+Applications that previously supplied a custom Codex client ID or callback host through that binding must move those overrides
+to `ChatGptCodexAuthServiceConfig`. The default Codex configuration inherits shared fields, such as key-store identifiers,
+from `ChatGptAuthServiceConfig`.
+Codex OAuth constants and helpers previously exported by `chatgpt-oauth` now live in `chatgpt-codex-oauth`;
+`chatgpt-oauth` describes the OSS protocol instead.
+
+Custom auth implementations must support parameterless `startLogin` and login operations bound to its returned `loginId`.
+Signing out forgets the current session and registration; there are no account-list or account-selection RPC methods.
+Backend implementations also implement `setAuthenticationMode`, signing out the previous mode on changes;
+individual protocol sessions use `ChatGptBackendAuthSession` instead.
+Backend credentials include the mode's OAuth `clientId` (fixed for Codex, issued by OpenAI for OSS) and a session identity
+that remains stable through refresh and changes on reconnect. The frontend does not select accounts or client IDs.
+`ChatGptModel` takes separate `oss` and `codex` Responses utility instances; its `initializeOpenAi` hook receives the selected credentials.
+
+#### Electron: the backend resolves the login shell environment [#18204](https://github.com/eclipse-theia/theia/pull/18204)
+
+The generated `electron-main.js` no longer runs `fix-path` before the Electron main process starts, which blocked the start for as long as the user's interactive login shell took to initialize. Instead, the backend runs the login shell once it has started, in parallel with the window and the frontend bundle, and applies the shell's `PATH` to its own `process.env`, from where every process it spawns inherits it.
+
+Until the environment is known, the backend holds the channel of every service that a frontend opens on its connection, so that terminals, tasks, debug adapters, local MCP servers and whatever else runs the user's tools see the resolved environment without waiting for it. Services that the frontend needs in order to start up, and that start no processes, are declared independent of the shell environment and are not held: those of `@theia/core`, `@theia/filesystem`, `@theia/workspace`, `@theia/preferences` and the plugin metadata services of `@theia/plugin-ext`. The plugin host itself is forked once the environment is known, while the plugin metadata is served at once. The resolution is skipped in browser deployments, on Windows and in a backend that the login shell being resolved has started.
+
+What changes for adopters:
+
+- A backend service that the frontend needs to start up, and that starts no processes, should be declared independent of the shell environment, otherwise the workbench waits for the login shell on macOS and Linux: `new RpcConnectionHandler(path, factory, { independentOfShellEnvironment: true })`, `bindBackendService(path, Service, undefined, { independentOfShellEnvironment: true })` or `messagingService.registerChannelHandler(path, handler, { independentOfShellEnvironment: true })`. A service that starts processes must not be declared independent. Frontend services bound with `bindFrontendService` are never held. At the `debug` log level, the backend logs `Held the channel '<path>' for <n> ms until the login shell environment was resolved.` for every channel it held, which shows what to declare.
+- `RpcConnectionHandler` takes an options object (`RpcConnectionHandlerOptions`) as its third argument; a proxy factory constructor passed there is still accepted.
+- The Electron main process keeps the environment of the GUI application. Main-process code that spawns the user's tools has to resolve the `PATH` itself, for example with `@theia/electron/shared/fix-path`, which stays available.
+- Backend code that spawns processes on its own before any frontend connects, for example in `BackendApplicationContribution.onStart()`, has to await `ShellEnvironmentServer.whenResolved()` (`@theia/core/lib/common/shell-environment`) before spawning. The headless plugin host, which `@theia/plugin-ext-headless` forks on its own, is started by `HostedPluginServerImpl` once the environment is known; `HostedPluginServerImpl.whenPluginServerStarted()` settles when it has been forked. Code that serves the requests of a held service needs no change.
+- `EnvVariablesServerImpl` reads `process.env` on every request instead of a snapshot taken when it was created, so that the `PATH` of the login shell is reported; its `envs` field is a getter now, and `getValue` answers from it like `getVariables`. The service is not held, as the frontend needs the configuration directory to start, so a frontend that asks for a variable before the login shell has answered gets the `PATH` of the GUI application; it used to get the `fix-path`-ed `PATH` at any time. The `${env:...}` variable of `@theia/variable-resolver` waits for the login shell before it reads, so that a task or launch configuration started early does not pass the `PATH` of the GUI application to its process. A frontend service of your own that passes variables to a process should await `ShellEnvironmentServer.whenResolved()` likewise; the frontend proxy is bound in Electron applications only, so inject it `@optional()`.
+- The login shell runs with `THEIA_RESOLVING_ENVIRONMENT=1` in its environment, which dotfiles can check to skip prompts or programs that would keep the shell from exiting. A shell that does not answer within the new `application.shellEnvironmentResolutionTimeout` preference, 10 seconds by default, is killed, the environment is left as it is, and the user is notified. The preference takes effect at the next start.
+
 ### v1.77.0
 
 #### TypeScript 6.0 [#18100](https://github.com/eclipse-theia/theia/pull/18100)
@@ -213,6 +247,7 @@ Set `"keyboard.dispatch": "keyCode"` to restore positional key-code dispatch glo
 - Review `KeyCode` consumers: `equals()` requires the same physical key and `dispatchString()`, character-only values are not modifier-only, and `toString()` preserves authored spelling. Use `dispatchString()` when a runtime match identity is required.
 - Update `KeybindingRegistry.matchKeybinding()` consumers from `match.binding` to `match.runtime.binding`; the resolved sequence is available as `match.runtime.sequence`. Pass resolved sequences (`resolveKeybinding(binding)`) or runtime interpretations to `matchKeybinding()`; raw `KeySequence.parse()` output is no longer guaranteed to match under `keyboard.dispatch: 'code'`. Subclasses that override chord handling must replace the protected `keySequence` field with `keySequenceCandidates`. Protected keybinding-tree values are runtime records containing the original scoped binding and its resolved sequence, rather than `ScopedKeybinding[]`.
 - Pass an explicit `'logical'` or `'physical'` form to `AcceleratorSource.getAccelerator`. Browser UI uses logical labels, while Electron native menus require physical accelerators.
+
 #### Theia packages are ES modules
 
 The runtime packages (`packages/*`) are now published as ES modules: their `package.json` declares `"type": "module"` and an `exports` map, and `lib` contains ES modules.
